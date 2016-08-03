@@ -17,6 +17,7 @@
     </properties>
 
     <modules>
+        <module>addressbook</module>
     </modules>
 
     <build>

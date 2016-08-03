@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-demo-project</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+	<artifactId>addressbook</artifactId>
+	<packaging>war</packaging>
+	<name>Vaadin Addressbook example</name>
+
+	<properties>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+	</properties>
+	<repositories>
+		<!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com 
+			contains a huge set of additional libraries. See vaadin.com/directory -->
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<!-- The huge set of awesome Java libraries are available as such for Vaadin 
+			developers, you should take the advantage of those. In this app we just use 
+			the commons-beanutils to help implementing the fake backend. -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
+
+</project>
