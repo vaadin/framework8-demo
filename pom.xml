@@ -3,18 +3,25 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vaadin</groupId>
+    <groupId>com.vaadin.framework8</groupId>
     <artifactId>vaadin-demo-project</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>8.0-SNAPSHOT</version>
     <name>Vaadin Demo</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jetty.version>9.3.9.v20160517</jetty.version>
-        <vaadin.version>8.0-SNAPSHOT</vaadin.version>
+        <vaadin.version>${project.version}</vaadin.version>
     </properties>
+    
+    <repositories>
+        <repository>
+          <id>snapshot</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>addressbook</module>
