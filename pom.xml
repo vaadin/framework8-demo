@@ -3,7 +3,7 @@
                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.vaadin</groupId>
+    <groupId>com.vaadin.framework8</groupId>
     <artifactId>vaadin-demo-project</artifactId>
     <packaging>pom</packaging>
     <version>8.0-SNAPSHOT</version>
