@@ -14,10 +14,27 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <jetty.version>9.3.9.v20160517</jetty.version>
         <vaadin.version>${project.version}</vaadin.version>
+        <phantomjs.plugin.version>0.7</phantomjs.plugin.version>
+        <phantomjs.version>2.1.1</phantomjs.version>
+        <phantomjs.outputDir>${project.rootdir}/target/phantomjs-maven-plugin</phantomjs.outputDir>
     </properties>
 
     <modules>
+        <module>test-util</module>
     </modules>
+    
+    <repositories>
+        <repository>
+          <id>snapshot</id>
+          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+        </repository>
+        <!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com
+            contains a huge set of additional libraries. See vaadin.com/directory -->
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -35,6 +52,20 @@
                     <stopKey>foo</stopKey>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.github.klieber</groupId>
+                <artifactId>phantomjs-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                        <configuration>
+                            <version>${phantomjs.version}</version>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>
@@ -43,24 +74,72 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.3</version>
                 </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings 
+                    only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            com.github.klieber
+                                        </groupId>
+                                        <artifactId>
+                                            phantomjs-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [0.7,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>install</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
+    
+    <dependencyManagement>
+        <dependencies>
+            <!-- Servlet 3.0 API -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-testbench</artifactId>
+                <version>4.1.0.alpha1</version>
+            </dependency>
+			<dependency>
+                <groupId>com.vaadin.framework8</groupId>
+                <artifactId>test-util</artifactId>
+                <scope>test</scope>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
-        <!-- Servlet 3.0 API -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>
-        
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-testbench</artifactId>
-            <version>4.1.0.alpha1</version>
-        </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
@@ -99,12 +178,6 @@
             <version>${jetty.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
+    
 </project>
