@@ -16,17 +16,18 @@
 package com.vaadin.tutorial.addressbook;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.DateToLongConverter;
 import com.vaadin.data.util.converter.StringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
+import com.vaadin.tutorial.addressbook.backend.ContactService;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.renderers.DateRenderer;
@@ -38,8 +39,6 @@ import com.vaadin.ui.renderers.DateRenderer;
 @DesignRoot
 public class LeftPanel extends VerticalLayout {
 
-    private ActionsBar actions;
-
     /*
      * Hundreds of widgets. Vaadin's user interface components are just Java
      * objects that encapsulate and handle cross-browser support and
@@ -48,6 +47,24 @@ public class LeftPanel extends VerticalLayout {
      * vaadin.com/directory.
      */
     private Grid contactList;
+    private TextField filter;
+    private Button newContact;
+
+    void addEditListener(Runnable editListener) {
+        /*
+         * Synchronous event handling.
+         *
+         * Receive user interaction events on the server-side. This allows you
+         * to synchronously handle those events. Vaadin automatically sends only
+         * the needed changes to the web page without loading a new page.
+         */
+        newContact.addClickListener(e -> editListener.run());
+
+    }
+
+    void addFilterListener(Consumer<String> listener) {
+        filter.addTextChangeListener(e -> listener.accept(e.getText()));
+    }
 
     public LeftPanel() {
         Design.read(this);
@@ -69,22 +86,13 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void refresh(String filter) {
-        contactList.setContainerDataSource(new BeanItemContainer<>(
-                Contact.class, getContactProvider().apply(filter)));
+        contactList
+                .setContainerDataSource(new BeanItemContainer<>(Contact.class,
+                        ContactService.getDemoService().findAll(filter)));
     }
 
     void refresh() {
-        contactList
-                .setContainerDataSource(new BeanItemContainer<>(Contact.class,
-                        getContactProvider().apply(actions.getFilterValue())));
-    }
-
-    void addFilterListener(Consumer<String> listener) {
-        actions.addFilterListener(listener);
-    }
-
-    void addEditListener(Runnable listener) {
-        actions.addEditListener(listener);
+        refresh(getFilterValue());
     }
 
     void addSelectionListener(Consumer<Contact> listener) {
@@ -96,7 +104,8 @@ public class LeftPanel extends VerticalLayout {
         contactList.select(null);
     }
 
-    private Function<String, List<Contact>> getContactProvider() {
-        return (AddressbookUI) getUI();
+    String getFilterValue() {
+        return filter.getValue();
     }
+
 }

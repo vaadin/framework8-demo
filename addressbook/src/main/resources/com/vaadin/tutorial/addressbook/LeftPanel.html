@@ -5,7 +5,12 @@
  </head> 
  <body> 
   <vaadin-vertical-layout size-full>
-    <com_vaadin_tutorial_addressbook-Actions-Bar  _id="actions"></com_vaadin_tutorial_addressbook-Actions-Bar>
+      <vaadin-horizontal-layout width-full>
+          <vaadin-text-field width-full _id="filter"  :expand input-prompt="Filter contacts..." ></vaadin-text-field> 
+          <vaadin-button plain-text _id="newContact" >
+            New contact 
+          </vaadin-button> 
+      </vaadin-horizontal-layout> 
     <vaadin-grid _id="contactList" size-full :expand></vaadin-grid> 
   </vaadin-vertical-layout>  
  </body>

@@ -1,9 +1,5 @@
 package com.vaadin.tutorial.addressbook;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
 import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
@@ -11,7 +7,6 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
@@ -24,8 +19,7 @@ import com.vaadin.ui.UI;
  */
 @Title("Addressbook")
 @Theme("valo")
-public class AddressbookUI extends UI
-        implements Function<String, List<Contact>>, Consumer<Contact> {
+public class AddressbookUI extends UI {
 
     // ContactService is a in-memory mock DAO that mimics
     // a real-world datasource. Typically implemented for
@@ -61,10 +55,8 @@ public class AddressbookUI extends UI
      * declarative HTML files in resources folder.
      */
     private void buildLayout() {
-        HorizontalLayout mainLayout = new MainLayout();
-
         // Split and allow resizing
-        setContent(mainLayout);
+        setContent(new MainLayout());
     }
 
     /*
@@ -77,16 +69,6 @@ public class AddressbookUI extends UI
     @WebServlet(urlPatterns = "/*")
     @VaadinServletConfiguration(ui = AddressbookUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
-    }
-
-    @Override
-    public List<Contact> apply(String filter) {
-        return service.findAll(filter);
-    }
-
-    @Override
-    public void accept(Contact contact) {
-        service.save(contact);
     }
 
 }
