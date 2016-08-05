@@ -17,7 +17,7 @@ package com.vaadin.tutorial.addressbook;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.tutorial.addressbook.backend.Contact;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.declarative.Design;
 
 /**
@@ -25,7 +25,7 @@ import com.vaadin.ui.declarative.Design;
  *
  */
 @DesignRoot
-public class MainLayout extends HorizontalLayout {
+public class MainLayout extends HorizontalSplitPanel {
 
     // ContactForm is an example of a custom component class
     private ContactForm contactForm;

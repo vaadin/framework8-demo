@@ -1,12 +1,11 @@
 package com.vaadin.tutorial.addressbook;
 
-import java.util.function.Consumer;
-
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.tutorial.addressbook.backend.Contact;
+import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -61,7 +60,7 @@ public class ContactFormActionsBar extends HorizontalLayout {
             formFieldBindings.commit();
 
             // Save DAO to backend with direct synchronous service API
-            getSaveProvider().accept(contact);
+            ContactService.getDemoService().save(contact);
 
             String msg = String.format("Saved '%s %s'.", contact.getFirstName(),
                     contact.getLastName());
@@ -86,10 +85,6 @@ public class ContactFormActionsBar extends HorizontalLayout {
                     getParent());
         }
         setVisible(contact != null);
-    }
-
-    private Consumer<Contact> getSaveProvider() {
-        return getUI();
     }
 
     @Override

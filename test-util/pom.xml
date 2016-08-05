@@ -12,6 +12,7 @@
     <packaging>jar</packaging>
 
     <properties>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -26,7 +27,22 @@
         </dependency>
     </dependencies>
 
-    <build>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+					<executions>
+						<execution>
+							<id>stop-jetty</id>
+							<phase />
+						</execution>
+					</executions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
