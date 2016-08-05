@@ -4,14 +4,14 @@
   <meta charset="UTF-8" name="package-mapping" content="com_vaadin_tutorial_addressbook:com.vaadin.tutorial.addressbook">
  </head> 
  <body> 
-  <vaadin-form-layout size-auto margin> 
+  <vaadin-form-layout size-auto margin style-name="contactform"> 
    <com_vaadin_tutorial_addressbook-Contact-Form-Actions-Bar  _id="actions"></com_vaadin_tutorial_addressbook-Contact-Form-Actions-Bar>
-   <vaadin-text-field  caption="First name" _id="firstName"></vaadin-text-field>
-   <vaadin-text-field  caption="Last name" _id="lastName"></vaadin-text-field> 
-   <vaadin-text-field  caption="Phone" _id="phone"></vaadin-text-field>
-   <vaadin-text-field  caption="Email" _id="email"></vaadin-text-field>
+   <vaadin-text-field  caption="First name" _id="firstName" style-name="firstName"></vaadin-text-field>
+   <vaadin-text-field  caption="Last name" _id="lastName" style-name="lastName"></vaadin-text-field> 
+   <vaadin-text-field  caption="Phone" _id="phone" style-name="phone"></vaadin-text-field>
+   <vaadin-text-field  caption="Email" _id="email" style-name="email"></vaadin-text-field>
    <vaadin-date-field caption="Birth date" _id="birthDate"></vaadin-date-field>
-   <vaadin-check-box caption="Do not call" _id="doNotCall"></vaadin-check-box> 
+   <vaadin-check-box caption="Do not call" _id="doNotCall" style-name="doNotCall"></vaadin-check-box> 
   </vaadin-form-layout>  
  </body>
 </html>
