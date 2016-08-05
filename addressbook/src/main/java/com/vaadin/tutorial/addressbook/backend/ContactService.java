@@ -10,8 +10,6 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.beanutils.BeanUtils;
-
 /**
  * Separate Java service class. Backend implementation for the address book
  * application, with "detached entities" simulating real world DAO. Typically
@@ -33,7 +31,7 @@ public class ContactService {
 
     private static final ContactService INSTANCE = createDemoService();
 
-    public static synchronized ContactService getDemoService() {
+    public static ContactService getDemoService() {
         return INSTANCE;
     }
 
@@ -99,7 +97,7 @@ public class ContactService {
             entry.setId(nextId++);
         }
         try {
-            entry = (Contact) BeanUtils.cloneBean(entry);
+            entry = entry.clone();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
