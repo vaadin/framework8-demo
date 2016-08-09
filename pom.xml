@@ -14,21 +14,18 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <jetty.version>9.3.9.v20160517</jetty.version>
         <vaadin.version>${project.version}</vaadin.version>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
         <phantomjs.plugin.version>0.7</phantomjs.plugin.version>
         <phantomjs.version>2.1.1</phantomjs.version>
-        <phantomjs.outputDir>${project.rootdir}/target/phantomjs-maven-plugin</phantomjs.outputDir>
+        <phantomjs.outputDir>${project.build.directory}/phantomjs-maven-plugin</phantomjs.outputDir>
     </properties>
-
-    <modules>
-        <module>test-util</module>
-    </modules>
     
     <repositories>
         <repository>
           <id>snapshot</id>
           <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </repository>
-        <!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com
+        <!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com 
             contains a huge set of additional libraries. See vaadin.com/directory -->
         <repository>
             <id>vaadin-addons</id>
@@ -36,6 +33,11 @@
         </repository>
     </repositories>
 
+    <modules>
+        <module>addressbook</module>
+        <module>test-util</module>
+    </modules>
+    
     <build>
         <plugins>
             <plugin>
@@ -140,6 +142,10 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+	        <groupId>javax.servlet</groupId>
+	        <artifactId>javax.servlet-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
