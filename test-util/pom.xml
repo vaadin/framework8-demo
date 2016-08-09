@@ -12,6 +12,8 @@
     <packaging>jar</packaging>
 
     <properties>
+        <skipTests>true</skipTests>
+        <jetty.skip>true</jetty.skip>
     </properties>
 
     <dependencies>
@@ -25,8 +27,5 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <build>
-    </build>
 
 </project>

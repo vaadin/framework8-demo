@@ -290,4 +290,18 @@ public abstract class AbstractDemoTest extends TestBenchTestCase {
         }
         Assert.assertEquals(unwrappedExpected, unwrappedActual);
     }
+
+    /**
+     * Checks that the {@code element} has the {@code text} as a part of its
+     * inner HTML.
+     * 
+     * @param element
+     *            a DOM element
+     * @param text
+     *            a text to check against
+     */
+    protected boolean hasText(WebElement element, String text) {
+        return element.getAttribute("innerHTML").contains(text);
+    }
+
 }

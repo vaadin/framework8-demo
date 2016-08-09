@@ -22,6 +22,11 @@
 			<version>1.9.2</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+            <groupId>com.vaadin.framework8</groupId>
+            <artifactId>test-util</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 </project>

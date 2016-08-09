@@ -7,9 +7,8 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.tutorial.addressbook.backend.ContactService;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
 /* User Interface written in Java.
  *
@@ -18,13 +17,8 @@ import com.vaadin.ui.UI;
  * the same instance, add @PreserveOnRefresh.
  */
 @Title("Addressbook")
-@Theme("valo")
+@Theme(ValoTheme.THEME_NAME)
 public class AddressbookUI extends UI {
-
-    // ContactService is a in-memory mock DAO that mimics
-    // a real-world datasource. Typically implemented for
-    // example as EJB or Spring Data based service.
-    private final ContactService service = ContactService.getDemoService();
 
     /*
      * The "Main method".
