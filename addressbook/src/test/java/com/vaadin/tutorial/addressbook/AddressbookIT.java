@@ -40,8 +40,7 @@ public class AddressbookIT extends AbstractDemoTest {
 
     @Test
     public void tableWithData() {
-        Assert.assertTrue(isElementPresent(By.className("contactstable")));
-        WebElement table = findElement(By.className("contactstable"));
+        WebElement table = findElement(By.id("contactstable"));
 
         List<WebElement> headers = table.findElements(By.tagName("th"));
         Assert.assertEquals(5, headers.size());
@@ -93,10 +92,11 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertEquals(contact.getEmail(), email.getAttribute("value"));
         Assert.assertEquals(contact.getPhone(), phone.getAttribute("value"));
 
+        boolean checked = hasText(doNotCall, "checked");
         if (contact.isDoNotCall()) {
-            hasText(doNotCall, "checked");
+            Assert.assertTrue(checked);
         } else {
-            hasNoText(doNotCall, "checked");
+            Assert.assertFalse(checked);
         }
     }
 
@@ -134,10 +134,12 @@ public class AddressbookIT extends AbstractDemoTest {
         hasText(columns.get(0), contacts.get(row).getFirstName());
         hasText(columns.get(1), contacts.get(row).getLastName());
         hasText(columns.get(2), contacts.get(row).getEmail());
+
+        boolean doNotCall = hasText(columns.get(4), "DO NOT CALL");
         if (contacts.get(row).isDoNotCall()) {
-            hasText(columns.get(4), "DO NOT CALL");
+            Assert.assertTrue(doNotCall);
         } else {
-            hasNoText(columns.get(4), "DO NOT CALL");
+            Assert.assertFalse(doNotCall);
         }
     }
 }
