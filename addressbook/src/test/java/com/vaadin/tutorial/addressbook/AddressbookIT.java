@@ -40,8 +40,7 @@ public class AddressbookIT extends AbstractDemoTest {
 
     @Test
     public void tableWithData() {
-        Assert.assertTrue(isElementPresent(By.className("contactstable")));
-        WebElement table = findElement(By.className("contactstable"));
+        WebElement table = findElement(By.id("contactstable"));
 
         List<WebElement> headers = table.findElements(By.tagName("th"));
         Assert.assertEquals(5, headers.size());
@@ -76,7 +75,7 @@ public class AddressbookIT extends AbstractDemoTest {
                 .findElements(By.className("v-button"));
         Assert.assertEquals(2, buttons.size());
 
-        WebElement form = findElement(By.className("contactform"));
+        WebElement form = findElement(By.id("contactform"));
 
         WebElement firstName = form.findElement(By.className("firstName"));
         WebElement lastName = form.findElement(By.className("lastName"));
@@ -84,6 +83,9 @@ public class AddressbookIT extends AbstractDemoTest {
         WebElement phone = form.findElement(By.className("phone"));
         WebElement doNotCall = form.findElement(By.className("doNotCall"));
 
+        // Remember that this is not the same ContactService as you have in web
+        // App ! This is executed in different JVM. So we can compare until
+        // modification is made.
         Contact contact = ContactService.getDemoService().findAll("")
                 .get(index);
         Assert.assertEquals(contact.getFirstName(),
@@ -93,11 +95,37 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertEquals(contact.getEmail(), email.getAttribute("value"));
         Assert.assertEquals(contact.getPhone(), phone.getAttribute("value"));
 
+        boolean checked = hasText(doNotCall, "checked");
         if (contact.isDoNotCall()) {
-            hasText(doNotCall, "checked");
+            Assert.assertTrue(checked);
         } else {
-            hasNoText(doNotCall, "checked");
+            Assert.assertFalse(checked);
         }
+    }
+
+    @Test
+    public void updateContact() {
+        int index = 1;
+
+        List<WebElement> rows = getRows();
+
+        rows.get(index).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.id("contactform"));
+
+        WebElement firstName = form.findElement(By.className("firstName"));
+        firstName.clear();
+        firstName.sendKeys("Updated Name");
+
+        form.findElement(By.className("primary")).click();
+
+        Assert.assertFalse(isElementPresent(By.className("contactform")));
+
+        rows = getRows();
+
+        WebElement firstNameColumn = rows.get(index)
+                .findElement(By.tagName("td"));
+        hasText(firstNameColumn, "Updated Name");
     }
 
     @Test
@@ -119,7 +147,7 @@ public class AddressbookIT extends AbstractDemoTest {
     }
 
     private List<WebElement> getRows() {
-        WebElement table = findElement(By.className("contactstable"));
+        WebElement table = findElement(By.id("contactstable"));
 
         List<WebElement> bodies = table.findElements(By.tagName("tbody"));
         List<WebElement> rows = bodies.get(bodies.size() - 1)
@@ -134,10 +162,16 @@ public class AddressbookIT extends AbstractDemoTest {
         hasText(columns.get(0), contacts.get(row).getFirstName());
         hasText(columns.get(1), contacts.get(row).getLastName());
         hasText(columns.get(2), contacts.get(row).getEmail());
+
+        // We can't compare created timestamp since the service instance is not
+        // the same: tests are executed in different JVM. So let's compare only
+        // reliable (permanent) values
+
+        boolean doNotCall = hasText(columns.get(4), "DO NOT CALL");
         if (contacts.get(row).isDoNotCall()) {
-            hasText(columns.get(4), "DO NOT CALL");
+            Assert.assertTrue(doNotCall);
         } else {
-            hasNoText(columns.get(4), "DO NOT CALL");
+            Assert.assertFalse(doNotCall);
         }
     }
 }
