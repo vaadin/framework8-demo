@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vaadin.framework8</groupId>
-    <artifactId>vaadin-demo-project</artifactId>
+    <artifactId>framework8-demo</artifactId>
     <packaging>pom</packaging>
     <version>8.0-SNAPSHOT</version>
     <name>Vaadin Demo</name>
