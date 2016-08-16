@@ -36,6 +36,7 @@
     <modules>
         <module>addressbook</module>
         <module>test-util</module>
+        <module>registration-form</module>
     </modules>
     
     <build>
