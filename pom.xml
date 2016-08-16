@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vaadin.framework8</groupId>
-    <artifactId>vaadin-demo-project</artifactId>
+    <artifactId>framework8-demo</artifactId>
     <packaging>pom</packaging>
     <version>8.0-SNAPSHOT</version>
     <name>Vaadin Demo</name>
@@ -41,6 +41,23 @@
     
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <systemPropertyVariables>
+                        <phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.17</version>
