@@ -1,17 +1,25 @@
 <!doctype html>
 <html>
  <head>
+  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="com_vaadin_tutorial_addressbook:com.vaadin.tutorial.addressbook">
  </head> 
  <body> 
-  <vaadin-form-layout size-auto margin id="contactform"> 
-   <com_vaadin_tutorial_addressbook-Contact-Form-Actions-Bar  _id="actions"></com_vaadin_tutorial_addressbook-Contact-Form-Actions-Bar>
-   <vaadin-text-field  caption="First name" _id="firstName" style-name="firstName"></vaadin-text-field>
-   <vaadin-text-field  caption="Last name" _id="lastName" style-name="lastName"></vaadin-text-field> 
-   <vaadin-text-field  caption="Phone" _id="phone" style-name="phone"></vaadin-text-field>
-   <vaadin-text-field  caption="Email" _id="email" style-name="email"></vaadin-text-field>
-   <vaadin-date-field caption="Birth date" _id="birthDate"></vaadin-date-field>
-   <vaadin-check-box caption="Do not call" _id="doNotCall" style-name="doNotCall"></vaadin-check-box> 
-  </vaadin-form-layout>  
+  <v-form-layout id="contactform" size-auto margin> 
+   <v-text-field caption="First name" style-name="firstName" _id="firstName"></v-text-field> 
+   <v-text-field caption="Last name" style-name="lastName" _id="lastName"></v-text-field> 
+   <v-text-field caption="Phone" style-name="phone" _id="phone"></v-text-field> 
+   <v-text-field caption="Email" style-name="email" _id="email"></v-text-field> 
+   <v-date-field caption="Birth date" _id="birthDate"></v-date-field> 
+   <v-check-box caption="Do not call" style-name="doNotCall" _id="doNotCall"></v-check-box> 
+   <v-horizontal-layout style-name="buttons" spacing> 
+    <v-button plain-text _id="save">
+      Save 
+    </v-button> 
+    <v-button plain-text _id="cancel">
+      Cancel 
+    </v-button> 
+   </v-horizontal-layout> 
+  </v-form-layout>  
  </body>
 </html>

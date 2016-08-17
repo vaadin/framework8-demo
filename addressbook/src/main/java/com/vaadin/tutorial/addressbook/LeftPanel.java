@@ -20,8 +20,8 @@ import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.DateToLongConverter;
-import com.vaadin.data.util.converter.StringToBooleanConverter;
+import com.vaadin.legacy.data.util.converter.LegacyDateToLongConverter;
+import com.vaadin.legacy.data.util.converter.LegacyStringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
@@ -63,12 +63,11 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void addFilterListener(Consumer<String> listener) {
-        filter.addTextChangeListener(e -> listener.accept(e.getText()));
+        filter.addValueChangeListener(e -> listener.accept(e.getValue()));
     }
 
     public LeftPanel() {
         Design.read(this);
-
         contactList
                 .setContainerDataSource(new BeanItemContainer<>(Contact.class));
         contactList.setColumnOrder("firstName", "lastName", "email");
@@ -80,9 +79,9 @@ public class LeftPanel extends VerticalLayout {
         Column timestamp = contactList.getColumn("createdTimestamp");
         timestamp.setRenderer(
                 new DateRenderer(new SimpleDateFormat("YYYY-MM-DD HH:mm:ss")));
-        timestamp.setConverter(new DateToLongConverter());
-        contactList.getColumn("doNotCall")
-                .setConverter(new StringToBooleanConverter("DO NOT CALL", ""));
+        timestamp.setConverter(new LegacyDateToLongConverter());
+        contactList.getColumn("doNotCall").setConverter(
+                new LegacyStringToBooleanConverter("DO NOT CALL", ""));
     }
 
     void refresh(String filter) {

@@ -105,7 +105,7 @@ public class AddressbookIT extends AbstractDemoTest {
 
     @Test
     public void updateContact() {
-        int index = 1;
+        int index = 4;
 
         List<WebElement> rows = getRows();
 
