@@ -105,7 +105,7 @@ public class AddressbookIT extends AbstractDemoTest {
 
     @Test
     public void updateContact() {
-        int index = 4;
+        int index = 1;
 
         List<WebElement> rows = getRows();
 
@@ -126,6 +126,24 @@ public class AddressbookIT extends AbstractDemoTest {
         WebElement firstNameColumn = rows.get(index)
                 .findElement(By.tagName("td"));
         hasText(firstNameColumn, "Updated Name");
+    }
+
+    @Test
+    public void validationError() {
+        int index = 1;
+
+        List<WebElement> rows = getRows();
+
+        rows.get(index).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.id("contactform"));
+        WebElement phone = form.findElement(By.className("phone"));
+        WebElement email = form.findElement(By.className("email"));
+
+        phone.clear();
+        email.clear();
+
+        waitForElementVisible(By.className("v-errorindicator"));
     }
 
     @Test
