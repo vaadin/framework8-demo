@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
@@ -144,6 +145,9 @@ public class AddressbookIT extends AbstractDemoTest {
         email.clear();
 
         waitForElementVisible(By.className("v-errorindicator"));
+
+        email.sendKeys("test@test.com", Keys.ENTER);
+        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
     }
 
     @Test

@@ -61,8 +61,8 @@ public class ContactForm extends FormLayout {
                         "Both phone and email cannot be empty")
                 .bind(Contact::getPhone, Contact::setPhone);
 
-        email.addValueChangeListener(l -> binder.validate());
-        phone.addValueChangeListener(l -> binder.validate());
+        email.addValueChangeListener(event -> binder.validate());
+        phone.addValueChangeListener(event -> binder.validate());
 
         firstName.setRequired(true);
         lastName.setRequired(true);
