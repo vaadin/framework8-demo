@@ -39,8 +39,6 @@ public class ContactForm extends FormLayout {
     protected Button cancel;
 
     private final Binder<Contact> binder = new Binder<>();
-    private final Predicate<String> phoneOrEmailPredicate = v -> !phone
-            .getValue().trim().isEmpty() || !email.getValue().trim().isEmpty();
 
     public ContactForm() {
         Design.read(this);
@@ -48,6 +46,9 @@ public class ContactForm extends FormLayout {
     }
 
     private void configureComponents() {
+
+        final Predicate<String> phoneOrEmailPredicate = v -> !phone.getValue()
+                .trim().isEmpty() || !email.getValue().trim().isEmpty();
 
         binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
@@ -59,6 +60,9 @@ public class ContactForm extends FormLayout {
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty")
                 .bind(Contact::getPhone, Contact::setPhone);
+
+        email.addValueChangeListener(l -> binder.validate());
+        phone.addValueChangeListener(l -> binder.validate());
 
         firstName.setRequired(true);
         lastName.setRequired(true);

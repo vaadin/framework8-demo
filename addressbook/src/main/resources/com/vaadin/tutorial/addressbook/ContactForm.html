@@ -1,18 +1,11 @@
 <!doctype html>
 <html>
  <head>
-  <meta charset="UTF-8" name="design-properties" content="{&quot;RULERS_VISIBLE&quot;:true,&quot;GUIDELINES_VISIBLE&quot;:false,&quot;SNAP_TO_OBJECTS&quot;:true,&quot;SNAP_TO_GRID&quot;:true,&quot;SNAPPING_DISTANCE&quot;:10,&quot;THEME&quot;:&quot;valo&quot;}">
   <meta charset="UTF-8" name="package-mapping" content="com_vaadin_tutorial_addressbook:com.vaadin.tutorial.addressbook">
  </head> 
  <body> 
   <v-form-layout id="contactform" size-auto margin> 
-   <v-text-field caption="First name" style-name="firstName" _id="firstName"></v-text-field> 
-   <v-text-field caption="Last name" style-name="lastName" _id="lastName"></v-text-field> 
-   <v-text-field caption="Phone" style-name="phone" _id="phone"></v-text-field> 
-   <v-text-field caption="Email" style-name="email" _id="email"></v-text-field> 
-   <v-date-field caption="Birth date" _id="birthDate"></v-date-field> 
-   <v-check-box caption="Do not call" style-name="doNotCall" _id="doNotCall"></v-check-box> 
-   <v-horizontal-layout style-name="buttons" spacing> 
+     <v-horizontal-layout style-name="buttons" spacing> 
     <v-button plain-text _id="save">
       Save 
     </v-button> 
@@ -20,6 +13,12 @@
       Cancel 
     </v-button> 
    </v-horizontal-layout> 
+   <v-text-field caption="First name" style-name="firstName" _id="firstName"></v-text-field> 
+   <v-text-field caption="Last name" style-name="lastName" _id="lastName"></v-text-field> 
+   <v-text-field caption="Phone" style-name="phone" _id="phone"></v-text-field> 
+   <v-text-field caption="Email" style-name="email" _id="email"></v-text-field> 
+   <v-date-field caption="Birth date" _id="birthDate"></v-date-field> 
+   <v-check-box caption="Do not call" style-name="doNotCall" _id="doNotCall"></v-check-box> 
   </v-form-layout>  
  </body>
 </html>
