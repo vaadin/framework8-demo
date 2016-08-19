@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
@@ -126,6 +127,27 @@ public class AddressbookIT extends AbstractDemoTest {
         WebElement firstNameColumn = rows.get(index)
                 .findElement(By.tagName("td"));
         hasText(firstNameColumn, "Updated Name");
+    }
+
+    @Test
+    public void validationError() {
+        int index = 1;
+
+        List<WebElement> rows = getRows();
+
+        rows.get(index).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.id("contactform"));
+        WebElement phone = form.findElement(By.className("phone"));
+        WebElement email = form.findElement(By.className("email"));
+
+        phone.clear();
+        email.clear();
+
+        waitForElementVisible(By.className("v-errorindicator"));
+
+        email.sendKeys("test@test.com", Keys.ENTER);
+        waitForElementNotPresent(By.className("v-errorindicator"));
     }
 
     @Test
