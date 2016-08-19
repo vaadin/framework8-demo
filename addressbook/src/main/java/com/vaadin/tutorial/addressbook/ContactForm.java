@@ -1,14 +1,22 @@
 package com.vaadin.tutorial.addressbook;
 
+import java.util.function.Predicate;
+
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.validator.AbstractStringValidator;
+import com.vaadin.data.Binder;
 import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.tutorial.addressbook.backend.Contact;
+import com.vaadin.tutorial.addressbook.backend.ContactService;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.declarative.Design;
+import com.vaadin.ui.themes.ValoTheme;
 
 /* Create custom UI Components.
  *
@@ -21,28 +29,16 @@ import com.vaadin.ui.declarative.Design;
 @DesignRoot
 public class ContactForm extends FormLayout {
 
-    private class PhoneEmailValidator extends AbstractStringValidator {
-
-        PhoneEmailValidator() {
-            super("Either phone or email must be filled in.");
-        }
-
-        @Override
-        protected boolean isValidValue(String value) {
-            return !phone.getValue().trim().isEmpty()
-                    || !email.getValue().trim().isEmpty();
-        }
-
-    }
-
-    private ContactFormActionsBar actions;
-
     private TextField firstName;
     private TextField lastName;
     private TextField phone;
     private TextField email;
     private DateField birthDate;
     private CheckBox doNotCall;
+    protected Button save;
+    protected Button cancel;
+
+    private final Binder<Contact> binder = new Binder<>();
 
     public ContactForm() {
         Design.read(this);
@@ -50,30 +46,79 @@ public class ContactForm extends FormLayout {
     }
 
     private void configureComponents() {
-        email.addValidator(new EmailValidator("Incorrect email address"));
 
-        PhoneEmailValidator validator = new PhoneEmailValidator();
-        email.addValidator(validator);
-        phone.addValidator(validator);
+        final Predicate<String> phoneOrEmailPredicate = v -> !phone.getValue()
+                .trim().isEmpty() || !email.getValue().trim().isEmpty();
 
-        email.addValueChangeListener(e -> phone.markAsDirty());
-        phone.addValueChangeListener(e -> email.markAsDirty());
+        binder.forField(email)
+                .withValidator(phoneOrEmailPredicate,
+                        "Both phone and email cannot be empty")
+                .withValidator(new EmailValidator("Incorrect email address"))
+                .bind(Contact::getEmail, Contact::setEmail);
+
+        binder.forField(phone)
+                .withValidator(phoneOrEmailPredicate,
+                        "Both phone and email cannot be empty")
+                .bind(Contact::getPhone, Contact::setPhone);
+
+        email.addValueChangeListener(event -> binder.validate());
+        phone.addValueChangeListener(event -> binder.validate());
 
         firstName.setRequired(true);
         lastName.setRequired(true);
 
-        firstName.setRequiredError("Please set the first name");
-        lastName.setRequiredError("Please set the last name");
+        binder.bind(firstName, Contact::getFirstName, Contact::setFirstName);
+        binder.bind(lastName, Contact::getLastName, Contact::setLastName);
+        binder.bind(doNotCall, Contact::isDoNotCall, Contact::setDoNotCall);
+        binder.bind(birthDate, Contact::getBirthDate, Contact::setBirthDate);
+
+        /*
+         * Highlight primary actions.
+         *
+         * With Vaadin built-in styles you can highlight the primary save button
+         * and give it a keyboard shortcut for a better UX.
+         */
+        save.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+
+        save.addClickListener(this::save);
+        cancel.addClickListener(this::cancel);
 
         setVisible(false);
     }
 
     void edit(Contact contact) {
         if (contact != null) {
-            actions.edit(contact);
+            binder.bind(contact);
             firstName.focus();
+        } else {
+            binder.unbind();
         }
         setVisible(contact != null);
     }
 
+    public void save(Button.ClickEvent event) {
+        binder.getBean().ifPresent(bean -> {
+            if (binder.validate().isEmpty()) {
+
+                binder.save(bean);
+                ContactService.getDemoService().save(bean);
+
+                String msg = String.format("Saved '%s %s'.",
+                        bean.getFirstName(), bean.getLastName());
+                Notification.show(msg, Type.TRAY_NOTIFICATION);
+                getUI().getContent().refreshContacts();
+            }
+        });
+    }
+
+    public void cancel(Button.ClickEvent event) {
+        Notification.show("Cancelled", Type.TRAY_NOTIFICATION);
+        getUI().getContent().deselect();
+    }
+
+    @Override
+    public AddressbookUI getUI() {
+        return (AddressbookUI) super.getUI();
+    }
 }
