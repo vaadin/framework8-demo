@@ -19,18 +19,18 @@ import java.text.SimpleDateFormat;
 import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.legacy.data.util.converter.LegacyDateToLongConverter;
-import com.vaadin.legacy.data.util.converter.LegacyStringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.LegacyGrid;
-import com.vaadin.ui.LegacyGrid.Column;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
-import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.v7.data.util.BeanItemContainer;
+import com.vaadin.v7.data.util.converter.DateToLongConverter;
+import com.vaadin.v7.data.util.converter.StringToBooleanConverter;
+import com.vaadin.v7.ui.Grid;
+import com.vaadin.v7.ui.Grid.Column;
+import com.vaadin.v7.ui.renderers.DateRenderer;
 
 /**
  * @author Vaadin Ltd
@@ -46,7 +46,7 @@ public class LeftPanel extends VerticalLayout {
      * com.vaadin.ui package and there are over 500 more in
      * vaadin.com/directory.
      */
-    private LegacyGrid contactList;
+    private Grid contactList;
     private TextField filter;
     private Button newContact;
 
@@ -74,14 +74,14 @@ public class LeftPanel extends VerticalLayout {
         contactList.removeColumn("id");
         contactList.removeColumn("birthDate");
         contactList.removeColumn("phone");
-        contactList.setSelectionMode(LegacyGrid.SelectionMode.SINGLE);
+        contactList.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         Column timestamp = contactList.getColumn("createdTimestamp");
         timestamp.setRenderer(
                 new DateRenderer(new SimpleDateFormat("YYYY-MM-DD HH:mm:ss")));
-        timestamp.setConverter(new LegacyDateToLongConverter());
-        contactList.getColumn("doNotCall").setConverter(
-                new LegacyStringToBooleanConverter("DO NOT CALL", ""));
+        timestamp.setConverter(new DateToLongConverter());
+        contactList.getColumn("doNotCall")
+                .setConverter(new StringToBooleanConverter("DO NOT CALL", ""));
     }
 
     void refresh(String filter) {
