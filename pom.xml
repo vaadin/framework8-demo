@@ -1,6 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                             http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vaadin.framework8</groupId>
@@ -12,7 +11,8 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jetty.version>9.3.9.v20160517</jetty.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty.version>9.3.7.v20160115</jetty.version>
         <vaadin.version>${project.version}</vaadin.version>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <phantomjs.plugin.version>0.7</phantomjs.plugin.version>
@@ -36,7 +36,8 @@
     <modules>
         <module>addressbook</module>
         <module>test-util</module>
-    </modules>
+        <module>spring-demo</module>
+  </modules>
     
     <build>
         <plugins>
@@ -111,6 +112,11 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.3</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-maven-plugin</artifactId>
+                    <version>7.7.0</version>
+                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings 
                     only. It has no influence on the Maven build itself. -->
                 <plugin>
@@ -136,7 +142,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -159,7 +165,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
-                <version>4.11</version>
+                <version>4.12</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -189,7 +195,6 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-server</artifactId>
-            <version>${vaadin.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
