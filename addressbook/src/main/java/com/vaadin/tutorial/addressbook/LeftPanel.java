@@ -20,8 +20,6 @@ import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.legacy.data.util.converter.LegacyDateToLongConverter;
-import com.vaadin.legacy.data.util.converter.LegacyStringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
@@ -31,6 +29,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.renderers.DateRenderer;
+import com.vaadin.v7.data.util.converter.LegacyDateToLongConverter;
+import com.vaadin.v7.data.util.converter.LegacyStringToBooleanConverter;
 
 /**
  * @author Vaadin Ltd
