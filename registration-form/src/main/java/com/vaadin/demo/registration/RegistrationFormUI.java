@@ -54,12 +54,17 @@ public class RegistrationFormUI extends UI {
         layout.setMargin(true);
         setContent(layout);
 
-        layout.addComponents(createFullName(), createEmailOrPhone(),
-                createPasswordField("Password", this::configurePassword),
-                createConfirmPassword(), createButton());
+        Component fullName = createFullName();
+        Component emailOrPhone = createEmailOrPhone();
+        Component passwordField = createPasswordField("Password",
+                this::configurePassword);
+        Component confirmPassword = createConfirmPassword();
+        Button button = createButton();
+        layout.addComponents(fullName, emailOrPhone, passwordField,
+                confirmPassword, button);
     }
 
-    private Component createButton() {
+    private Button createButton() {
         Button button = new Button("Sign Up", event -> save());
         button.addStyleName(ValoTheme.BUTTON_PRIMARY);
         button.setWidth(WIDTH, Unit.PIXELS);
@@ -174,7 +179,7 @@ public class RegistrationFormUI extends UI {
         statusMessage.setVisible(false);
         statusMessage.addStyleName("validation-message");
         field.setData(statusMessage);
-        return createRow(field, statusMessage, configureBinding);
+        return createFieldContainer(field, statusMessage, configureBinding);
     }
 
     private Component createTextField(String placeholder,
@@ -190,7 +195,8 @@ public class RegistrationFormUI extends UI {
         return configureField(field, placeholder, configureBinding);
     }
 
-    private HorizontalLayout createRow(AbstractTextField field, Label infoLabel,
+    private HorizontalLayout createFieldContainer(AbstractTextField field,
+            Label infoLabel,
             Consumer<Binding<Person, String, String>> configureBinding) {
         HorizontalLayout layout = new HorizontalLayout();
         layout.addComponent(field);

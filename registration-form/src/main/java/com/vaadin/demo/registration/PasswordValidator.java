@@ -41,11 +41,10 @@ class PasswordValidator extends StringLengthValidator {
     }
 
     private boolean hasDigit(String pwd) {
-        return pwd.chars().anyMatch(ch -> ch >= '0' && ch <= '9');
+        return pwd.chars().anyMatch(Character::isDigit);
     }
 
     private boolean hasLetter(String pwd) {
-        return pwd.chars().anyMatch(
-                ch -> (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
+        return pwd.chars().anyMatch(Character::isLetter);
     }
 }
