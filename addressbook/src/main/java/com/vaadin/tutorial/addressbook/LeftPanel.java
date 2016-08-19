@@ -25,8 +25,8 @@ import com.vaadin.legacy.data.util.converter.LegacyStringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.LegacyGrid;
+import com.vaadin.ui.LegacyGrid.Column;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
@@ -46,7 +46,7 @@ public class LeftPanel extends VerticalLayout {
      * com.vaadin.ui package and there are over 500 more in
      * vaadin.com/directory.
      */
-    private Grid contactList;
+    private LegacyGrid contactList;
     private TextField filter;
     private Button newContact;
 
@@ -74,7 +74,7 @@ public class LeftPanel extends VerticalLayout {
         contactList.removeColumn("id");
         contactList.removeColumn("birthDate");
         contactList.removeColumn("phone");
-        contactList.setSelectionMode(Grid.SelectionMode.SINGLE);
+        contactList.setSelectionMode(LegacyGrid.SelectionMode.SINGLE);
 
         Column timestamp = contactList.getColumn("createdTimestamp");
         timestamp.setRenderer(

@@ -147,7 +147,7 @@ public class AddressbookIT extends AbstractDemoTest {
         waitForElementVisible(By.className("v-errorindicator"));
 
         email.sendKeys("test@test.com", Keys.ENTER);
-        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
+        waitForElementNotPresent(By.className("v-errorindicator"));
     }
 
     @Test
