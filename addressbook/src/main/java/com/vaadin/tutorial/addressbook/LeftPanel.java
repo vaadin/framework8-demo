@@ -20,13 +20,13 @@ import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.DateToLongConverter;
-import com.vaadin.data.util.converter.StringToBooleanConverter;
+import com.vaadin.legacy.data.util.converter.LegacyDateToLongConverter;
+import com.vaadin.legacy.data.util.converter.LegacyStringToBooleanConverter;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.Column;
+import com.vaadin.ui.LegacyGrid;
+import com.vaadin.ui.LegacyGrid.Column;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
@@ -46,7 +46,7 @@ public class LeftPanel extends VerticalLayout {
      * com.vaadin.ui package and there are over 500 more in
      * vaadin.com/directory.
      */
-    private Grid contactList;
+    private LegacyGrid contactList;
     private TextField filter;
     private Button newContact;
 
@@ -63,26 +63,25 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void addFilterListener(Consumer<String> listener) {
-        filter.addTextChangeListener(e -> listener.accept(e.getText()));
+        filter.addValueChangeListener(e -> listener.accept(e.getValue()));
     }
 
     public LeftPanel() {
         Design.read(this);
-
         contactList
                 .setContainerDataSource(new BeanItemContainer<>(Contact.class));
         contactList.setColumnOrder("firstName", "lastName", "email");
         contactList.removeColumn("id");
         contactList.removeColumn("birthDate");
         contactList.removeColumn("phone");
-        contactList.setSelectionMode(Grid.SelectionMode.SINGLE);
+        contactList.setSelectionMode(LegacyGrid.SelectionMode.SINGLE);
 
         Column timestamp = contactList.getColumn("createdTimestamp");
         timestamp.setRenderer(
                 new DateRenderer(new SimpleDateFormat("YYYY-MM-DD HH:mm:ss")));
-        timestamp.setConverter(new DateToLongConverter());
-        contactList.getColumn("doNotCall")
-                .setConverter(new StringToBooleanConverter("DO NOT CALL", ""));
+        timestamp.setConverter(new LegacyDateToLongConverter());
+        contactList.getColumn("doNotCall").setConverter(
+                new LegacyStringToBooleanConverter("DO NOT CALL", ""));
     }
 
     void refresh(String filter) {

@@ -15,8 +15,6 @@
  */
 package com.vaadin.demo.registration;
 
-import java.util.regex.Pattern;
-
 import com.vaadin.data.Result;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
@@ -24,11 +22,6 @@ import com.vaadin.data.validator.EmailValidator;
 class EmailOrPhoneValidator extends AbstractValidator<String> {
 
     private final EmailValidator emailValidator;
-    private static final Pattern PHONE_REGEXP = Pattern
-            .compile("^[ ]*\\+[ ]*[0-9][ \\d]*$");
-
-    private static final Pattern PHONE_PREFIX = Pattern
-            .compile("^[ ]*\\+[ ]*[0-9].*$");
 
     EmailOrPhoneValidator() {
         super("");
@@ -38,14 +31,14 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
 
     @Override
     public Result<String> apply(String value) {
+        String val = value;
+        // remove all spaces
+        val = val.replace(" ", "");
         // if string starts from +0-9 ignoring spaces
-        if (PHONE_PREFIX.matcher(value).matches()) {
+        if (startsWithCountryCode(val)) {
+            String digits = val.substring(1);
             // if string contains only + and digits (ignoring spaces)
-            if (PHONE_REGEXP.matcher(value).matches()) {
-                // remove all spaces
-                String val = value.replace(" ", "");
-                // remove leading +
-                String digits = val.substring(1, val.length());
+            if (hasOnlyDigits(digits)) {
                 // now there should be at least 10 digits
                 if (digits.length() >= 10) {
                     return Result.ok(val);
@@ -64,6 +57,15 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
         } else {
             return emailValidator.apply(value);
         }
+    }
+
+    private boolean startsWithCountryCode(String phone) {
+        return phone.length() >= 2 && phone.charAt(0) == '+'
+                && Character.isDigit(phone.charAt(1));
+    }
+
+    private boolean hasOnlyDigits(String phone) {
+        return phone.chars().allMatch(Character::isDigit);
     }
 
 }
