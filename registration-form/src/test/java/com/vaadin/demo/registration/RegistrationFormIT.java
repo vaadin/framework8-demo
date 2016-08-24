@@ -63,7 +63,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         fullName.sendKeys("foo");
         fullName.sendKeys(Keys.TAB);
 
-        fullName.sendKeys("");
+        fullName.focus();
+        fullName.clear();
         fullName.sendKeys(Keys.TAB);
 
         WebElement statusMessage = findStatusMessage();
@@ -150,9 +151,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
     @Test
     public void validatePasswd_valid() {
-        PasswordFieldElement fullName = $(PasswordFieldElement.class).get(0);
-        fullName.sendKeys("aa11bbss33ddd");
-        fullName.sendKeys(Keys.TAB);
+        PasswordFieldElement password = $(PasswordFieldElement.class).get(0);
+        password.sendKeys("aa11bbss33ddd");
+        password.sendKeys(Keys.TAB);
 
         Assert.assertFalse(
                 isElementPresent(By.className("validation-message")));

@@ -25,7 +25,7 @@ public class Person {
 
     private String emailOrPhone;
 
-    private String passwd;
+    private String password;
 
     public String getFullName() {
         return fullName;
@@ -44,11 +44,11 @@ public class Person {
     }
 
     public String getPasswd() {
-        return passwd;
+        return password;
     }
 
     public void setPasswd(String passwd) {
-        this.passwd = passwd;
+        this.password = passwd;
     }
 
 }
