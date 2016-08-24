@@ -85,7 +85,7 @@ public class RegistrationFormUI extends UI {
         field.focus();
         return configureField(field, "Full name", binding -> binding
                 .withValidator(new NotEmptyValidator<String>(
-                        "Full name may not be null"))
+                        "Full name may not be empty"))
                 .withStatusChangeHandler(this::handleFullNameStatusChange)
                 .bind(Person::getFullName, Person::setFullName));
     }
@@ -93,7 +93,7 @@ public class RegistrationFormUI extends UI {
     private void configurePassword(Binding<Person, String, String> binding) {
         binding.withValidator(new PasswordValidator())
                 .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getPasswd, Person::setPasswd);
+                .bind(Person::getPassword, Person::setPassword);
         passwordBinding = binding;
     }
 
@@ -111,7 +111,7 @@ public class RegistrationFormUI extends UI {
         binding.withValidator(Validator.from(this::validateConfirmPasswd,
                 "Password doesn't match"))
                 .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getPasswd, (person, pwd) -> {
+                .bind(Person::getPassword, (person, pwd) -> {
                 });
         confirmPasswordBinding = binding;
     }
@@ -119,16 +119,15 @@ public class RegistrationFormUI extends UI {
     private void handleFullNameStatusChange(ValidationStatusChangeEvent event) {
         Label statusLabel = getStatusMessageLabel(event);
         statusLabel.addStyleName("full-name-status");
+        statusLabel.setVisible(true);
         if (ValidationStatus.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
             statusLabel.addStyleName(VALID);
-            statusLabel.setVisible(true);
         } else {
             statusLabel.setIcon(FontAwesome.TIMES);
             statusLabel.setValue(event.getMessage().get());
             statusLabel.removeStyleName(VALID);
-            statusLabel.setVisible(false);
         }
     }
 
@@ -146,16 +145,9 @@ public class RegistrationFormUI extends UI {
     }
 
     private Label getStatusMessageLabel(ValidationStatusChangeEvent event) {
-        return getStatusMessageLabel(event.getSource());
-    }
-
-    private Label getStatusMessageLabel(HasValue<?> field) {
+        HasValue<?> field = event.getSource();
         assert field instanceof AbstractTextField;
-        return getStatusMessageLabel((AbstractTextField) field);
-    }
-
-    private Label getStatusMessageLabel(AbstractTextField field) {
-        return (Label) field.getData();
+        return (Label) ((AbstractTextField) field).getData();
     }
 
     private boolean validateConfirmPasswd(String confirmPasswd) {

@@ -26,7 +26,7 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
     EmailOrPhoneValidator() {
         super("");
         emailValidator = new EmailValidator(
-                "The string '{0}' is not valid email address");
+                "The string '{0}' is not a valid email address");
     }
 
     @Override
@@ -35,28 +35,25 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
         // remove all spaces
         val = val.replace(" ", "");
         // if string starts from +0-9 ignoring spaces
-        if (startsWithCountryCode(val)) {
-            String digits = val.substring(1);
-            // if string contains only + and digits (ignoring spaces)
-            if (hasOnlyDigits(digits)) {
-                // now there should be at least 10 digits
-                if (digits.length() >= 10) {
-                    return Result.ok(val);
-                } else {
-                    return Result.error(String.format(
-                            "The string '%s' is not valid phone. "
-                                    + "Phone should start from +0-9 and contain at least 10 digits",
-                            value));
-                }
-            } else {
-                return Result.error(String.format(
-                        "The string '%s' is not valid phone. "
-                                + "Phone should start from +0-9 and contain only digits",
-                        value));
-            }
-        } else {
+        if (!startsWithCountryCode(val)) {
             return emailValidator.apply(value);
         }
+        String digits = val.substring(1);
+        // if string contains only + and digits (ignoring spaces)
+        if (!hasOnlyDigits(digits)) {
+            return Result.error(String.format(
+                    "The string '%s' is not a valid phone number. "
+                            + "Phone numbers should start with a plus sign followed by digits.",
+                    value));
+        }
+        // now there should be at least 10 digits
+        if (digits.length() >= 10) {
+            return Result.ok(val);
+        }
+        return Result.error(String.format(
+                "The string '%s' is not a valid phone number. "
+                        + "Phone should start with a plus sign and contain at least 10 digits",
+                value));
     }
 
     private boolean startsWithCountryCode(String phone) {
