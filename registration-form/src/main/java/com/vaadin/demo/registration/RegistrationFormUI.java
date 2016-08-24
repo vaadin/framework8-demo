@@ -119,16 +119,15 @@ public class RegistrationFormUI extends UI {
     private void handleFullNameStatusChange(ValidationStatusChangeEvent event) {
         Label statusLabel = getStatusMessageLabel(event);
         statusLabel.addStyleName("full-name-status");
+        statusLabel.setVisible(true);
         if (ValidationStatus.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
             statusLabel.addStyleName(VALID);
-            statusLabel.setVisible(true);
         } else {
             statusLabel.setIcon(FontAwesome.TIMES);
             statusLabel.setValue(event.getMessage().get());
             statusLabel.removeStyleName(VALID);
-            statusLabel.setVisible(false);
         }
     }
 
