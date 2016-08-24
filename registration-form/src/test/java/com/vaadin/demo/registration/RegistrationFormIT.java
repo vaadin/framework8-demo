@@ -63,7 +63,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         fullName.sendKeys("foo");
         fullName.sendKeys(Keys.TAB);
 
-        fullName.sendKeys("");
+        fullName.focus();
+        fullName.clear();
         fullName.sendKeys(Keys.TAB);
 
         WebElement statusMessage = findStatusMessage();
@@ -114,7 +115,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         WebElement statusMessage = findStatusMessage();
         Assert.assertEquals(
-                "The string '+354' is not valid phone. Phone should start from +0-9 and contain at least 10 digits",
+                "The string '+354' is not valid phone. Phone should start with +0-9 and contain at least 10 digits",
                 statusMessage.getText());
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -128,7 +129,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         WebElement statusMessage = findStatusMessage();
         Assert.assertEquals(
-                "The string '+7' is not valid phone. Phone should start from +0-9 and contain at least 10 digits",
+                "The string '+7' is not valid phone. Phone should start with +0-9 and contain at least 10 digits",
                 statusMessage.getText());
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -142,7 +143,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         WebElement statusMessage = findStatusMessage();
         Assert.assertEquals(
-                "The string '+7 dsfdsf 435345565654' is not valid phone. Phone should start from +0-9 and contain only digits",
+                "The string '+7 dsfdsf 435345565654' is not valid phone. Phone should start with +0-9 and contain only digits",
                 statusMessage.getText());
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -150,9 +151,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
     @Test
     public void validatePasswd_valid() {
-        PasswordFieldElement fullName = $(PasswordFieldElement.class).get(0);
-        fullName.sendKeys("aa11bbss33ddd");
-        fullName.sendKeys(Keys.TAB);
+        PasswordFieldElement password = $(PasswordFieldElement.class).get(0);
+        password.sendKeys("aa11bbss33ddd");
+        password.sendKeys(Keys.TAB);
 
         Assert.assertFalse(
                 isElementPresent(By.className("validation-message")));

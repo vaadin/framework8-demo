@@ -119,16 +119,15 @@ public class RegistrationFormUI extends UI {
     private void handleFullNameStatusChange(ValidationStatusChangeEvent event) {
         Label statusLabel = getStatusMessageLabel(event);
         statusLabel.addStyleName("full-name-status");
+        statusLabel.setVisible(true);
         if (ValidationStatus.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
             statusLabel.addStyleName(VALID);
-            statusLabel.setVisible(true);
         } else {
             statusLabel.setIcon(FontAwesome.TIMES);
             statusLabel.setValue(event.getMessage().get());
             statusLabel.removeStyleName(VALID);
-            statusLabel.setVisible(false);
         }
     }
 
@@ -146,16 +145,9 @@ public class RegistrationFormUI extends UI {
     }
 
     private Label getStatusMessageLabel(ValidationStatusChangeEvent event) {
-        return getStatusMessageLabel(event.getSource());
-    }
-
-    private Label getStatusMessageLabel(HasValue<?> field) {
+        HasValue<?> field = event.getSource();
         assert field instanceof AbstractTextField;
-        return getStatusMessageLabel((AbstractTextField) field);
-    }
-
-    private Label getStatusMessageLabel(AbstractTextField field) {
-        return (Label) field.getData();
+        return (Label) ((AbstractTextField) field).getData();
     }
 
     private boolean validateConfirmPasswd(String confirmPasswd) {
