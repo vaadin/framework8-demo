@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
         <groupId>com.vaadin.framework8</groupId>
         <artifactId>framework8-demo</artifactId>
         <version>8.0-SNAPSHOT</version>
     </parent>
-	<artifactId>registration-form</artifactId>
-	<packaging>war</packaging>
-	<name>Registration Form example</name>
+    <artifactId>registration-form</artifactId>
+    <packaging>war</packaging>
+    <name>Registration Form example</name>
 
-	<dependencies>
-	<dependency>
+    <dependencies>
+        <dependency>
             <groupId>com.vaadin.framework8</groupId>
             <artifactId>test-util</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+    </dependencies>
 
 </project>
