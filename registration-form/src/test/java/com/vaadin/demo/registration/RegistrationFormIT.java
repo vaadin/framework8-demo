@@ -63,7 +63,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         fullName.sendKeys("foo");
         fullName.sendKeys(Keys.TAB);
 
-        fullName.sendKeys("");
+        fullName.focus();
+        fullName.clear();
         fullName.sendKeys(Keys.TAB);
 
         WebElement statusMessage = findStatusMessage();
