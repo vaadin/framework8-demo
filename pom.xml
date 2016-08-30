@@ -35,6 +35,7 @@
 
     <modules>
         <module>addressbook</module>
+        <module>todomvc</module>
         <module>test-util</module>
     </modules>
     
