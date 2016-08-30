@@ -12,7 +12,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jetty.version>9.3.9.v20160517</jetty.version>
+        <jetty.version>9.3.7.v20160115</jetty.version>
         <vaadin.version>${project.version}</vaadin.version>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <phantomjs.plugin.version>0.7</phantomjs.plugin.version>
@@ -36,6 +36,7 @@
     <modules>
         <module>addressbook</module>
         <module>test-util</module>
+        <module>registration-form</module>
     </modules>
     
     <build>
