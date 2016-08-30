@@ -39,6 +39,7 @@
         <module>test-util</module>
         <module>registration-form</module>
         <module>spring-demo</module>
+        <module>todomvc</module>
   </modules>
     
     <build>
