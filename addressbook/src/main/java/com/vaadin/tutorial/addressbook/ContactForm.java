@@ -61,6 +61,7 @@ public class ContactForm extends FormLayout {
                         "Both phone and email cannot be empty")
                 .bind(Contact::getPhone, Contact::setPhone);
 
+        // Trigger cross-field validation when the other field is changed
         email.addValueChangeListener(event -> binder.validate());
         phone.addValueChangeListener(event -> binder.validate());
 
