@@ -25,6 +25,7 @@ import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.By;
+import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
@@ -223,10 +224,40 @@ public class RegistrationFormIT extends AbstractDemoTest {
         List<WebElement> icons = findElements(By.className("v-icon"));
         // 61453 is a code that is used in font awsome for the "times" sign
         // (ERROR)
-        // 61452 is similarly the font awesome char code for the "checkmark" sign
+        // 61452 is similarly the font awesome char code for the "checkmark"
+        // sign
         // (VALID)
         Assert.assertEquals(61452, icons.get(0).getText().charAt(0));
         Assert.assertEquals(61453, icons.get(1).getText().charAt(0));
+    }
+
+    @Test
+    public void signupErrorNotification() {
+        ButtonElement signupButton = $(ButtonElement.class).get(0);
+        signupButton.click();
+
+        Assert.assertTrue(
+                isElementPresent(By.className("v-Notification-error")));
+    }
+
+    @Test
+    public void signupSuccessNotification() {
+        TextFieldElement name = $(TextFieldElement.class).get(0);
+        TextFieldElement email = $(TextFieldElement.class).get(1);
+        PasswordFieldElement password = $(PasswordFieldElement.class).get(0);
+        PasswordFieldElement confirmPassword = $(PasswordFieldElement.class)
+                .get(1);
+
+        name.sendKeys("Test", Keys.TAB);
+        email.sendKeys("test@test.com", Keys.TAB);
+        password.sendKeys("aa11bbss33ddd", Keys.TAB);
+        confirmPassword.sendKeys("aa11bbss33ddd", Keys.TAB);
+
+        ButtonElement signupButton = $(ButtonElement.class).get(0);
+        signupButton.click();
+
+        Assert.assertTrue(
+                isElementPresent(By.className("v-Notification-humanized")));
     }
 
     private void assertStatusMessagePresent(String message) {
