@@ -29,3 +29,5 @@ phantomjsdriver.log
 
 */.checkstyle
 
+*.scss.cache
+
