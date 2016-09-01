@@ -144,19 +144,14 @@ public class RegistrationFormUI extends UI {
     }
 
     private void save() {
-        boolean ok = binder.validate().isEmpty();
-        if (ok) {
-            Person person = new Person();
+        Person person = new Person();
+        if (binder.saveIfValid(person)) {
 
-            ok = binder.saveIfValid(person);
-            if (ok) {
-                Notification.show("Registration data is saved",
-                        String.format("Full name '%s', email or phone '%s'",
-                                person.getFullName(), person.getEmailOrPhone()),
-                        Type.HUMANIZED_MESSAGE);
-            }
-        }
-        if (!ok) {
+            Notification.show("Registration data is saved",
+                    String.format("Full name '%s', email or phone '%s'",
+                            person.getFullName(), person.getEmailOrPhone()),
+                    Type.HUMANIZED_MESSAGE);
+        } else {
             Notification.show(
                     "Registration could not be saved, please check all fields",
                     Type.ERROR_MESSAGE);
