@@ -22,9 +22,7 @@ import com.vaadin.data.validator.StringLengthValidator;
  * @author Vaadin Ltd
  *
  */
-class PasswordValidator extends StringLengthValidator {
-
-    public static final String PASSWORD_RULE_MESSAGE = "Password should contain at least 6 characters, including at least one letter and one digit";
+public class PasswordValidator extends StringLengthValidator {
 
     public PasswordValidator() {
         super("", 6, Integer.MAX_VALUE);
@@ -33,11 +31,12 @@ class PasswordValidator extends StringLengthValidator {
     @Override
     public Result<String> apply(String value) {
         Result<String> result = super.apply(value);
-        if (result.isError() ||
-                !hasDigit(value) ||
-                !hasLetter(value))
+        if (result.isError()) {
             return Result
-                    .error(PASSWORD_RULE_MESSAGE);
+                    .error("Password should contain at least 6 characters");
+        } else if (!hasDigit(value) || !hasLetter(value)) {
+            return Result.error("Password must contain a letter and a number");
+        }
         return result;
     }
 

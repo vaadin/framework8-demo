@@ -38,8 +38,8 @@ import com.vaadin.testbench.elements.TextFieldElement;
  */
 public class RegistrationFormIT extends AbstractDemoTest {
 
-    public static final int VALID_ICON_CHAR = FontAwesome.CHECK.getCodepoint();
-    public static final int INVALID_ICON_CHAR = FontAwesome.TIMES.getCodepoint();
+    private static final int VALID_ICON_CHAR = FontAwesome.CHECK.getCodepoint();
+    private static final int INVALID_ICON_CHAR = FontAwesome.TIMES.getCodepoint();
 
     @Before
     public void setUp() {
@@ -163,7 +163,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys(Keys.TAB);
 
         assertStatusMessagePresent(
-                PasswordValidator.PASSWORD_RULE_MESSAGE);
+                "Password must contain a letter and a number");
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
@@ -174,7 +174,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("aabbcc");
         password.sendKeys(Keys.TAB);
 
-        assertStatusMessagePresent(PasswordValidator.PASSWORD_RULE_MESSAGE);
+        assertStatusMessagePresent(
+                "Password must contain a letter and a number");
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
@@ -186,7 +187,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys(Keys.TAB);
 
         assertStatusMessagePresent(
-                PasswordValidator.PASSWORD_RULE_MESSAGE);
+                "Password should contain at least 6 characters");
         WebElement icon = findElement(By.className("v-icon"));
         Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
