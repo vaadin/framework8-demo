@@ -1,10 +1,5 @@
 package com.vaadin.demo.registration;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-
-import javax.servlet.annotation.WebServlet;
-
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -19,12 +14,11 @@ import com.vaadin.data.validator.NotEmptyValidator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractTextField;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.PasswordField;
@@ -32,6 +26,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
+import javax.servlet.annotation.WebServlet;
+import java.util.Objects;
 
 @Title("Registration Form")
 @Theme("registration")
@@ -42,9 +39,22 @@ public class RegistrationFormUI extends UI {
     private final Binder<Person> binder = new Binder<>();
 
     private Binding<Person, String, String> passwordBinding;
-    private Binding<Person, String, String> confirmPasswordBinding;
 
     private static final String VALID = "valid";
+
+    private void addToLayout(Layout layout, AbstractTextField textField, String placeHolderText) {
+        textField.setPlaceholder(placeHolderText);
+        Label statusMessage = new Label();
+        statusMessage.setVisible(false);
+        statusMessage.addStyleName("validation-message");
+        textField.setData(statusMessage);
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.addComponent(textField);
+        textField.setWidth(WIDTH, Unit.PIXELS);
+        horizontalLayout.addComponent(statusMessage);
+        layout.addComponent(horizontalLayout);
+        textField.addValueChangeListener(event -> binder.validate());
+    }
 
     @Override
     protected void init(VaadinRequest request) {
@@ -54,14 +64,43 @@ public class RegistrationFormUI extends UI {
         layout.setMargin(true);
         setContent(layout);
 
-        Component fullName = createFullName();
-        Component emailOrPhone = createEmailOrPhone();
-        Component passwordField = createPasswordField("Password",
-                this::configurePassword);
-        Component confirmPassword = createConfirmPassword();
-        Button button = createButton();
-        layout.addComponents(fullName, emailOrPhone, passwordField,
-                confirmPassword, button);
+        TextField fullNameField = new TextField();
+        addToLayout(layout, fullNameField, "Full name");
+
+        binder.forField(fullNameField).withValidator(new NotEmptyValidator<>(
+                "Full name may not be empty"))
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .bind(Person::getFullName, Person::setFullName);
+
+        TextField phoneOrEmailField = new TextField();
+        addToLayout(layout, phoneOrEmailField, "Phone or Email");
+        binder.forField(phoneOrEmailField).withValidator(new EmailOrPhoneValidator())
+                .withStatusChangeHandler(
+                        this::commonStatusChangeHandler)
+                .bind(Person::getEmailOrPhone,
+                        Person::setEmailOrPhone);
+
+        PasswordField passwordField = new PasswordField();
+        addToLayout(layout, passwordField, "Password");
+        passwordBinding = binder.forField(passwordField);
+        passwordBinding.withValidator(new PasswordValidator())
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .bind(Person::getPassword, Person::setPassword);
+
+        PasswordField confirmPasswordField = new PasswordField();
+        addToLayout(layout, confirmPasswordField, "Password again");
+
+        Binding<Person, String, String> confirmPasswordBinding = binder.forField(confirmPasswordField);
+        confirmPasswordBinding.withValidator(Validator.from(this::validateConfirmPasswd, "Password doesn't match"))
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .bind(Person::getPassword, (person, pwd) -> {
+                });
+        passwordField.addValueChangeListener(
+                event -> confirmPasswordBinding.validate());
+
+        layout.addComponent(createButton());
+
+        fullNameField.focus();
     }
 
     private Button createButton() {
@@ -71,62 +110,17 @@ public class RegistrationFormUI extends UI {
         return button;
     }
 
-    private Component createEmailOrPhone() {
-        return createTextField("Phone or Email",
-                binding -> binding.withValidator(new EmailOrPhoneValidator())
-                        .withStatusChangeHandler(
-                                this::commonStatusChangeHandler)
-                        .bind(Person::getEmailOrPhone,
-                                Person::setEmailOrPhone));
-    }
-
-    private Component createFullName() {
-        TextField field = new TextField();
-        field.focus();
-        return configureField(field, "Full name", binding -> binding
-                .withValidator(new NotEmptyValidator<String>(
-                        "Full name may not be empty"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getFullName, Person::setFullName));
-    }
-
-    private void configurePassword(Binding<Person, String, String> binding) {
-        binding.withValidator(new PasswordValidator())
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getPassword, Person::setPassword);
-        passwordBinding = binding;
-    }
-
-    private Component createConfirmPassword() {
-        AbstractComponent component = createPasswordField("Password again",
-                this::configureConfirmPassword);
-        HasValue<?> pwdField = passwordBinding.getField();
-        pwdField.addValueChangeListener(
-                event -> confirmPasswordBinding.validate());
-        return component;
-    }
-
-    private void configureConfirmPassword(
-            Binding<Person, String, String> binding) {
-        binding.withValidator(Validator.from(this::validateConfirmPasswd,
-                "Password doesn't match"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getPassword, (person, pwd) -> {
-                });
-        confirmPasswordBinding = binding;
-    }
-
     private void commonStatusChangeHandler(ValidationStatusChangeEvent event) {
         Label statusLabel = getStatusMessageLabel(event);
         statusLabel.setVisible(true);
         if (ValidationStatus.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
-            statusLabel.addStyleName(VALID);
+            statusLabel.getParent().addStyleName(VALID);
         } else {
-            statusLabel.setValue(event.getMessage().get());
             statusLabel.setIcon(FontAwesome.TIMES);
-            statusLabel.removeStyleName(VALID);
+            statusLabel.setValue(event.getMessage().orElse("Unknown error"));
+            statusLabel.getParent().removeStyleName(VALID);
         }
     }
 
@@ -136,64 +130,22 @@ public class RegistrationFormUI extends UI {
         return (Label) ((AbstractTextField) field).getData();
     }
 
-    private boolean validateConfirmPasswd(String confirmPasswd) {
-        if (confirmPasswd.isEmpty()) {
-            return true;
-
+    private boolean validateConfirmPasswd(String confirmPasswordValue) {
+        HasValue<String> passwordField = passwordBinding.getField();
+        String passwordValue = passwordField.getValue();
+        if (confirmPasswordValue.isEmpty()) {
+            return passwordValue.isEmpty();
         }
         Result<?> result = passwordBinding.validate();
         if (result.isError()) {
             return true;
         }
-        HasValue<?> pwdField = passwordBinding.getField();
-        return Objects.equals(pwdField.getValue(), confirmPasswd);
-    }
-
-    private AbstractComponent configureField(AbstractTextField field,
-            String placeholder,
-            Consumer<Binding<Person, String, String>> configureBinding) {
-        field.setPlaceholder(placeholder);
-        Label statusMessage = new Label();
-        statusMessage.setVisible(false);
-        statusMessage.addStyleName("validation-message");
-        field.setData(statusMessage);
-        return createFieldContainer(field, statusMessage, configureBinding);
-    }
-
-    private Component createTextField(String placeholder,
-            Consumer<Binding<Person, String, String>> configureBinding) {
-        TextField field = new TextField();
-        field.setPlaceholder(placeholder);
-        return configureField(field, placeholder, configureBinding);
-    }
-
-    private AbstractComponent createPasswordField(String placeholder,
-            Consumer<Binding<Person, String, String>> configureBinding) {
-        PasswordField field = new PasswordField();
-        return configureField(field, placeholder, configureBinding);
-    }
-
-    private HorizontalLayout createFieldContainer(AbstractTextField field,
-            Label infoLabel,
-            Consumer<Binding<Person, String, String>> configureBinding) {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.addComponent(field);
-        field.setWidth(WIDTH, Unit.PIXELS);
-        if (infoLabel != null) {
-            layout.addComponent(infoLabel);
-        }
-        Binding<Person, String, String> binding = binder.forField(field);
-        configureBinding.accept(binding);
-        field.addValueChangeListener(event -> binding.validate());
-        return layout;
+        return Objects.equals(passwordValue, confirmPasswordValue);
     }
 
     private void save() {
-        if (binder.validate().isEmpty()) {
-            Person person = new Person();
-
-            boolean saved = binder.saveIfValid(person);
-            assert saved;
+        Person person = new Person();
+        if (binder.saveIfValid(person)) {
 
             Notification.show("Registration data is saved",
                     String.format("Full name '%s', email or phone '%s'",
@@ -210,5 +162,4 @@ public class RegistrationFormUI extends UI {
     @VaadinServletConfiguration(ui = RegistrationFormUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
-
 }

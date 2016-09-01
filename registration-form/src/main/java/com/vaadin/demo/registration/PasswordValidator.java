@@ -22,7 +22,7 @@ import com.vaadin.data.validator.StringLengthValidator;
  * @author Vaadin Ltd
  *
  */
-class PasswordValidator extends StringLengthValidator {
+public class PasswordValidator extends StringLengthValidator {
 
     public PasswordValidator() {
         super("", 6, Integer.MAX_VALUE);
