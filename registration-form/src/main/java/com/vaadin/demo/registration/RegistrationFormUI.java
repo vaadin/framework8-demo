@@ -191,7 +191,10 @@ public class RegistrationFormUI extends UI {
     private void save() {
         if (binder.validate().isEmpty()) {
             Person person = new Person();
-            binder.save(person);
+
+            boolean saved = binder.saveIfValid(person);
+            assert saved;
+
             Notification.show("Registration data is saved",
                     String.format("Full name '%s', email or phone '%s'",
                             person.getFullName(), person.getEmailOrPhone()),
