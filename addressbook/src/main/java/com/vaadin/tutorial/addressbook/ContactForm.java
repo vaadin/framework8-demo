@@ -100,9 +100,7 @@ public class ContactForm extends FormLayout {
 
     public void save(Button.ClickEvent event) {
         binder.getBean().ifPresent(bean -> {
-            if (binder.validate().isEmpty()) {
-
-                binder.save(bean);
+            if (binder.saveIfValid(bean)) {
                 ContactService.getDemoService().save(bean);
 
                 String msg = String.format("Saved '%s %s'.",
