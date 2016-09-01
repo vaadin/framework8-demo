@@ -25,12 +25,13 @@ import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.By;
+import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 /**
  * Integration tests for registration form: checks how validation works.
- * 
+ *
  * @author Vaadin Ltd
  *
  */
@@ -53,8 +54,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         fullName.sendKeys("foo");
         fullName.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("", statusMessage.getText());
+        assertStatusMessagePresent("");
         WebElement icon = findElement(By.className("v-icon"));
         // 61452 is a code that used in font awsome for the "selected" sign (OK)
         Assert.assertEquals(61452, icon.getText().charAt(0));
@@ -70,9 +70,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         fullName.clear();
         fullName.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("Full name may not be empty",
-                statusMessage.getText());
+        assertStatusMessagePresent("Full name may not be empty");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -84,8 +82,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         email.sendKeys("foo@vaadin.com");
         email.sendKeys(Keys.TAB);
 
-        Assert.assertFalse(
-                isElementPresent(By.className("validation-message")));
+        Assert.assertTrue(isElementPresent(By.className("v-slot-valid")));
     }
 
     @Test
@@ -94,9 +91,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         email.sendKeys("foo");
         email.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("The string 'foo' is not a valid email address",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "The string 'foo' is not a valid email address");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -108,8 +104,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         phone.sendKeys(" + 354 111 222 44 66 7688");
         phone.sendKeys(Keys.TAB);
 
-        Assert.assertFalse(
-                isElementPresent(By.className("validation-message")));
+        Assert.assertTrue(isElementPresent(By.className("v-slot-valid")));
     }
 
     @Test
@@ -118,10 +113,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         phone.sendKeys("+354");
         phone.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals(
-                "The string '+354' is not a valid phone number. Phone should start with a plus sign and contain at least 10 digits",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "The string '+354' is not a valid phone number. "
+                        + "Phone should start with a plus sign and contain at least 10 digits");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -133,10 +127,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         phone.sendKeys("+7");
         phone.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals(
-                "The string '+7' is not a valid phone number. Phone should start with a plus sign and contain at least 10 digits",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "The string '+7' is not a valid phone number. "
+                        + "Phone should start with a plus sign and contain at least 10 digits");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -148,10 +141,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         phone.sendKeys("+7 dsfdsf 435345565654");
         phone.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals(
-                "The string '+7 dsfdsf 435345565654' is not a valid phone number. Phone numbers should start with a plus sign followed by digits.",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "The string '+7 dsfdsf 435345565654' is not a valid phone number. "
+                        + "Phone numbers should start with a plus sign followed by digits.");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -163,8 +155,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("aa11bbss33ddd");
         password.sendKeys(Keys.TAB);
 
-        Assert.assertFalse(
-                isElementPresent(By.className("validation-message")));
+        Assert.assertTrue(isElementPresent(By.className("v-slot-valid")));
     }
 
     @Test
@@ -173,9 +164,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("33221144");
         password.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("Password must contain a letter and a number",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "Password must contain a letter and a number");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -187,9 +177,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("aabbcc");
         password.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("Password must contain a letter and a number",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "Password must contain a letter and a number");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -201,9 +190,8 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("a1");
         password.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("Password should contain at least 6 characters",
-                statusMessage.getText());
+        assertStatusMessagePresent(
+                "Password should contain at least 6 characters");
         WebElement icon = findElement(By.className("v-icon"));
         // 61453 is a code that used in font awsome for the "times" sign (ERROR)
         Assert.assertEquals(61453, icon.getText().charAt(0));
@@ -219,8 +207,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("aa11bbss33ddd");
         password.sendKeys(Keys.TAB);
 
-        Assert.assertFalse(
-                isElementPresent(By.className("validation-message")));
+        Assert.assertTrue(isElementPresent(By.className("v-slot-valid")));
     }
 
     @Test
@@ -233,17 +220,55 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("a");
         password.sendKeys(Keys.TAB);
 
-        WebElement statusMessage = findStatusMessage();
-        Assert.assertEquals("Password doesn't match", statusMessage.getText());
-        WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        assertStatusMessagePresent("Password doesn't match");
+        List<WebElement> icons = findElements(By.className("v-icon"));
+        // 61453 is a code that is used in font awsome for the "times" sign
+        // (ERROR)
+        // 61452 is similarly the font awesome char code for the "checkmark"
+        // sign
+        // (VALID)
+        Assert.assertEquals(61452, icons.get(0).getText().charAt(0));
+        Assert.assertEquals(61453, icons.get(1).getText().charAt(0));
     }
 
-    private WebElement findStatusMessage() {
+    @Test
+    public void signupErrorNotification() {
+        ButtonElement signupButton = $(ButtonElement.class).get(0);
+        signupButton.click();
+
+        Assert.assertTrue(
+                isElementPresent(By.className("v-Notification-error")));
+    }
+
+    @Test
+    public void signupSuccessNotification() {
+        TextFieldElement name = $(TextFieldElement.class).get(0);
+        TextFieldElement email = $(TextFieldElement.class).get(1);
+        PasswordFieldElement password = $(PasswordFieldElement.class).get(0);
+        PasswordFieldElement confirmPassword = $(PasswordFieldElement.class)
+                .get(1);
+
+        name.sendKeys("Test", Keys.TAB);
+        email.sendKeys("test@test.com", Keys.TAB);
+        password.sendKeys("aa11bbss33ddd", Keys.TAB);
+        confirmPassword.sendKeys("aa11bbss33ddd", Keys.TAB);
+
+        ButtonElement signupButton = $(ButtonElement.class).get(0);
+        signupButton.click();
+
+        Assert.assertTrue(
+                isElementPresent(By.className("v-Notification-humanized")));
+    }
+
+    private void assertStatusMessagePresent(String message) {
         List<WebElement> messages = findElements(
                 By.className("validation-message"));
-        Assert.assertEquals(1, messages.size());
-        return messages.get(0);
+        boolean statusMessageFound = false;
+        for (WebElement messageElement : messages) {
+            if (messageElement.getText().equals(message)) {
+                statusMessageFound = true;
+            }
+        }
+        Assert.assertTrue(statusMessageFound);
     }
 }

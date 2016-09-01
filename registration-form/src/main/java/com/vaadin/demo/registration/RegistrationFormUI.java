@@ -86,7 +86,7 @@ public class RegistrationFormUI extends UI {
         return configureField(field, "Full name", binding -> binding
                 .withValidator(new NotEmptyValidator<String>(
                         "Full name may not be empty"))
-                .withStatusChangeHandler(this::handleFullNameStatusChange)
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
                 .bind(Person::getFullName, Person::setFullName));
     }
 
@@ -116,31 +116,17 @@ public class RegistrationFormUI extends UI {
         confirmPasswordBinding = binding;
     }
 
-    private void handleFullNameStatusChange(ValidationStatusChangeEvent event) {
+    private void commonStatusChangeHandler(ValidationStatusChangeEvent event) {
         Label statusLabel = getStatusMessageLabel(event);
-        statusLabel.addStyleName("full-name-status");
         statusLabel.setVisible(true);
         if (ValidationStatus.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
             statusLabel.addStyleName(VALID);
         } else {
-            statusLabel.setIcon(FontAwesome.TIMES);
             statusLabel.setValue(event.getMessage().get());
+            statusLabel.setIcon(FontAwesome.TIMES);
             statusLabel.removeStyleName(VALID);
-        }
-    }
-
-    private void commonStatusChangeHandler(ValidationStatusChangeEvent event) {
-        Label statusLabel = getStatusMessageLabel(event);
-        if (ValidationStatus.OK.equals(event.getStatus())) {
-            statusLabel.setIcon(null);
-            statusLabel.setValue("");
-            statusLabel.setVisible(false);
-        } else {
-            statusLabel.setIcon(FontAwesome.TIMES);
-            statusLabel.setValue(event.getMessage().get());
-            statusLabel.setVisible(true);
         }
     }
 
@@ -203,12 +189,21 @@ public class RegistrationFormUI extends UI {
     }
 
     private void save() {
-        Person person = new Person();
-        binder.save(person);
-        Notification.show("Registration data is saved",
-                String.format("Full name '%s', email or phone '%s'",
-                        person.getFullName(), person.getEmailOrPhone()),
-                Type.HUMANIZED_MESSAGE);
+        if (binder.validate().isEmpty()) {
+            Person person = new Person();
+
+            boolean saved = binder.saveIfValid(person);
+            assert saved;
+
+            Notification.show("Registration data is saved",
+                    String.format("Full name '%s', email or phone '%s'",
+                            person.getFullName(), person.getEmailOrPhone()),
+                    Type.HUMANIZED_MESSAGE);
+        } else {
+            Notification.show(
+                    "Registration could not be saved, please check all fields",
+                    Type.ERROR_MESSAGE);
+        }
     }
 
     @WebServlet(urlPatterns = "/*")
