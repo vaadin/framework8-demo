@@ -46,12 +46,13 @@
     color:red;
     margin-left:10px;
   }
+  .valid .v-label.validation-message {
+    color:green;
+  }
   .v-icon {
     color:red;
   }
-  .v-slot-valid {
-    .v-icon {
+  .valid .v-icon {
        color:green;
-    }
   }
 }

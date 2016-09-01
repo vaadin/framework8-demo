@@ -17,6 +17,7 @@ package com.vaadin.demo.registration;
 
 import java.util.List;
 
+import com.vaadin.server.FontAwesome;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,9 @@ import com.vaadin.testbench.elements.TextFieldElement;
  */
 public class RegistrationFormIT extends AbstractDemoTest {
 
+    public static final int VALID_ICON_CHAR = FontAwesome.CHECK.getCodepoint();
+    public static final int INVALID_ICON_CHAR = FontAwesome.TIMES.getCodepoint();
+
     @Before
     public void setUp() {
         open();
@@ -56,8 +60,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         assertStatusMessagePresent("");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61452 is a code that used in font awsome for the "selected" sign (OK)
-        Assert.assertEquals(61452, icon.getText().charAt(0));
+        Assert.assertEquals(VALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -72,8 +75,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         assertStatusMessagePresent("Full name may not be empty");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -94,8 +96,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
         assertStatusMessagePresent(
                 "The string 'foo' is not a valid email address");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -117,8 +118,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
                 "The string '+354' is not a valid phone number. "
                         + "Phone should start with a plus sign and contain at least 10 digits");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -131,8 +131,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
                 "The string '+7' is not a valid phone number. "
                         + "Phone should start with a plus sign and contain at least 10 digits");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -145,8 +144,7 @@ public class RegistrationFormIT extends AbstractDemoTest {
                 "The string '+7 dsfdsf 435345565654' is not a valid phone number. "
                         + "Phone numbers should start with a plus sign followed by digits.");
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -165,10 +163,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys(Keys.TAB);
 
         assertStatusMessagePresent(
-                "Password must contain a letter and a number");
+                PasswordValidator.PASSWORD_RULE_MESSAGE);
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -177,11 +174,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys("aabbcc");
         password.sendKeys(Keys.TAB);
 
-        assertStatusMessagePresent(
-                "Password must contain a letter and a number");
+        assertStatusMessagePresent(PasswordValidator.PASSWORD_RULE_MESSAGE);
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -191,10 +186,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys(Keys.TAB);
 
         assertStatusMessagePresent(
-                "Password should contain at least 6 characters");
+                PasswordValidator.PASSWORD_RULE_MESSAGE);
         WebElement icon = findElement(By.className("v-icon"));
-        // 61453 is a code that used in font awsome for the "times" sign (ERROR)
-        Assert.assertEquals(61453, icon.getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icon.getText().charAt(0));
     }
 
     @Test
@@ -222,13 +216,24 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         assertStatusMessagePresent("Password doesn't match");
         List<WebElement> icons = findElements(By.className("v-icon"));
-        // 61453 is a code that is used in font awsome for the "times" sign
-        // (ERROR)
-        // 61452 is similarly the font awesome char code for the "checkmark"
-        // sign
-        // (VALID)
-        Assert.assertEquals(61452, icons.get(0).getText().charAt(0));
-        Assert.assertEquals(61453, icons.get(1).getText().charAt(0));
+        Assert.assertEquals(VALID_ICON_CHAR, icons.get(2).getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icons.get(3).getText().charAt(0));
+    }
+
+    @Test
+    public void validateConfirmPasswd_empty() {
+        PasswordFieldElement password = $(PasswordFieldElement.class).get(0);
+        password.sendKeys("aa11bbss33ddd");
+        password.sendKeys(Keys.TAB);
+
+        password = $(PasswordFieldElement.class).get(1);
+        password.sendKeys(Keys.DELETE);
+        password.sendKeys(Keys.TAB);
+
+        assertStatusMessagePresent("Password doesn't match");
+        List<WebElement> icons = findElements(By.className("v-icon"));
+        Assert.assertEquals(VALID_ICON_CHAR, icons.get(2).getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR, icons.get(3).getText().charAt(0));
     }
 
     @Test
