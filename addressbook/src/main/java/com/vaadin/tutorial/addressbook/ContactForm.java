@@ -61,6 +61,7 @@ public class ContactForm extends FormLayout {
                         "Both phone and email cannot be empty")
                 .bind(Contact::getPhone, Contact::setPhone);
 
+        // Trigger cross-field validation when the other field is changed
         email.addValueChangeListener(event -> binder.validate());
         phone.addValueChangeListener(event -> binder.validate());
 
@@ -99,9 +100,7 @@ public class ContactForm extends FormLayout {
 
     public void save(Button.ClickEvent event) {
         binder.getBean().ifPresent(bean -> {
-            if (binder.validate().isEmpty()) {
-
-                binder.save(bean);
+            if (binder.saveIfValid(bean)) {
                 ContactService.getDemoService().save(bean);
 
                 String msg = String.format("Saved '%s %s'.",
