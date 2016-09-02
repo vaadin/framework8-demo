@@ -11,8 +11,9 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.data.BackEndDataSource;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.themes.ValoTheme;
 
-@Theme("mytheme")
+@Theme(ValoTheme.THEME_NAME)
 public class RESTDemoUI extends UI {
 
     @Override
