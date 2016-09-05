@@ -35,6 +35,7 @@
 
     <modules>
         <module>addressbook</module>
+		<module>rest-datasource-demo</module>
         <module>test-util</module>
         <module>registration-form</module>
         <module>spring-demo</module>
