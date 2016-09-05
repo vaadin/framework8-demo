@@ -6,10 +6,10 @@ A short demonstration of how Vaadin 8 can be used to bind data from a REST API d
 
 Running the example
 -------------------
-The example can be run from the command line with the following 
+The example can be run from the command line with the following command
 
 ```
 $ mvn clean install jetty:run
 ```
 
-after which 
+after which the application is accessible at http://localhost:8888/
