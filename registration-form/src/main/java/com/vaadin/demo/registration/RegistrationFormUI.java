@@ -1,12 +1,15 @@
 package com.vaadin.demo.registration;
 
+import java.util.Objects;
+
+import javax.servlet.annotation.WebServlet;
+
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.HasValue;
-import com.vaadin.data.Result;
 import com.vaadin.data.ValidationStatus;
 import com.vaadin.data.ValidationStatusChangeEvent;
 import com.vaadin.data.Validator;
@@ -27,9 +30,6 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import javax.servlet.annotation.WebServlet;
-import java.util.Objects;
-
 @Title("Registration Form")
 @Theme("registration")
 public class RegistrationFormUI extends UI {
@@ -38,11 +38,15 @@ public class RegistrationFormUI extends UI {
 
     private final Binder<Person> binder = new Binder<>();
 
+    private Binding<Person, String, String> fullNameBinding;
+    private Binding<Person, String, String> phoneOrEmailBinding;
     private Binding<Person, String, String> passwordBinding;
+    private Binding<Person, String, String> confirmPasswordBinding;
 
     private static final String VALID = "valid";
 
-    private void addToLayout(Layout layout, AbstractTextField textField, String placeHolderText) {
+    private void addToLayout(Layout layout, AbstractTextField textField,
+            String placeHolderText) {
         textField.setPlaceholder(placeHolderText);
         Label statusMessage = new Label();
         statusMessage.setVisible(false);
@@ -53,7 +57,6 @@ public class RegistrationFormUI extends UI {
         textField.setWidth(WIDTH, Unit.PIXELS);
         horizontalLayout.addComponent(statusMessage);
         layout.addComponent(horizontalLayout);
-        textField.addValueChangeListener(event -> binder.validate());
     }
 
     @Override
@@ -67,36 +70,49 @@ public class RegistrationFormUI extends UI {
         TextField fullNameField = new TextField();
         addToLayout(layout, fullNameField, "Full name");
 
-        binder.forField(fullNameField).withValidator(new NotEmptyValidator<>(
-                "Full name may not be empty"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getFullName, Person::setFullName);
+        fullNameBinding = binder.forField(fullNameField)
+                .withValidator(
+                        new NotEmptyValidator<>("Full name may not be empty"))
+                .withStatusChangeHandler(this::commonStatusChangeHandler);
+        fullNameField
+                .addValueChangeListener(event -> fullNameBinding.validate());
+        fullNameBinding.bind(Person::getFullName, Person::setFullName);
 
         TextField phoneOrEmailField = new TextField();
         addToLayout(layout, phoneOrEmailField, "Phone or Email");
-        binder.forField(phoneOrEmailField).withValidator(new EmailOrPhoneValidator())
-                .withStatusChangeHandler(
-                        this::commonStatusChangeHandler)
-                .bind(Person::getEmailOrPhone,
-                        Person::setEmailOrPhone);
+        phoneOrEmailBinding = binder.forField(phoneOrEmailField)
+                .withValidator(new EmailOrPhoneValidator())
+                .withStatusChangeHandler(this::commonStatusChangeHandler);
+        phoneOrEmailField.addValueChangeListener(
+                event -> phoneOrEmailBinding.validate());
+        phoneOrEmailBinding.bind(Person::getEmailOrPhone,
+                Person::setEmailOrPhone);
 
         PasswordField passwordField = new PasswordField();
         addToLayout(layout, passwordField, "Password");
-        passwordBinding = binder.forField(passwordField);
-        passwordBinding.withValidator(new PasswordValidator())
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
-                .bind(Person::getPassword, Person::setPassword);
+        passwordBinding = binder.forField(passwordField)
+                .withValidator(new PasswordValidator())
+                .withStatusChangeHandler(this::commonStatusChangeHandler);
+        passwordField.addValueChangeListener(event -> {
+            passwordBinding.validate();
+            confirmPasswordBinding.validate();
+        });
+        passwordBinding.bind(Person::getPassword, Person::setPassword);
 
         PasswordField confirmPasswordField = new PasswordField();
         addToLayout(layout, confirmPasswordField, "Password again");
 
-        Binding<Person, String, String> confirmPasswordBinding = binder.forField(confirmPasswordField);
-        confirmPasswordBinding.withValidator(Validator.from(this::validateConfirmPasswd, "Password doesn't match"))
+        confirmPasswordBinding = binder.forField(confirmPasswordField);
+        confirmPasswordBinding
+                .withValidator(Validator.from(this::validateConfirmPasswd,
+                        "Password doesn't match"))
                 .withStatusChangeHandler(this::commonStatusChangeHandler)
                 .bind(Person::getPassword, (person, pwd) -> {
                 });
-        passwordField.addValueChangeListener(
-                event -> confirmPasswordBinding.validate());
+        confirmPasswordField.addValueChangeListener(event -> {
+            passwordBinding.validate();
+            confirmPasswordBinding.validate();
+        });
 
         layout.addComponent(createButton());
 
@@ -131,16 +147,8 @@ public class RegistrationFormUI extends UI {
     }
 
     private boolean validateConfirmPasswd(String confirmPasswordValue) {
-        HasValue<String> passwordField = passwordBinding.getField();
-        String passwordValue = passwordField.getValue();
-        if (confirmPasswordValue.isEmpty()) {
-            return passwordValue.isEmpty();
-        }
-        Result<?> result = passwordBinding.validate();
-        if (result.isError()) {
-            return true;
-        }
-        return Objects.equals(passwordValue, confirmPasswordValue);
+        return Objects.equals(passwordBinding.getField().getValue(),
+                confirmPasswordValue);
     }
 
     private void save() {
