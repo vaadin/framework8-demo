@@ -1,0 +1,15 @@
+Vaadin 8 + JAX-RS REST Data Source Demo
+====================
+
+A short demonstration of how Vaadin 8 can be used to bind data from a REST API directly to a listing component.
+
+
+Running the example
+-------------------
+The example can be run from the command line with the following 
+
+```
+$ mvn clean install jetty:run
+```
+
+after which 

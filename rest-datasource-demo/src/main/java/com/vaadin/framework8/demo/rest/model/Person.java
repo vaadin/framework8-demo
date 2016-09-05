@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Person {
 
-    private PersonName name;
+    private Name name;
     private Address location;
     private String email;
 
-    public void setName(PersonName name) {
+    public void setName(Name name) {
         this.name = name;
     }
 

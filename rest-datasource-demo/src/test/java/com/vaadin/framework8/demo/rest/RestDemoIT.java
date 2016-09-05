@@ -19,18 +19,12 @@ public class RestDemoIT extends AbstractDemoTest {
     }
 
     @Test
-    public void rowsPresent() {
-        List<WebElement> rows = findElements(By.className("v-grid-row"));
-        Assert.assertFalse(rows.isEmpty());
-    }
-
-    @Test
     public void rowHasCorrectData() {
         WebElement row = findElements(By.className("v-grid-row")).get(2);
         List<WebElement> rowCells = row
                 .findElements(By.className("v-grid-cell"));
 
-        Assert.assertTrue(rowCells.size() == 7);
+        Assert.assertEquals(7, rowCells.size());
 
         String[] data = { "andrea", "johansen", "andrea.johansen@example.com",
                 "allinge", "7966 ridderhatten", "48559", "nordjylland" };

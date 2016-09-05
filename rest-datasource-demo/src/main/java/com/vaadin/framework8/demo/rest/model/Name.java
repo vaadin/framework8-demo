@@ -1,6 +1,6 @@
 package com.vaadin.framework8.demo.rest.model;
 
-public class PersonName {
+public class Name {
 
     private String first;
     private String last;
