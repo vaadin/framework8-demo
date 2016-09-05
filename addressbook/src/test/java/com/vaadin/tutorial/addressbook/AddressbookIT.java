@@ -26,6 +26,7 @@ import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.TextFieldElement;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 
@@ -177,6 +178,14 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
 
         getRows().get(0).findElement(By.tagName("td")).click();
+        newContactButton.click();
+        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
+
+        newContactButton.click();
+        TextFieldElement phoneField = $(TextFieldElement.class).get(4);
+        phoneField.sendKeys(Keys.ENTER);
+        Assert.assertTrue(isElementPresent(By.className("v-errorindicator")));
+
         newContactButton.click();
         Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
     }
