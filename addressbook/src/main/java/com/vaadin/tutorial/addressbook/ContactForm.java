@@ -62,8 +62,16 @@ public class ContactForm extends FormLayout {
                 .bind(Contact::getPhone, Contact::setPhone);
 
         // Trigger cross-field validation when the other field is changed
-        email.addValueChangeListener(event -> binder.validate());
-        phone.addValueChangeListener(event -> binder.validate());
+        email.addValueChangeListener(event -> {
+            if (event.isUserOriginated()) {
+                binder.validate();
+            }
+        });
+        phone.addValueChangeListener(event -> {
+            if (event.isUserOriginated()) {
+                binder.validate();
+            }
+        });
 
         firstName.setRequired(true);
         lastName.setRequired(true);
