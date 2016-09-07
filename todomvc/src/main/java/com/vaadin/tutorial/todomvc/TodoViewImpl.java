@@ -84,12 +84,12 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         grid.setHeight(null);
 
         // TODO add checkbox renderer and clickhandler for marking todo complete
-        grid.addColumn("", boolean.class, Todo::isCompleted);
+        grid.addColumn("", t -> String.valueOf(t.isCompleted()));
         // grid.addColumn("",boolean.class,Todo::isCompleted).setRenderer(new
         // CheckboxRenderer())
 
         // TODO make text column expand
-        grid.addColumn("", String.class, Todo::getText);
+        grid.addColumn("", Todo::getText);
         // TODO trigger inline editing via details row (?) once the user clicks
         // the text column (?), depends on clickable renderer (?)
 
