@@ -38,8 +38,6 @@ public class RegistrationFormUI extends UI {
 
     private final Binder<Person> binder = new Binder<>();
 
-    private Binding<Person, String, String> fullNameBinding;
-    private Binding<Person, String, String> phoneOrEmailBinding;
     private Binding<Person, String, String> passwordBinding;
     private Binding<Person, String, String> confirmPasswordBinding;
 
@@ -70,33 +68,26 @@ public class RegistrationFormUI extends UI {
         TextField fullNameField = new TextField();
         addToLayout(layout, fullNameField, "Full name");
 
-        fullNameBinding = binder.forField(fullNameField)
+        binder.forField(fullNameField)
                 .withValidator(
                         new NotEmptyValidator<>("Full name may not be empty"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler);
-        fullNameField
-                .addValueChangeListener(event -> fullNameBinding.validate());
-        fullNameBinding.bind(Person::getFullName, Person::setFullName);
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .bind(Person::getFullName, Person::setFullName);
 
         TextField phoneOrEmailField = new TextField();
         addToLayout(layout, phoneOrEmailField, "Phone or Email");
-        phoneOrEmailBinding = binder.forField(phoneOrEmailField)
+        binder.forField(phoneOrEmailField)
                 .withValidator(new EmailOrPhoneValidator())
-                .withStatusChangeHandler(this::commonStatusChangeHandler);
-        phoneOrEmailField.addValueChangeListener(
-                event -> phoneOrEmailBinding.validate());
-        phoneOrEmailBinding.bind(Person::getEmailOrPhone,
-                Person::setEmailOrPhone);
+                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .bind(Person::getEmailOrPhone, Person::setEmailOrPhone);
 
         PasswordField passwordField = new PasswordField();
         addToLayout(layout, passwordField, "Password");
         passwordBinding = binder.forField(passwordField)
                 .withValidator(new PasswordValidator())
                 .withStatusChangeHandler(this::commonStatusChangeHandler);
-        passwordField.addValueChangeListener(event -> {
-            passwordBinding.validate();
-            confirmPasswordBinding.validate();
-        });
+        passwordField.addValueChangeListener(
+                event -> confirmPasswordBinding.validate());
         passwordBinding.bind(Person::getPassword, Person::setPassword);
 
         PasswordField confirmPasswordField = new PasswordField();
@@ -109,10 +100,8 @@ public class RegistrationFormUI extends UI {
                 .withStatusChangeHandler(this::commonStatusChangeHandler)
                 .bind(Person::getPassword, (person, pwd) -> {
                 });
-        confirmPasswordField.addValueChangeListener(event -> {
-            passwordBinding.validate();
-            confirmPasswordBinding.validate();
-        });
+        confirmPasswordField
+                .addValueChangeListener(event -> passwordBinding.validate());
 
         layout.addComponent(createButton());
 
