@@ -15,8 +15,6 @@
  */
 package com.vaadin.tutorial.addressbook;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -26,14 +24,10 @@ import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.converter.DateToLongConverter;
-import com.vaadin.v7.data.util.converter.StringToBooleanConverter;
-import com.vaadin.v7.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.DateRenderer;
 
 /**
  * @author Vaadin Ltd
@@ -71,16 +65,13 @@ public class LeftPanel extends VerticalLayout {
 
     public LeftPanel() {
         Design.read(this);
-        contactList.addColumn("First Name", String.class,
-                Contact::getFirstName);
-        contactList.addColumn("Last Name", String.class, Contact::getLastName);
-        contactList.addColumn("Email", String.class, Contact::getEmail);
-        contactList.addColumn("Created Timestamp", String.class, c -> {
-            DateFormat df = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss");
-            return df.format(new Date(c.getCreatedTimestamp()));
-        });
+        contactList.addColumn("First Name", Contact::getFirstName);
+        contactList.addColumn("Last Name", Contact::getLastName);
+        contactList.addColumn("Email", Contact::getEmail);
+        contactList.addColumn("Created Timestamp",
+                c -> new Date(c.getCreatedTimestamp()), new DateRenderer());
 
-        contactList.addColumn("Do Not Call", String.class,
+        contactList.addColumn("Do Not Call",
                 c -> c.isDoNotCall() ? "DO NOT CALL" : "");
     }
 
@@ -92,7 +83,6 @@ public class LeftPanel extends VerticalLayout {
         refresh(getFilterValue());
     }
 
-    @SuppressWarnings("unchecked")
     void addSelectionListener(Consumer<Contact> listener) {
         ((SingleSelection<Contact>) contactList.getSelectionModel())
                 .addSelectionListener(
