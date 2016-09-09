@@ -100,8 +100,6 @@ public class RegistrationFormUI extends UI {
                 .withStatusChangeHandler(this::commonStatusChangeHandler)
                 .bind(Person::getPassword, (person, pwd) -> {
                 });
-        confirmPasswordField
-                .addValueChangeListener(event -> passwordBinding.validate());
 
         layout.addComponent(createButton());
 
