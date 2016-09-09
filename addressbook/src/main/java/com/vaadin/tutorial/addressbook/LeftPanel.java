@@ -15,22 +15,19 @@
  */
 package com.vaadin.tutorial.addressbook;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
+import com.vaadin.data.selection.SingleSelection;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
-import com.vaadin.v7.data.util.BeanItemContainer;
-import com.vaadin.v7.data.util.converter.DateToLongConverter;
-import com.vaadin.v7.data.util.converter.StringToBooleanConverter;
-import com.vaadin.v7.ui.Grid;
-import com.vaadin.v7.ui.Grid.Column;
-import com.vaadin.v7.ui.renderers.DateRenderer;
+import com.vaadin.ui.renderers.DateRenderer;
 
 /**
  * @author Vaadin Ltd
@@ -46,7 +43,7 @@ public class LeftPanel extends VerticalLayout {
      * com.vaadin.ui package and there are over 500 more in
      * vaadin.com/directory.
      */
-    private Grid contactList;
+    private Grid<Contact> contactList;
     private TextField filter;
     private Button newContact;
 
@@ -68,26 +65,18 @@ public class LeftPanel extends VerticalLayout {
 
     public LeftPanel() {
         Design.read(this);
-        contactList
-                .setContainerDataSource(new BeanItemContainer<>(Contact.class));
-        contactList.setColumnOrder("firstName", "lastName", "email");
-        contactList.removeColumn("id");
-        contactList.removeColumn("birthDate");
-        contactList.removeColumn("phone");
-        contactList.setSelectionMode(Grid.SelectionMode.SINGLE);
+        contactList.addColumn("First Name", Contact::getFirstName);
+        contactList.addColumn("Last Name", Contact::getLastName);
+        contactList.addColumn("Email", Contact::getEmail);
+        contactList.addColumn("Created Timestamp",
+                c -> new Date(c.getCreatedTimestamp()), new DateRenderer());
 
-        Column timestamp = contactList.getColumn("createdTimestamp");
-        timestamp.setRenderer(
-                new DateRenderer(new SimpleDateFormat("YYYY-MM-DD HH:mm:ss")));
-        timestamp.setConverter(new DateToLongConverter());
-        contactList.getColumn("doNotCall")
-                .setConverter(new StringToBooleanConverter("DO NOT CALL", ""));
+        contactList.addColumn("Do Not Call",
+                c -> c.isDoNotCall() ? "DO NOT CALL" : "");
     }
 
     void refresh(String filter) {
-        contactList
-                .setContainerDataSource(new BeanItemContainer<>(Contact.class,
-                        ContactService.getDemoService().findAll(filter)));
+        contactList.setItems(ContactService.getDemoService().findAll(filter));
     }
 
     void refresh() {
@@ -95,8 +84,9 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void addSelectionListener(Consumer<Contact> listener) {
-        contactList.addSelectionListener(
-                e -> listener.accept((Contact) contactList.getSelectedRow()));
+        ((SingleSelection<Contact>) contactList.getSelectionModel())
+                .addSelectionListener(
+                        e -> listener.accept(e.getSelectedItem().orElse(null)));
     }
 
     void deselect() {

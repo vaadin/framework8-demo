@@ -19,13 +19,13 @@ public class RESTDemoUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Grid<Person> personGrid = new Grid<>();
-        personGrid.addColumn("First name", String.class, Person::getFirstName);
-        personGrid.addColumn("Last name", String.class, Person::getLastName);
-        personGrid.addColumn("Email", String.class, Person::getEmail);
-        personGrid.addColumn("City", String.class, Person::getCity);
-        personGrid.addColumn("Street", String.class, Person::getStreet);
-        personGrid.addColumn("Postal code", String.class, Person::getPostCode);
-        personGrid.addColumn("State", String.class, Person::getState);
+        personGrid.addColumn("First name", Person::getFirstName);
+        personGrid.addColumn("Last name", Person::getLastName);
+        personGrid.addColumn("Email", Person::getEmail);
+        personGrid.addColumn("City", Person::getCity);
+        personGrid.addColumn("Street", Person::getStreet);
+        personGrid.addColumn("Postal code", Person::getPostCode);
+        personGrid.addColumn("State", Person::getState);
 
         personGrid.setDataSource(new BackEndDataSource<Person>(
                 query -> PersonService.getInstance()
