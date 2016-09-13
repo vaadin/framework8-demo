@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Binder;
+import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.tutorial.addressbook.backend.Contact;
@@ -50,26 +51,34 @@ public class ContactForm extends FormLayout {
         final Predicate<String> phoneOrEmailPredicate = v -> !phone.getValue()
                 .trim().isEmpty() || !email.getValue().trim().isEmpty();
 
-        binder.forField(email)
-                .withValidator(phoneOrEmailPredicate,
-                        "Both phone and email cannot be empty")
-                .withValidator(new EmailValidator("Incorrect email address"))
-                .bind(Contact::getEmail, Contact::setEmail);
+        final Predicate<String> phonePredicate = phoneString -> {
+            return !phoneString.trim().isEmpty();
+        };
 
-        binder.forField(phone)
+        phonePredicate.or(emailString -> {
+            return !emailString.trim().isEmpty();
+        });
+
+        Binding<Contact, String, String> emailBinding = binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty")
-                .bind(Contact::getPhone, Contact::setPhone);
+                .withValidator(new EmailValidator("Incorrect email address"));
+        emailBinding.bind(Contact::getEmail, Contact::setEmail);
+
+        Binding<Contact, String, String> phoneBinding = binder.forField(phone)
+                .withValidator(phoneOrEmailPredicate,
+                        "Both phone and email cannot be empty");
+        phoneBinding.bind(Contact::getPhone, Contact::setPhone);
 
         // Trigger cross-field validation when the other field is changed
         email.addValueChangeListener(event -> {
             if (event.isUserOriginated()) {
-                binder.validate();
+                phoneBinding.validate();
             }
         });
         phone.addValueChangeListener(event -> {
             if (event.isUserOriginated()) {
-                binder.validate();
+                emailBinding.validate();
             }
         });
 

@@ -178,12 +178,11 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
 
         getRows().get(0).findElement(By.tagName("td")).click();
-        newContactButton.click();
         Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
-
-        newContactButton.click();
-        TextFieldElement phoneField = $(TextFieldElement.class).get(4);
-        phoneField.sendKeys(Keys.ENTER);
+        TextFieldElement phoneField = $(TextFieldElement.class).get(3);
+        TextFieldElement emailField = $(TextFieldElement.class).get(4);
+        phoneField.clear();
+        emailField.clear();
         Assert.assertTrue(isElementPresent(By.className("v-errorindicator")));
 
         newContactButton.click();
