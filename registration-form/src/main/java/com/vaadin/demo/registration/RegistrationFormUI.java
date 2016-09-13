@@ -11,7 +11,6 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationStatus;
-import com.vaadin.data.ValidationStatusChangeEvent;
 import com.vaadin.data.Validator;
 import com.vaadin.data.validator.NotEmptyValidator;
 import com.vaadin.server.FontAwesome;
@@ -71,21 +70,27 @@ public class RegistrationFormUI extends UI {
         binder.forField(fullNameField)
                 .withValidator(
                         new NotEmptyValidator<>("Full name may not be empty"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .withValidationStatusHandler(
+                        status -> commonStatusChangeHandler(status,
+                                fullNameField))
                 .bind(Person::getFullName, Person::setFullName);
 
         TextField phoneOrEmailField = new TextField();
         addToLayout(layout, phoneOrEmailField, "Phone or Email");
         binder.forField(phoneOrEmailField)
                 .withValidator(new EmailOrPhoneValidator())
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .withValidationStatusHandler(
+                        status -> commonStatusChangeHandler(status,
+                                phoneOrEmailField))
                 .bind(Person::getEmailOrPhone, Person::setEmailOrPhone);
 
         PasswordField passwordField = new PasswordField();
         addToLayout(layout, passwordField, "Password");
         passwordBinding = binder.forField(passwordField)
                 .withValidator(new PasswordValidator())
-                .withStatusChangeHandler(this::commonStatusChangeHandler);
+                .withValidationStatusHandler(
+                        status -> commonStatusChangeHandler(status,
+                                passwordField));
         passwordField.addValueChangeListener(
                 event -> confirmPasswordBinding.validate());
         passwordBinding.bind(Person::getPassword, Person::setPassword);
@@ -97,7 +102,9 @@ public class RegistrationFormUI extends UI {
         confirmPasswordBinding
                 .withValidator(Validator.from(this::validateConfirmPasswd,
                         "Password doesn't match"))
-                .withStatusChangeHandler(this::commonStatusChangeHandler)
+                .withValidationStatusHandler(
+                        status -> commonStatusChangeHandler(status,
+                                confirmPasswordField))
                 .bind(Person::getPassword, (person, pwd) -> {
                 });
 
@@ -115,10 +122,11 @@ public class RegistrationFormUI extends UI {
         return button;
     }
 
-    private void commonStatusChangeHandler(ValidationStatusChangeEvent event) {
-        Label statusLabel = getStatusMessageLabel(event);
+    private void commonStatusChangeHandler(ValidationStatus<?> event,
+            HasValue<?> field) {
+        Label statusLabel = (Label) ((AbstractTextField) field).getData();
         statusLabel.setVisible(true);
-        if (ValidationStatus.OK.equals(event.getStatus())) {
+        if (ValidationStatus.Status.OK.equals(event.getStatus())) {
             statusLabel.setValue("");
             statusLabel.setIcon(FontAwesome.CHECK);
             statusLabel.getParent().addStyleName(VALID);
@@ -127,12 +135,6 @@ public class RegistrationFormUI extends UI {
             statusLabel.setValue(event.getMessage().orElse("Unknown error"));
             statusLabel.getParent().removeStyleName(VALID);
         }
-    }
-
-    private Label getStatusMessageLabel(ValidationStatusChangeEvent event) {
-        HasValue<?> field = event.getSource();
-        assert field instanceof AbstractTextField;
-        return (Label) ((AbstractTextField) field).getData();
     }
 
     private boolean validateConfirmPasswd(String confirmPasswordValue) {
