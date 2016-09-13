@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.ui.textfield.ValueChangeMode;
+import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
@@ -80,7 +80,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     }
 
     private void initGrid() {
-        grid = new Grid<Todo>();
+        grid = new Grid<>();
         grid.setHeight(null);
 
         // TODO add checkbox renderer and clickhandler for marking todo complete
