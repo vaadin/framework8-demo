@@ -17,7 +17,6 @@ package com.vaadin.demo.registration;
 
 import java.util.List;
 
-import com.vaadin.server.FontAwesome;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +24,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
@@ -39,7 +39,8 @@ import com.vaadin.testbench.elements.TextFieldElement;
 public class RegistrationFormIT extends AbstractDemoTest {
 
     private static final int VALID_ICON_CHAR = FontAwesome.CHECK.getCodepoint();
-    private static final int INVALID_ICON_CHAR = FontAwesome.TIMES.getCodepoint();
+    private static final int INVALID_ICON_CHAR = FontAwesome.TIMES
+            .getCodepoint();
 
     @Before
     public void setUp() {
@@ -217,8 +218,9 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         assertStatusMessagePresent("Password doesn't match");
         List<WebElement> icons = findElements(By.className("v-icon"));
-        Assert.assertEquals(VALID_ICON_CHAR, icons.get(2).getText().charAt(0));
-        Assert.assertEquals(INVALID_ICON_CHAR, icons.get(3).getText().charAt(0));
+        Assert.assertEquals(VALID_ICON_CHAR, icons.get(0).getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR,
+                icons.get(1).getText().charAt(0));
     }
 
     @Test
@@ -233,8 +235,27 @@ public class RegistrationFormIT extends AbstractDemoTest {
 
         assertStatusMessagePresent("Password doesn't match");
         List<WebElement> icons = findElements(By.className("v-icon"));
-        Assert.assertEquals(VALID_ICON_CHAR, icons.get(2).getText().charAt(0));
-        Assert.assertEquals(INVALID_ICON_CHAR, icons.get(3).getText().charAt(0));
+        Assert.assertEquals(VALID_ICON_CHAR, icons.get(0).getText().charAt(0));
+        Assert.assertEquals(INVALID_ICON_CHAR,
+                icons.get(1).getText().charAt(0));
+    }
+
+    @Test
+    public void noCrossValidationOnNameField() {
+        TextFieldElement nameField = $(TextFieldElement.class).get(0);
+        nameField.sendKeys("test", Keys.TAB);
+
+        Assert.assertEquals(1,
+                findElements(By.className("validation-message")).size());
+    }
+
+    @Test
+    public void noCrossValidationOnPhoneEmailField() {
+        TextFieldElement nameField = $(TextFieldElement.class).get(1);
+        nameField.sendKeys("test", Keys.TAB);
+
+        Assert.assertEquals(1,
+                findElements(By.className("validation-message")).size());
     }
 
     @Test
