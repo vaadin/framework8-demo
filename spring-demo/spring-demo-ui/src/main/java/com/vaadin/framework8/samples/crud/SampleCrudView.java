@@ -92,7 +92,7 @@ public class SampleCrudView extends CssLayout implements View {
     }
 
     public void clearSelection() {
-        grid.getSelectionModel().reset();
+        grid.getSelectionModel().deselectAll();
     }
 
     public void selectRow(Product row) {
@@ -115,16 +115,16 @@ public class SampleCrudView extends CssLayout implements View {
     }
 
     public void showProducts(Collection<Product> products) {
-        grid.setProducts(products);
+        grid.setItems(products);
     }
 
     public void refreshProduct(Product product) {
         grid.refresh(product);
-        grid.scrollTo(product);
     }
 
     public void removeProduct(Product product) {
-        grid.remove(product);
+        // TODO: Remove from the back end, inform grid of change.
+        // grid.remove(product);
     }
 
     @PostConstruct
@@ -156,4 +156,5 @@ public class SampleCrudView extends CssLayout implements View {
 
         viewLogic.init();
     }
+
 }
