@@ -15,6 +15,8 @@
  */
 package com.vaadin.tutorial.todomvc;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.GridElement;
+import com.vaadin.testbench.elements.GridElement.GridCellElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 /**
@@ -47,9 +50,14 @@ public class TodoMvcIT extends AbstractDemoTest {
         // TODO depends on button renderer column
     }
 
+    @Test
     public void testInlineEditingTodoText() {
-        // TODO depends on selection implementation or clickable renderer or
-        // whatnot
+        addTodo("one");
+        editTodo(0, "one", "edited");
+
+        addTodo("two");
+        editTodo(1, "two", "foobar");
+        editTodo(0, "edited", "edited twice");
     }
 
     @Test
@@ -193,6 +201,40 @@ public class TodoMvcIT extends AbstractDemoTest {
         }
     }
 
+    private void verifyInlineEditorNotPresent() {
+        try {
+            getTodoTextInlineEditor();
+            Assert.fail("Todo inline editor should not be visible");
+        } catch (NoSuchElementException nsee) {
+            // expected
+        }
+    }
+
+    private void verifyTodoText(int row, String text) {
+        GridCellElement cell = getGrid().getCell(row, 1);
+        Assert.assertEquals(text,
+                cell.findElement(By.tagName("button")).getText());
+    }
+
+    private void editTodo(int row, String oldText, String newText) {
+        verifyInlineEditorNotPresent();
+        verifyTodoText(row, oldText);
+
+        Optional<WebElement> textCell = findElements(By.tagName("button"))
+                .stream().filter(e -> e.getText().equals(oldText)).findAny();
+        Assert.assertTrue(textCell.isPresent());
+        textCell.get().click();
+
+        Assert.assertEquals(oldText, getTodoTextInlineEditor().getValue());
+        getTodoTextInlineEditor().clear();
+        getTodoTextInlineEditor().sendKeys(newText);
+        Assert.assertEquals(newText, getTodoTextInlineEditor().getValue());
+        getTodoTextInlineEditor().sendKeys(Keys.ENTER);
+
+        verifyInlineEditorNotPresent();
+        verifyTodoText(row, newText);
+    }
+
     private void addTodo(String text) {
         getTodoField().sendKeys(text);
         verifyTodoFieldText(text);
@@ -243,7 +285,7 @@ public class TodoMvcIT extends AbstractDemoTest {
     }
 
     private TextFieldElement getTodoField() {
-        return $(TextFieldElement.class).first();
+        return $(TextFieldElement.class).id("new-todo");
     }
 
     private WebElement getItemsLeftLabel() {
@@ -256,6 +298,10 @@ public class TodoMvcIT extends AbstractDemoTest {
 
     private WebElement getClearCompletedButton() {
         return findElement(By.id("clear-completed"));
+    }
+
+    private TextFieldElement getTodoTextInlineEditor() {
+        return $(TextFieldElement.class).id("todo-editor");
     }
 
 }
