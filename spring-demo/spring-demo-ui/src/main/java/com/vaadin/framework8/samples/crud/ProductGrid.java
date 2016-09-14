@@ -58,8 +58,7 @@ public class ProductGrid extends Grid<Product> {
     }
 
     public Product getSelectedRow() {
-        return getSelectionModel().getSelectedItems().stream().findFirst()
-                .orElse(null);
+        return getSelectedItem().orElse(null);
     }
 
     public void refresh(Product product) {
@@ -73,8 +72,8 @@ public class ProductGrid extends Grid<Product> {
                     .of(t.getProductName(), t.getAvailability(),
                             t.getCategory())
                     .map(String::valueOf)
-                    .filter(s -> s.toLowerCase().contains(text.toLowerCase()))
-                    .count() > 0;
+                    .anyMatch(s -> s.toLowerCase(getLocale())
+                            .contains(text.toLowerCase(getLocale())));
         }
         getDataCommunicator().setInMemoryFilter(filter);
     }
