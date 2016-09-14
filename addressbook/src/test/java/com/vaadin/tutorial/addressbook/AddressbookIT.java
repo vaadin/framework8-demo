@@ -25,6 +25,8 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
+import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.TextFieldElement;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 
@@ -166,6 +168,25 @@ public class AddressbookIT extends AbstractDemoTest {
         // deselect
         rows.get(index).findElement(By.tagName("td")).click();
         Assert.assertFalse(isElementPresent(By.className("buttons")));
+    }
+
+    @Test
+    public void newContactNoValidationErrors() {
+        ButtonElement newContactButton = $(ButtonElement.class).get(0);
+
+        newContactButton.click();
+        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
+
+        getRows().get(0).findElement(By.tagName("td")).click();
+        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
+        TextFieldElement phoneField = $(TextFieldElement.class).get(3);
+        TextFieldElement emailField = $(TextFieldElement.class).get(4);
+        phoneField.clear();
+        emailField.clear();
+        Assert.assertTrue(isElementPresent(By.className("v-errorindicator")));
+
+        newContactButton.click();
+        Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
     }
 
     private List<WebElement> getRows() {
