@@ -8,7 +8,56 @@
     border: none;
     cursor: text;
     font-weight: 300;
+    outline: none;
     text-align: left;
     width: 100%;
+  }
+  
+  .v-grid {
+    background: #fff;
+    .v-grid-row {
+      .v-grid-cell {
+        background: transparent;
+        border-left-color: transparent;
+      }
+      td:first-child,
+      td:nth-child(3) {
+        button {
+          cursor: pointer;
+          height: inherit;
+          position: relative;
+          text-align: center;
+        }
+      }
+      td:first-child button:before {
+        position: absolute;
+        top: -2px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#ededed" stroke-width="3"/></svg>');
+      }
+    }
+    .v-grid-row:hover {
+      td:nth-child(3) button {
+        color: #cc9a9a;
+      }
+      td:nth-child(3) button:hover {
+        color: #af5b5e;
+      }
+      td:nth-child(3) button:before {
+        content: 'X';
+        font-size: 20px;
+      }
+    }
+    .v-grid-row.done {
+      td:first-child button:before {
+      content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="-10 -18 100 135"><circle cx="50" cy="50" r="50" fill="none" stroke="#bddad5" stroke-width="3"/><path fill="#5dc2af" d="M72 25L42 71 27 56l-4 4 20 20 34-52z"/></svg>');
+     }
+      
+      td:nth-child(2) button {
+        text-decoration: line-through;
+      }
+    }
   }
 }
