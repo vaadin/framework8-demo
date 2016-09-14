@@ -51,14 +51,6 @@ public class ContactForm extends FormLayout {
         final Predicate<String> phoneOrEmailPredicate = v -> !phone.getValue()
                 .trim().isEmpty() || !email.getValue().trim().isEmpty();
 
-        final Predicate<String> phonePredicate = phoneString -> {
-            return !phoneString.trim().isEmpty();
-        };
-
-        phonePredicate.or(emailString -> {
-            return !emailString.trim().isEmpty();
-        });
-
         Binding<Contact, String, String> emailBinding = binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty")
