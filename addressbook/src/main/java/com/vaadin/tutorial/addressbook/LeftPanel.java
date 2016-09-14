@@ -88,7 +88,7 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void deselect() {
-        contactList.select(null);
+        contactList.getSelectedItem().ifPresent(contactList::deselect);
     }
 
     String getFilterValue() {
