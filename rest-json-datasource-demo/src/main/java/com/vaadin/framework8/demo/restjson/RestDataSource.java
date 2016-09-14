@@ -26,14 +26,14 @@ import java.util.stream.Stream;
 import org.apache.commons.io.IOUtils;
 
 import com.vaadin.data.util.JsonUtil;
-import com.vaadin.server.data.DataSource;
+import com.vaadin.server.data.AbstractDataSource;
 import com.vaadin.server.data.Query;
 
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 
-public class RestDataSource implements DataSource<JsonObject> {
+public class RestDataSource extends AbstractDataSource<JsonObject> {
 
     private String restApiUrl;
 
