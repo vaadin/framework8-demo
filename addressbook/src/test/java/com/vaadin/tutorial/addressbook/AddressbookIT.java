@@ -189,6 +189,17 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertFalse(isElementPresent(By.className("v-errorindicator")));
     }
 
+    @Test
+    public void cancelButtonClosesForm() {
+        List<WebElement> rows = getRows();
+        rows.get(1).findElement(By.tagName("td")).click();
+        Assert.assertTrue(isElementPresent(By.className("v-formlayout")));
+
+        ButtonElement cancelButton = $(ButtonElement.class).get(2);
+        cancelButton.click();
+        Assert.assertFalse(isElementPresent(By.className("v-formlayout")));
+    }
+
     private List<WebElement> getRows() {
         WebElement table = findElement(By.id("contactstable"));
 
