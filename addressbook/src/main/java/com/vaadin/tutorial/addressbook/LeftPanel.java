@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.function.Consumer;
 
 import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.selection.SingleSelection;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
@@ -84,9 +83,8 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void addSelectionListener(Consumer<Contact> listener) {
-        ((SingleSelection<Contact>) contactList.getSelectionModel())
-                .addSelectionListener(
-                        e -> listener.accept(e.getSelectedItem().orElse(null)));
+        contactList.addSelectionListener(
+                e -> listener.accept(e.getSelectedItem().orElse(null)));
     }
 
     void deselect() {
