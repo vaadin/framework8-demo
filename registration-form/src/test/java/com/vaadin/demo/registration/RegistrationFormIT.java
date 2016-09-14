@@ -233,11 +233,10 @@ public class RegistrationFormIT extends AbstractDemoTest {
         password.sendKeys(Keys.DELETE);
         password.sendKeys(Keys.TAB);
 
-        assertStatusMessagePresent("Password doesn't match");
+        Assert.assertEquals(1,
+                findElements(By.className("validation-message")).size());
         List<WebElement> icons = findElements(By.className("v-icon"));
         Assert.assertEquals(VALID_ICON_CHAR, icons.get(0).getText().charAt(0));
-        Assert.assertEquals(INVALID_ICON_CHAR,
-                icons.get(1).getText().charAt(0));
     }
 
     @Test
