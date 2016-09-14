@@ -12,6 +12,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.v7.ui.OptionGroup;
 
@@ -32,6 +33,10 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private OptionGroup filters;
 
     private Button markAllDoneButton;
+
+    private Todo currentlyEditedTodo;
+
+    private EnterPressHandler newTodoFieldEnterPressHandler;
 
     public TodoViewImpl() {
 
@@ -71,7 +76,11 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         newTodoField.setValueChangeMode(ValueChangeMode.EAGER);
         newTodoField.setPlaceholder("What needs to be done?");
         newTodoField.focus(); // auto-focus
-        newTodoField.addShortcutListener(new EnterPressHandler());
+        // there can only be one shortcut listener set, so need to add/remove
+        // this in editTodo(Todo)
+        newTodoFieldEnterPressHandler = new EnterPressHandler(
+                this::onNewTodoFieldEnter);
+        newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
 
         topBar.addComponents(markAllDoneButton, newTodoField);
         topBar.setExpandRatio(newTodoField, 1);
@@ -82,6 +91,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private void initGrid() {
         grid = new Grid<>();
         grid.setHeight(null);
+        grid.setDetailsGenerator(this::createTodoEditor);
 
         // TODO add checkbox renderer and clickhandler for marking todo complete
         grid.addColumn("", t -> String.valueOf(t.isCompleted()));
@@ -89,9 +99,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         // CheckboxRenderer())
 
         // TODO make text column expand
-        grid.addColumn("", Todo::getText);
-        // TODO trigger inline editing via details row (?) once the user clicks
-        // the text column (?), depends on clickable renderer (?)
+        grid.addColumn("", Todo::getText,
+                new ButtonRenderer<>(e -> editTodo(e.getItem())));
 
         // TODO delete button column, needs button renderer
         // grid.addColumn("",boolean.class,()->false).setRenderer(new
@@ -156,20 +165,56 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         }
     }
 
+    private void onNewTodoFieldEnter() {
+        String value = newTodoField.getValue().trim();
+        if (!value.isEmpty()) {
+            presenter.add(new Todo(value));
+            newTodoField.setValue("");
+        }
+    }
+
+    private void editTodo(Todo newTodo) {
+        if (currentlyEditedTodo == newTodo) {
+            return;
+        }
+        if (currentlyEditedTodo != null) {
+            grid.setDetailsVisible(currentlyEditedTodo, false);
+            newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
+        }
+
+        currentlyEditedTodo = newTodo;
+        if (currentlyEditedTodo != null) {
+            newTodoField.removeShortcutListener(newTodoFieldEnterPressHandler);
+            grid.setDetailsVisible(currentlyEditedTodo, true);
+        }
+    }
+
+    private TextField createTodoEditor(Todo todo) {
+        TextField textField = new TextField();
+        textField.setId("todo-editor");
+        textField.setWidth("100%");
+        textField.setValue(todo.getText());
+        textField.focus();
+        textField.addValueChangeListener(e -> todo.setText(e.getValue()));
+        textField.addShortcutListener(
+                new EnterPressHandler(() -> editTodo(null)));
+        textField.addBlurListener(e -> editTodo(null));
+        return textField;
+    }
+
     private class EnterPressHandler extends ShortcutListener {
 
-        public EnterPressHandler() {
+        private Runnable handler;
+
+        public EnterPressHandler(Runnable handler) {
             super("", KeyCode.ENTER, new int[0]);
+            this.handler = handler;
         }
 
         @Override
         public void handleAction(Object sender, Object target) {
-            String value = newTodoField.getValue().trim();
-            if (!value.isEmpty()) {
-                presenter.add(new Todo(value));
-                newTodoField.setValue("");
-            }
+            handler.run();
         }
-
     }
+
 }

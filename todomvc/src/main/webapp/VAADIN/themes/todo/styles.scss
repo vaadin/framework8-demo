@@ -1,0 +1,14 @@
+@import "../valo/valo.scss";
+
+.todo {
+  @include valo;
+  
+  .v-grid button {
+    background: transparent;
+    border: none;
+    cursor: text;
+    font-weight: 300;
+    text-align: left;
+    width: 100%;
+  }
+}

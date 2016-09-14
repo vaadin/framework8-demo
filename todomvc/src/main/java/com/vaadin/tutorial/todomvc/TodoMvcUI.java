@@ -8,7 +8,6 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.themes.ValoTheme;
 
 /* User Interface written in Java.
  *
@@ -17,7 +16,7 @@ import com.vaadin.ui.themes.ValoTheme;
  * the same instance, add @PreserveOnRefresh.
  */
 @Title("TodoMVC")
-@Theme(ValoTheme.THEME_NAME)
+@Theme("todo")
 public class TodoMvcUI extends UI {
 
     /*
