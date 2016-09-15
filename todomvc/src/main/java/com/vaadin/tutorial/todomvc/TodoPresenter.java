@@ -6,11 +6,12 @@ public class TodoPresenter {
 
     private TodoModel model = new TodoModel();
 
-    private String filterValue;
+    private Completion completionFilter = Completion.ALL;
 
     public TodoPresenter(TodoView view) {
         this.view = view;
         view.setDataSource(model.getDataSourceAll());
+        view.updateCounters(model.getCompleted(), model.getActive());
     }
 
     public void markCompleted(Todo todo, boolean completed) {
@@ -52,21 +53,23 @@ public class TodoPresenter {
         refreshView();
     }
 
-    public void filterTodos(String value) {
-        filterValue = value;
+    public void filterTodos(Completion completionFilter) {
+        this.completionFilter = completionFilter;
         refreshView();
     }
 
     private void refreshView() {
 /* TODO move to DataSource level when filtering is supported */
-        if ("Active".equals(filterValue)) {
-            view.setDataSource(model.getDataSourceActive());
-        } else if ("Completed".equals(filterValue)) {
-            view.setDataSource(model.getDataSourceCompleted());
-        } else {
-            view.setDataSource(model.getDataSourceAll());
+        switch (completionFilter) {
+            case ACTIVE:
+                view.setDataSource(model.getDataSourceActive());
+                break;
+            case COMPLETED:
+                view.setDataSource(model.getDataSourceCompleted());
+                break;
+            default:
+                view.setDataSource(model.getDataSourceAll());
         }
         view.refresh();
     }
-
 }
