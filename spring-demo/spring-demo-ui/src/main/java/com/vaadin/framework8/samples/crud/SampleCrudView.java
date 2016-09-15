@@ -1,7 +1,5 @@
 package com.vaadin.framework8.samples.crud;
 
-import java.util.Collection;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;

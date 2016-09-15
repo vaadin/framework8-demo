@@ -33,7 +33,7 @@ import com.vaadin.framework8.samples.backend.data.Category;
  * @author Vaadin Ltd
  *
  */
-// @Transactional(TxType.MANDATORY)
+@Transactional(TxType.MANDATORY)
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> findAllByNameContainingIgnoreCase(String name);
