@@ -1,5 +1,6 @@
 package com.vaadin.framework8.samples.crud;
 
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import com.vaadin.framework8.samples.backend.data.Availability;
@@ -34,10 +35,10 @@ public class ProductGrid extends Grid<Product> {
         addColumn("Stock Count", Product::getStockCount, new NumberRenderer())
                 .setStyleGenerator(c -> "align-right")
                 .setSortProperty("stockCount");
-        addColumn("Category",
-                p -> p.getCategory().stream().map(Category::getName)
-                        .collect(Collectors.joining(", ")))
-                                .setSortProperty("category");
+        addColumn("Category", p -> p.getCategory().stream()
+                .sorted(Comparator.comparing(Category::getId))
+                .map(Category::getName).collect(Collectors.joining(", ")))
+                        .setSortable(false);
     }
 
     private String getTrafficLightIconHtml(Availability availability) {
