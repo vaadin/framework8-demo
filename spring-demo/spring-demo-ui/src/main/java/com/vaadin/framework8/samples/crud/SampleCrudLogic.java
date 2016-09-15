@@ -54,8 +54,6 @@ public class SampleCrudLogic implements Serializable {
         if (!SampleUI.get().getAccessControl().isUserInRole("admin")) {
             view.setNewProductEnabled(false);
         }
-
-        view.showProducts(dataService.getAllProducts());
     }
 
     public void cancelProduct() {

@@ -1,10 +1,6 @@
 package com.vaadin.framework8.samples.crud;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
@@ -24,6 +20,7 @@ public class ProductGrid extends Grid<Product> {
     public ProductGrid() {
         setSizeFull();
 
+        // TODO: Add sorting for backend
         addColumn("Id", p -> String.valueOf(p.getId()));
         addColumn("Product Name", Product::getProductName);
         addColumn("Price", Product::getPrice, new NumberRenderer())
@@ -63,18 +60,5 @@ public class ProductGrid extends Grid<Product> {
 
     public void refresh(Product product) {
         getDataCommunicator().refresh(product);
-    }
-
-    public void setFilter(String text) {
-        Predicate<Product> filter = null;
-        if (text != null && !text.isEmpty()) {
-            filter = t -> Stream
-                    .of(t.getProductName(), t.getAvailability(),
-                            t.getCategory())
-                    .map(String::valueOf)
-                    .anyMatch(s -> s.toLowerCase(getLocale())
-                            .contains(text.toLowerCase(getLocale())));
-        }
-        getDataCommunicator().setInMemoryFilter(filter);
     }
 }

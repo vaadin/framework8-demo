@@ -15,11 +15,13 @@
  */
 package com.vaadin.framework8.samples.backend.repository;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
+import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.vaadin.framework8.samples.backend.data.Availability;
+import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
 
 /**
@@ -31,7 +33,11 @@ import com.vaadin.framework8.samples.backend.data.Product;
  * @author Vaadin Ltd
  *
  */
-@Transactional(TxType.MANDATORY)
+// @Transactional(TxType.MANDATORY)
 public interface ProductRepository extends JpaRepository<Product, Integer> {
+
+    List<Product> findAllByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
+            String productName, Collection<Availability> availability,
+            Collection<Category> category);
 
 }
