@@ -21,19 +21,23 @@ public class ProductGrid extends Grid<Product> {
         setSizeFull();
 
         // TODO: Add sorting for backend
-        addColumn("Id", p -> String.valueOf(p.getId()));
-        addColumn("Product Name", Product::getProductName);
+        addColumn("Id", p -> String.valueOf(p.getId())).setSortProperty("id");
+        addColumn("Product Name", Product::getProductName)
+                .setSortProperty("productName");
         addColumn("Price", Product::getPrice, new NumberRenderer())
-                .setStyleGenerator(c -> "align-right");
+                .setStyleGenerator(c -> "align-right").setSortProperty("price");
         addColumn("Availability", p -> {
             Availability availability = p.getAvailability();
             return getTrafficLightIconHtml(availability) + " "
                     + availability.name();
-        }, new HtmlRenderer());
+        }, new HtmlRenderer()).setSortProperty("availability");
         addColumn("Stock Count", Product::getStockCount, new NumberRenderer())
-                .setStyleGenerator(c -> "align-right");
-        addColumn("Category", p -> p.getCategory().stream()
-                .map(Category::getName).collect(Collectors.joining(", ")));
+                .setStyleGenerator(c -> "align-right")
+                .setSortProperty("stockCount");
+        addColumn("Category",
+                p -> p.getCategory().stream().map(Category::getName)
+                        .collect(Collectors.joining(", ")))
+                                .setSortProperty("category");
     }
 
     private String getTrafficLightIconHtml(Availability availability) {

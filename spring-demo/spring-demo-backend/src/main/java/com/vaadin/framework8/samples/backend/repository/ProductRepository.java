@@ -18,6 +18,7 @@ package com.vaadin.framework8.samples.backend.repository;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.vaadin.framework8.samples.backend.data.Availability;
@@ -38,6 +39,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
             String productName, Collection<Availability> availability,
-            Collection<Category> category);
+            Collection<Category> category, Pageable page);
 
 }
