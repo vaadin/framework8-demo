@@ -12,7 +12,7 @@
             <x-number-field _id="stockCount" caption="In Stock" width-full />
         </vaadin-horizontal-layout>
         <vaadin7-combo-box caption="Availability" _id="availability" width-full null-selection-allowed=false text-input-allowed=false />
-        <x-category-field _id="category" caption="Categories" width-full />
+        <vaadin-check-box-group _id="category" caption="Categories" width-full />
         <vaadin-css-layout :expand style-name="expander" />
         <vaadin-button style-name="primary" _id="save">Save</vaadin-button>
         <vaadin-button style-name="cancel" _id="cancel" click-shortcut="escape">Cancel</vaadin-button>
