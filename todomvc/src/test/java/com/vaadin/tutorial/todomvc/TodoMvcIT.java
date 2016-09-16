@@ -28,6 +28,7 @@ import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.GridElement.GridCellElement;
+import com.vaadin.testbench.elements.GridElement.GridRowElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 
 /**
@@ -42,12 +43,60 @@ public class TodoMvcIT extends AbstractDemoTest {
         getDriver().resizeViewPortTo(1000, 800);
     }
 
+    @Test
     public void testMarkingTodoCompleteFromGrid() {
-        // TODO depends on checkbox renderer column
+        addTodo("one");
+        addTodo("two");
+
+        verifyTodoText(0, "one");
+        verifyTodoText(1, "two");
+        verifyNumberOfItemsLeft(2);
+
+        markTodoDone(0);
+        verifyNumberOfItemsLeft(1);
+
+        markTodoDone(1);
+        verifyNumberOfItemsLeft(0);
+
+        markTodoNotDone(0);
+        verifyNumberOfItemsLeft(1);
+
+        markTodoNotDone(1);
+        verifyNumberOfItemsLeft(2);
+
+        markAllCompleted();
+        verifyNumberOfItemsLeft(0);
+
+        markTodoNotDone(1);
+        verifyNumberOfItemsLeft(1);
     }
 
+    @Test
     public void testDeleteTodoFromGrid() {
-        // TODO depends on button renderer column
+        addTodo("one");
+        addTodo("two");
+        addTodo("three");
+
+        verifyTodoText(0, "one");
+        verifyTodoText(1, "two");
+        verifyTodoText(2, "three");
+        verifyNumberOfItemsLeft(3);
+
+        markTodoDone(1);
+        verifyNumberOfItemsLeft(2);
+        verifyGridRows(3);
+
+        deleteTodo(0);
+        verifyNumberOfItemsLeft(1);
+        verifyGridRows(2);
+
+        deleteTodo(1);
+        verifyNumberOfItemsLeft(0);
+        verifyGridRows(1);
+
+        deleteTodo(0);
+        verifyBottomBarVisible(false);
+        verifyGridEmpty();
     }
 
     @Test
@@ -214,6 +263,29 @@ public class TodoMvcIT extends AbstractDemoTest {
         GridCellElement cell = getGrid().getCell(row, 1);
         Assert.assertEquals(text,
                 cell.findElement(By.tagName("button")).getText());
+    }
+
+    private void verifyTodoDone(int row, boolean done) {
+        GridRowElement rowElement = getGrid().getRow(row);
+        Assert.assertEquals(done,
+                rowElement.getAttribute("class").contains("done"));
+
+    }
+
+    private void markTodoDone(int row) {
+        verifyTodoDone(row, false);
+        getGrid().getCell(row, 0).findElement(By.tagName("button")).click();
+        verifyTodoDone(row, true);
+    }
+
+    private void markTodoNotDone(int row) {
+        verifyTodoDone(row, true);
+        getGrid().getCell(row, 0).findElement(By.tagName("button")).click();
+        verifyTodoDone(row, false);
+    }
+
+    private void deleteTodo(int row) {
+        getGrid().getCell(row, 2).findElement(By.tagName("button")).click();
     }
 
     private void editTodo(int row, String oldText, String newText) {
