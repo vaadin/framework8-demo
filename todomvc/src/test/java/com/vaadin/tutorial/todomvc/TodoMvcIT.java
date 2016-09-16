@@ -18,6 +18,7 @@ package com.vaadin.tutorial.todomvc;
 import java.util.Optional;
 
 import org.junit.Assert;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
@@ -376,4 +377,15 @@ public class TodoMvcIT extends AbstractDemoTest {
         return $(TextFieldElement.class).id("todo-editor");
     }
 
+    @After
+    public void tearDown() {
+        try {
+            getMarkAllDoneButton().click();
+        } catch (NoSuchElementException ignored) {
+        }
+        try {
+            getClearCompletedButton().click();
+        } catch (NoSuchElementException ignored) {
+        }
+    }
 }
