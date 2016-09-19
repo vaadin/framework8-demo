@@ -1,6 +1,7 @@
 package com.vaadin.framework8.samples.crud;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import javax.annotation.PostConstruct;
 
@@ -63,7 +64,10 @@ public class ProductForm extends ProductFormDesign {
 
         @Override
         public void postCommit(CommitEvent commitEvent) throws CommitException {
-            dataService.updateProduct(fieldGroup.getItemDataSource().getBean());
+            Product product = fieldGroup.getItemDataSource().getBean();
+            // TODO: this should be done automatically using Binder
+            product.setCategory(new HashSet<>(category.getSelectedItems()));
+            dataService.updateProduct(product);
         }
     }
 
@@ -71,7 +75,7 @@ public class ProductForm extends ProductFormDesign {
     }
 
     public void setCategories(Collection<Category> categories) {
-        category.setOptions(categories);
+        category.setItems(categories);
     }
 
     public void editProduct(Product product) {
@@ -84,11 +88,24 @@ public class ProductForm extends ProductFormDesign {
         // of the product name field (which may be empty)
         productName.setValidationVisible(false);
 
+        selectCategories(product);
+
         // Scroll to the top
         // As this is not a Panel, using JavaScript
         String scrollScript = "window.document.getElementById('" + getId()
                 + "').scrollTop = 0;";
         Page.getCurrent().getJavaScript().execute(scrollScript);
+    }
+
+    /*
+     * TODO: this should be done automatically using Binder
+     */
+    private void selectCategories(Product product) {
+        category.getSelectionModel().deselectAll();
+        if (product.getCategory() != null) {
+            product.getCategory().stream()
+                    .forEach(category.getSelectionModel()::select);
+        }
     }
 
     @PostConstruct
@@ -116,6 +133,8 @@ public class ProductForm extends ProductFormDesign {
 
         cancel.addClickListener(event -> viewLogic.cancelProduct());
         delete.addClickListener(event -> onDelete());
+
+        category.setItemCaptionProvider(Category::getName);
     }
 
     private void onSave() {
@@ -155,4 +174,5 @@ public class ProductForm extends ProductFormDesign {
     private void init(SampleCrudLogic logic) {
         this.viewLogic = logic;
     }
+
 }

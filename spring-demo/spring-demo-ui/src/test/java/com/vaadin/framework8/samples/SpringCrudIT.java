@@ -244,7 +244,7 @@ public class SpringCrudIT extends AbstractDemoTest {
 
     private void checkCategories(WebElement form, Product product) {
         WebElement categories = form
-                .findElement(By.className("v-customcomponent"));
+                .findElement(By.className("v-select-optiongroup"));
         WebElement captionElement = categories.findElement(By.xpath(".."))
                 .findElement(By.className("v-caption"));
         Assert.assertEquals("Categories", captionElement.getText());
