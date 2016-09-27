@@ -2,6 +2,7 @@ package com.vaadin.framework8.samples.crud;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -41,7 +42,13 @@ import com.vaadin.ui.UI;
 // TODO: Use common data source for all UIs after backend filtering is done
 @UIScope
 @Transactional
-public class ProductDataSourceImpl extends AbstractDataSource<Product> implements ProductDataSource {
+public class ProductDataSourceImpl extends AbstractDataSource<Product>
+        implements ProductDataSource {
+
+    private static class PageQuery {
+        Pageable pageable;
+        int pageOffset;
+    }
 
     @Autowired
     private ProductRepository productRepo;
@@ -58,13 +65,14 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product> implement
 
     @Override
     public int size(Query t) {
-        return (int) getItems(getPageable(t)).count();
+        return (int) getItems(getPaging(t).pageable).count();
     }
 
     @Override
     public Stream<Product> apply(Query t) {
-        // TODO: Align the query to pages in a sensible way.
-        return getItems(getPageable(t)).skip(t.getOffset());
+        PageQuery pageQuery = getPaging(t);
+        return getItems(pageQuery.pageable).skip(pageQuery.pageOffset)
+                .limit(t.getLimit());
     }
 
     public void setFilterText(String filterText) {
@@ -109,22 +117,47 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product> implement
                 .stream();
     }
 
-    private Pageable getPageable(Query q) {
-        // TODO: Calculate page more correctly to avoid requesting extra items.
-        final PageRequest pageRequest;
-        int pageLength = q.getOffset() + q.getLimit();
-        if (!q.getSortOrders().isEmpty()) {
-            Sort sorting = new Sort(q.getSortOrders().stream()
-                    .map(so -> new Order(
-                            so.getDirection() == SortDirection.ASCENDING
-                                    ? Direction.ASC : Direction.DESC,
-                            so.getSorted()))
-                    .collect(Collectors.toList()));
-            pageRequest = new PageRequest(0, pageLength, sorting);
+    /**
+     * Return a PageQuery object containing page request and offset in page.
+     * 
+     * @param q
+     *            the original query
+     * @return paged query
+     */
+    private PageQuery getPaging(Query q) {
+        final PageQuery p = new PageQuery();
+        int start = q.getOffset();
+        int end = q.getOffset() + q.getLimit();
+
+        if (start < end - start) {
+            p.pageable = getPageRequest(q, 0, end);
+            p.pageOffset = q.getOffset();
         } else {
-            pageRequest = new PageRequest(0, pageLength);
+            int size = end - start;
+            while (start / size != (end - 1) / size) {
+                ++size;
+            }
+            p.pageable = getPageRequest(q, start / size, size);
+            p.pageOffset = start % size;
         }
 
-        return pageRequest;
+        return p;
+    }
+
+    private PageRequest getPageRequest(Query q, int pageIndex, int pageLength) {
+        if (!q.getSortOrders().isEmpty()) {
+            return new PageRequest(pageIndex, pageLength, getSorting(q));
+        } else {
+            return new PageRequest(pageIndex, pageLength); 
+        }
+    }
+
+    private Sort getSorting(Query q) {
+        return new Sort(q.getSortOrders().stream()
+                .map(so -> new Order(
+                        so.getDirection() == SortDirection.ASCENDING
+                                ? Direction.ASC : Direction.DESC,
+                        so.getSorted()))
+                .collect(Collectors.toList()));
     }
 }
