@@ -99,9 +99,9 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product>
 
     private List<Availability> getFilteredAvailabilities(String string) {
         Locale locale = UI.getCurrent().getLocale();
-        return Arrays.stream(Availability.values()).filter(a -> {
-            return a.name().toLowerCase(locale).contains(string);
-        }).collect(Collectors.toList());
+        return Arrays.stream(Availability.values())
+                .filter(a -> a.name().toLowerCase(locale).contains(string))
+                .collect(Collectors.toList());
     }
 
     private Stream<Product> getItems(Pageable page) {
@@ -148,7 +148,7 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product>
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
         } else {
-            return new PageRequest(pageIndex, pageLength); 
+            return new PageRequest(pageIndex, pageLength);
         }
     }
 
