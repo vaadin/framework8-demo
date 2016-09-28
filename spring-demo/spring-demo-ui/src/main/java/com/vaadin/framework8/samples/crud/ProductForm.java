@@ -121,7 +121,7 @@ public class ProductForm extends ProductFormDesign {
         cancel.addClickListener(event -> viewLogic.cancelProduct());
         delete.addClickListener(event -> onDelete());
 
-        category.setItemCaptionProvider(Category::getName);
+        category.setItemCaptionGenerator(Category::getName);
         ((BeanBinding<?, ?, ?>) binder.forSelect(category)).bind("category");
         binder.forField(stockCount).withConverter(new StockPriceConverter())
                 .bind("stockCount");

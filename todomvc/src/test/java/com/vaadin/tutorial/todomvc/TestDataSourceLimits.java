@@ -29,6 +29,8 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Test JDBC
  *
@@ -45,7 +47,7 @@ public class TestDataSourceLimits {
         //For safety sake
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE long_table");
-        } catch (SQLException ignored){
+        } catch (SQLException ignored) {
         }
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("CREATE TABLE long_table (i INTEGER PRIMARY KEY)");
@@ -65,9 +67,12 @@ public class TestDataSourceLimits {
             int expectedLast) {
         Query query = new Query(offset, limit, null, null);
         int size = dataSource.size(query);
-        Assert.assertEquals("Response size", expectedLast - expectedFirst + 1, size);
+        assertEquals("Response size", expectedLast - expectedFirst + 1, size);
         List<Integer> values = dataSource.apply(query).collect(Collectors.toList());
-        Assert.assertEquals(size, values.size());
+        assertEquals(size, values.size());
+        for (int i = 0; i < values.size(); i++) {
+            assertEquals(i + expectedFirst, values.get(i).intValue());
+        }
     }
 
     @Test

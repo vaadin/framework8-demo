@@ -166,7 +166,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
      * Temporary method
      * todo remove when filtering has been implemented on DataSource level
      *
-     * @param dataSource
+     * @param dataSource dataSource
      */
     @Override
     public void setDataSource(DataSource<Todo> dataSource) {

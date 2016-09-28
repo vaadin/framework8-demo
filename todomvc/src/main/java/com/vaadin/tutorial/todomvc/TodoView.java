@@ -13,6 +13,7 @@ public interface TodoView {
      * todo remove when filtering has been implemented on DataSource level
      *
      * @param dataSource
+     *         dataSource
      */
     void setDataSource(DataSource<Todo> dataSource);
 }

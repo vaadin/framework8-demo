@@ -59,7 +59,7 @@ public class Todo {
 
     @Override
     public String toString() {
-        return String.format("Todo{[%d] %s (%s)", id, text,
+        return String.format("Todo{[%d] %s (%s)}", id, text,
                 completed ? "Completed" : "Active");
     }
 }

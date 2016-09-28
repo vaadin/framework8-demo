@@ -66,7 +66,9 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
             }
         }
         int size = cachedSize - query.getOffset();
-        if (size < 0) return 0;
+        if (size < 0) {
+            return 0;
+        }
         return Math.min(size, query.getLimit());
     }
 
@@ -110,15 +112,22 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
                 ResultSet resultSet, int limit) throws SQLException {
             super(Long.MAX_VALUE, IMMUTABLE | NONNULL);
             this.resultSet = resultSet;
-            if (resultSet.next()) this.limit = limit;
-            else this.limit = 0;
-            if (this.limit <= 0) close();
+            if (resultSet.next()) {
+                this.limit = limit;
+            } else {
+                this.limit = 0;
+            }
+            if (this.limit <= 0) {
+                close();
+            }
         }
 
         @Override
         public boolean tryAdvance(Consumer<? super T> action) {
             try {
-                if (resultSet.isClosed()) return false;
+                if (resultSet.isClosed()) {
+                    return false;
+                }
                 T dto = jdbcReader.readRow(resultSet);
                 action.accept(dto);
                 if (resultSet.next()) {
@@ -126,7 +135,9 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
                 } else {
                     limit = 0;
                 }
-                if (limit <= 0) close();
+                if (limit <= 0) {
+                    close();
+                }
             } catch (SQLException e) {
                 throw new RuntimeException("ResultSet row retrieve error", e);
             }

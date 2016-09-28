@@ -21,7 +21,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -39,19 +38,21 @@ public class SimpleJDBCDataSource<T> extends AbstractJDBCDataSource<T> {
     private final PreparedStatement sizeStatement;
 
     public SimpleJDBCDataSource(Connection connection,
-            String sqlQuery, DataRetriever<T>  jdbcReader) throws SQLException {
+            String sqlQuery, DataRetriever<T> jdbcReader) throws SQLException {
         super(connection, jdbcReader);
         resultSetStatement = connection.prepareStatement(sqlQuery,
                 ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
-        sizeStatement = connection.prepareStatement("select count (*) from (" + sqlQuery + ")",
+        sizeStatement = connection.prepareStatement(
+                "select count(*) from (" + sqlQuery + ")",
                 ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 
     }
 
 
     @Override
-    protected ResultSet rowCountStatement(Connection connection, Query query) throws SQLException {
+    protected ResultSet rowCountStatement(Connection connection,
+            Query query) throws SQLException {
         assert query.getFilters() == null || query.getFilters().isEmpty();
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return sizeStatement.executeQuery();
