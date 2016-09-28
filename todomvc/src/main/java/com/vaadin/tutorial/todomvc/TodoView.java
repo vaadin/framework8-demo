@@ -8,5 +8,11 @@ public interface TodoView {
 
     void updateCounters(int completed, int active);
 
+    /**
+     * Temporary method
+     * todo remove when filtering has been implemented on DataSource level
+     *
+     * @param dataSource
+     */
     void setDataSource(DataSource<Todo> dataSource);
 }

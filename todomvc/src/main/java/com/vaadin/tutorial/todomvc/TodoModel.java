@@ -42,22 +42,19 @@ public class TodoModel {
             dataSourceActive = setupDataSource(" SELECT * FROM todo WHERE NOT completed");
             dataSourceCompleted = setupDataSource(" SELECT * FROM todo WHERE completed");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Model initialization failed", e);
         }
     }
 
-    private SimpleJDBCDataSource<Todo> setupDataSource(String sqlQuery) throws SQLException {
+    private SimpleJDBCDataSource<Todo> setupDataSource(
+            String sqlQuery) throws SQLException {
         return new SimpleJDBCDataSource<>(conn, sqlQuery, resultSet ->
         {
-            try {
-                Todo todo = new Todo();
-                todo.setId(resultSet.getInt("id"));
-                todo.setText(resultSet.getString("text"));
-                todo.setCompleted(resultSet.getBoolean("completed"));
-                return todo;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            Todo todo = new Todo();
+            todo.setId(resultSet.getInt("id"));
+            todo.setText(resultSet.getString("text"));
+            todo.setCompleted(resultSet.getBoolean("completed"));
+            return todo;
         });
     }
 
@@ -80,7 +77,8 @@ public class TodoModel {
             resultSet.next();
             return resultSet.getInt(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    String.format("Data retrieve failed(%s)", sql), e);
         }
     }
 
@@ -101,30 +99,30 @@ public class TodoModel {
     }
 
     public Todo persist(Todo todo) {
-        try {
-            if (todo.getId() < 0) {
-                try (PreparedStatement s = conn.prepareStatement("INSERT INTO todo(id, text, completed) VALUES (NULL, ?, ?)",
-                        Statement.RETURN_GENERATED_KEYS)) {
-                    s.setString(1, todo.getText());
-                    s.setBoolean(2, todo.isCompleted());
-                    s.executeUpdate();
-                    ResultSet generatedKeys = s.getGeneratedKeys();
-                    generatedKeys.next();
-                    todo.setId(generatedKeys.getInt(1));
-                }
-            } else {
-                try (PreparedStatement s = conn.prepareStatement("UPDATE todo SET text= ?,completed=? WHERE id = ?")) {
-                    s.setString(1, todo.getText());
-                    s.setBoolean(2, todo.isCompleted());
-                    s.setInt(3, todo.getId());
-                    s.execute();
-                    if (s.getUpdateCount() != 1) {
-                        throw new RuntimeException("Failed update: " + todo);
-                    }
-                }
+        if (todo.getId() < 0) {
+            try (PreparedStatement s = conn.prepareStatement("INSERT INTO todo(id, text, completed) VALUES (NULL, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
+                s.setString(1, todo.getText());
+                s.setBoolean(2, todo.isCompleted());
+                s.executeUpdate();
+                ResultSet generatedKeys = s.getGeneratedKeys();
+                generatedKeys.next();
+                todo.setId(generatedKeys.getInt(1));
+            } catch (SQLException e) {
+                throw new RuntimeException("ToDo insertion failed", e);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } else {
+            try (PreparedStatement s = conn.prepareStatement("UPDATE todo SET text= ?,completed=? WHERE id = ?")) {
+                s.setString(1, todo.getText());
+                s.setBoolean(2, todo.isCompleted());
+                s.setInt(3, todo.getId());
+                s.execute();
+                if (s.getUpdateCount() != 1) {
+                    throw new RuntimeException("Todo update failed (non-existing id?): " + todo);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException("Todo update failed", e);
+            }
         }
         return todo;
     }
@@ -133,10 +131,10 @@ public class TodoModel {
         try (Statement s = conn.createStatement()) {
             s.execute("DELETE FROM todo WHERE id = " + todo.getId());
             if (s.getUpdateCount() != 1) {
-                throw new RuntimeException("Failed delete: " + todo);
+                throw new RuntimeException("Deletion failed(non-existing id?): " + todo);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Deletion failed", e);
         }
     }
 
@@ -144,7 +142,7 @@ public class TodoModel {
         try (Statement s = conn.createStatement()) {
             s.execute("DELETE FROM todo WHERE completed");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Deletion of completed items failed", e);
         }
     }
 
@@ -153,7 +151,7 @@ public class TodoModel {
             s.setBoolean(1, completed);
             s.execute();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Update failed", e);
         }
     }
 }

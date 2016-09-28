@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -32,11 +34,12 @@ import java.util.stream.Stream;
  */
 public class SimpleJDBCDataSource<T> extends AbstractJDBCDataSource<T> {
 
+    public static final Logger LOGGER = Logger.getLogger(SimpleJDBCDataSource.class.getName());
     private final PreparedStatement resultSetStatement;
     private final PreparedStatement sizeStatement;
 
     public SimpleJDBCDataSource(Connection connection,
-            String sqlQuery, Function<ResultSet,T>  jdbcReader) throws SQLException {
+            String sqlQuery, DataRetriever<T>  jdbcReader) throws SQLException {
         super(connection, jdbcReader);
         resultSetStatement = connection.prepareStatement(sqlQuery,
                 ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -64,12 +67,12 @@ public class SimpleJDBCDataSource<T> extends AbstractJDBCDataSource<T> {
 
     @Override
     public void close() throws Exception {
-        Stream.of(resultSetStatement, sizeStatement).forEach(s ->
+        Stream.of(resultSetStatement, sizeStatement).forEach(statement ->
                 {
                     try {
-                        s.close();
+                        statement.close();
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.log(Level.WARNING, "Prepared statement was closed with error", e);
                     }
                 }
         );

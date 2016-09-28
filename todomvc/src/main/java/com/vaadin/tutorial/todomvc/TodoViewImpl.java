@@ -162,6 +162,12 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         }
     }
 
+    /**
+     * Temporary method
+     * todo remove when filtering has been implemented on DataSource level
+     *
+     * @param dataSource
+     */
     @Override
     public void setDataSource(DataSource<Todo> dataSource) {
         grid.setDataSource(dataSource);

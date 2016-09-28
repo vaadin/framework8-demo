@@ -377,8 +377,11 @@ public class TodoMvcIT extends AbstractDemoTest {
         return $(TextFieldElement.class).id("todo-editor");
     }
 
+    /** Clean up item list if anything was left there after the test.
+     *
+     */
     @After
-    public void tearDown() {
+    public void cleanUpItemList() {
         try {
             getMarkAllDoneButton().click();
         } catch (NoSuchElementException ignored) {

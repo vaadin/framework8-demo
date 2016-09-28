@@ -21,10 +21,10 @@ import com.vaadin.server.data.Query;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Objects;
 import java.util.Spliterators;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -33,17 +33,19 @@ import java.util.stream.StreamSupport;
 /**
  * Vaadin datasource over pure JDBC, base class.
  *
+ * @param <T>
+ *         data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
 public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> implements AutoCloseable {
     public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataSource.class.getName());
     private final java.sql.Connection connection;
-    private final Function<ResultSet, T> jdbcReader;
+    private final DataRetriever<T> jdbcReader;
 
     private int cachedSize = -1;
 
     public AbstractJDBCDataSource(Connection connection,
-            Function<ResultSet, T> jdbcReader) {
+            DataRetriever<T> jdbcReader) {
         this.connection = Objects.requireNonNull(connection);
         this.jdbcReader = Objects.requireNonNull(jdbcReader);
     }
@@ -60,10 +62,12 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
                 resultSet.next();
                 cachedSize = resultSet.getInt(1);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("Size SQL query failed", e);
             }
         }
-        return cachedSize;
+        int size = cachedSize - query.getOffset();
+        if (size < 0) return 0;
+        return Math.min(size, query.getLimit());
     }
 
     protected abstract ResultSet rowCountStatement(
@@ -76,10 +80,17 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
     public Stream<T> apply(Query query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
+            try {
+                resultSet.absolute(query.getOffset());
+            } catch (SQLFeatureNotSupportedException e) {
+                for (int i = query.getOffset(); i > 0; i--) {
+                    resultSet.next();
+                }
+            }
             return StreamSupport.stream(
-                    new ResultSetToSpliterator(resultSet), false);
+                    new ResultSetToSpliterator(resultSet, query.getLimit()), false);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Data SQL query failed", e);
         }
     }
 
@@ -93,25 +104,31 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
             implements
             AutoCloseable {
         private final ResultSet resultSet;
+        private int limit;
 
         public ResultSetToSpliterator(
-                ResultSet resultSet) throws SQLException {
+                ResultSet resultSet, int limit) throws SQLException {
             super(Long.MAX_VALUE, IMMUTABLE | NONNULL);
             this.resultSet = resultSet;
+            if (resultSet.next()) this.limit = limit;
+            else this.limit = 0;
+            if (this.limit <= 0) close();
         }
 
         @Override
         public boolean tryAdvance(Consumer<? super T> action) {
             try {
                 if (resultSet.isClosed()) return false;
-                if (!resultSet.next()) {
-                    close();
-                    return false;
+                T dto = jdbcReader.readRow(resultSet);
+                action.accept(dto);
+                if (resultSet.next()) {
+                    limit--;
+                } else {
+                    limit = 0;
                 }
-                T pojo = jdbcReader.apply(resultSet);
-                action.accept(pojo);
+                if (limit <= 0) close();
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("ResultSet row retrieve error", e);
             }
 
             return true;
@@ -125,5 +142,10 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
                 LOGGER.log(Level.WARNING, "Result set was closed with exception", e);
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface DataRetriever<T> {
+        T readRow(ResultSet resultSet) throws SQLException;
     }
 }
