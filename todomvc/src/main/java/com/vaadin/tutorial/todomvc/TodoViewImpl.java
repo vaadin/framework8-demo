@@ -90,21 +90,20 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     private void initGrid() {
         grid = new Grid<>();
+        // TODO disable grid selection once supported
         grid.setHeight(null);
         grid.setDetailsGenerator(this::createTodoEditor);
-
-        // TODO add checkbox renderer and clickhandler for marking todo complete
-        grid.addColumn("", t -> String.valueOf(t.isCompleted()));
-        // grid.addColumn("",boolean.class,Todo::isCompleted).setRenderer(new
-        // CheckboxRenderer())
+        grid.setStyleGenerator(this::createStyle);
+        grid.addColumn("", t -> "", new ButtonRenderer<>(
+                event -> presenter.markCompleted(event.getItem(),
+                        !event.getItem().isCompleted())));
 
         // TODO make text column expand
         grid.addColumn("", Todo::getText,
                 new ButtonRenderer<>(e -> editTodo(e.getItem())));
 
-        // TODO delete button column, needs button renderer
-        // grid.addColumn("",boolean.class,()->false).setRenderer(new
-        // ButtonRenderer(event -> presenter.delete(event.getItem())));
+        grid.addColumn("", t -> "", new ButtonRenderer<>(
+                event -> presenter.delete(event.getItem())));
 
         // TODO remove header once supported
         // grid.removeHeaderRow(0);
@@ -200,6 +199,10 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
                 new EnterPressHandler(() -> editTodo(null)));
         textField.addBlurListener(e -> editTodo(null));
         return textField;
+    }
+
+    private String createStyle(Todo todo) {
+        return todo.isCompleted() ? "done" : "";
     }
 
     private class EnterPressHandler extends ShortcutListener {

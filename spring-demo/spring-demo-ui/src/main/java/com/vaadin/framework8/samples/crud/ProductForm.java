@@ -1,6 +1,9 @@
 package com.vaadin.framework8.samples.crud;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
@@ -9,21 +12,16 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
+import com.vaadin.data.BeanBinder;
+import com.vaadin.data.BeanBinder.BeanBinding;
+import com.vaadin.data.Result;
+import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.server.Page;
 import com.vaadin.spring.annotation.SpringComponent;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.v7.data.Property.ValueChangeListener;
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitEvent;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitHandler;
-import com.vaadin.v7.data.util.BeanItem;
-import com.vaadin.v7.ui.Field;
 
 /**
  * A form for editing a single product.
@@ -37,7 +35,7 @@ import com.vaadin.v7.ui.Field;
 public class ProductForm extends ProductFormDesign {
 
     private SampleCrudLogic viewLogic;
-    private com.vaadin.v7.data.fieldgroup.BeanFieldGroup<Product> fieldGroup;
+    private final BeanBinder<Product> binder = new BeanBinder<>(Product.class);
 
     @Autowired
     private DataService dataService;
@@ -56,33 +54,48 @@ public class ProductForm extends ProductFormDesign {
         }
     }
 
-    private class CommitHanlderImpl implements CommitHandler {
-        @Override
-        public void preCommit(CommitEvent commitEvent) throws CommitException {
+    private static class StockPriceConverter extends StringToIntegerConverter {
+
+        public StockPriceConverter() {
+            super("Could not convert value to " + Integer.class.getName());
         }
 
         @Override
-        public void postCommit(CommitEvent commitEvent) throws CommitException {
-            dataService.updateProduct(fieldGroup.getItemDataSource().getBean());
+        protected NumberFormat getFormat(Locale locale) {
+            // do not use a thousands separator, as HTML5 input type
+            // number expects a fixed wire/DOM number format regardless
+            // of how the browser presents it to the user (which could
+            // depend on the browser locale)
+            DecimalFormat format = new DecimalFormat();
+            format.setMaximumFractionDigits(0);
+            format.setDecimalSeparatorAlwaysShown(false);
+            format.setParseIntegerOnly(true);
+            format.setGroupingUsed(false);
+            return format;
         }
+
+        @Override
+        public Result<Integer> convertToModel(String value, Locale locale) {
+            Result<Integer> result = super.convertToModel(value, locale);
+            return result.map(stock -> stock == null ? 0 : stock);
+        }
+
     }
 
     private ProductForm() {
     }
 
     public void setCategories(Collection<Category> categories) {
-        category.setOptions(categories);
+        category.setItems(categories);
     }
 
     public void editProduct(Product product) {
         if (product == null) {
             product = new Product();
         }
-        fieldGroup.setItemDataSource(new BeanItem<>(product));
+        binder.bind(product);
 
-        // before the user makes any changes, disable validation error indicator
-        // of the product name field (which may be empty)
-        productName.setValidationVisible(false);
+        delete.setEnabled(product.getId() != -1);
 
         // Scroll to the top
         // As this is not a Panel, using JavaScript
@@ -95,64 +108,37 @@ public class ProductForm extends ProductFormDesign {
     private void init() {
         addStyleName("product-form");
 
-        price.setConverter(new EuroConverter());
+        availability.setItems(Availability.values());
 
-        for (Availability availabilityValue : Availability.values()) {
-            availability.addItem(availabilityValue);
-        }
+        binder.forField(price).withConverter(new EuroConverter()).bind("price");
+        binder.forField(productName).bind("productName");
 
-        fieldGroup = new BeanFieldGroup<>(Product.class);
-        fieldGroup.bindMemberFields(this);
-
-        // perform validation and enable/disable buttons while editing
-        ValueChangeListener valueListener = event -> formHasChanged();
-        for (Field<?> field : fieldGroup.getFields()) {
-            field.addValueChangeListener(valueListener);
-        }
-
-        fieldGroup.addCommitHandler(new CommitHanlderImpl());
+        ((BeanBinding<?, ?, ?>) binder.forSelect(availability))
+                .bind("availability");
 
         save.addClickListener(event -> onSave());
 
         cancel.addClickListener(event -> viewLogic.cancelProduct());
         delete.addClickListener(event -> onDelete());
+
+        category.setItemCaptionProvider(Category::getName);
+        ((BeanBinding<?, ?, ?>) binder.forSelect(category)).bind("category");
+        binder.forField(stockCount).withConverter(new StockPriceConverter())
+                .bind("stockCount");
     }
 
     private void onSave() {
-        try {
-            fieldGroup.commit();
-
-            // only if validation succeeds
-            Product product = fieldGroup.getItemDataSource().getBean();
-            viewLogic.saveProduct(product);
-        } catch (CommitException e) {
-            Notification n = new Notification("Please re-check the fields",
-                    Type.ERROR_MESSAGE);
-            n.setDelayMsec(500);
-            n.show(getUI().getPage());
-        }
+        Product product = binder.getBean().get();
+        dataService.updateProduct(product);
+        viewLogic.saveProduct(product);
     }
 
     private void onDelete() {
-        Product product = fieldGroup.getItemDataSource().getBean();
-        viewLogic.deleteProduct(product);
-    }
-
-    private void formHasChanged() {
-        // show validation errors after the user has changed something
-        productName.setValidationVisible(true);
-
-        // only products that have been saved should be removable
-        boolean canRemoveProduct = false;
-        BeanItem<Product> item = fieldGroup.getItemDataSource();
-        if (item != null) {
-            Product product = item.getBean();
-            canRemoveProduct = product.getId() != -1;
-        }
-        delete.setEnabled(canRemoveProduct);
+        binder.getBean().ifPresent(viewLogic::deleteProduct);
     }
 
     private void init(SampleCrudLogic logic) {
         this.viewLogic = logic;
     }
+
 }

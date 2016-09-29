@@ -111,7 +111,8 @@ public class SampleCrudView extends CssLayout implements View {
             form.setEnabled(true);
         } else {
             form.removeStyleName("visible");
-            form.setEnabled(false);
+            // Issue #286
+            // form.setEnabled(false);
         }
         form.editProduct(product);
     }

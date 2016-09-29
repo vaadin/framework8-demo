@@ -2,6 +2,7 @@ package com.vaadin.framework8.samples.backend.data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -37,7 +38,7 @@ public class Product implements Serializable {
     @JoinTable(name = "product_and_categories", joinColumns = {
             @JoinColumn(name = "product_id") }, inverseJoinColumns = {
                     @JoinColumn(name = "category_id") })
-    private Set<Category> category;
+    private Set<Category> category = new HashSet<>();
 
     @Min(value = 0, message = "Can't have negative amount in stock")
     private int stockCount = 0;
