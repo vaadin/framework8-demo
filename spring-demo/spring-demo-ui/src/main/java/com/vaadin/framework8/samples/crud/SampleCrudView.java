@@ -1,7 +1,5 @@
 package com.vaadin.framework8.samples.crud;
 
-import java.util.Collection;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +37,12 @@ public class SampleCrudView extends CssLayout implements View {
 
     @Autowired
     private ProductFormFactory formFactory;
+
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private ProductDataSource dataSource;
 
     private ProductForm form;
 
@@ -56,7 +58,7 @@ public class SampleCrudView extends CssLayout implements View {
         filter.setPlaceholder("Filter");
         filter.setImmediate(true);
         filter.addValueChangeListener(
-                event -> grid.setFilter(event.getValue()));
+                event -> dataSource.setFilterText(event.getValue()));
 
         newProduct = new Button("New product");
         newProduct.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -115,18 +117,13 @@ public class SampleCrudView extends CssLayout implements View {
         form.editProduct(product);
     }
 
-    public void showProducts(Collection<Product> products) {
-        grid.setItems(products);
-    }
-
-    public void refreshProduct(Product product) {
-        grid.refresh(product);
+    public void updateProduct(Product product) {
+        dataSource.save(product);
         // TODO: Grid used to scroll to the updated item
     }
 
     public void removeProduct(Product product) {
-        // TODO: Remove from the back end, inform grid of change.
-        // grid.remove(product);
+        dataSource.delete(product);
     }
 
     @PostConstruct
@@ -140,6 +137,7 @@ public class SampleCrudView extends CssLayout implements View {
         grid = new ProductGrid();
         grid.addSelectionListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
+        grid.setDataSource(dataSource);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);
