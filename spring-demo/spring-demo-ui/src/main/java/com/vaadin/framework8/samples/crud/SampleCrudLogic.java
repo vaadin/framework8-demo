@@ -105,7 +105,7 @@ public class SampleCrudLogic implements Serializable {
                 + product.getId() + ") updated");
         view.clearSelection();
         view.editProduct(null);
-        view.refreshProduct(product);
+        view.updateProduct(product);
         setFragmentParameter("");
     }
 

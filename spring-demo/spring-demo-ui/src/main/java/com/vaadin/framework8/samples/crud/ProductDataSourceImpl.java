@@ -133,11 +133,13 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product>
             p.pageable = getPageRequest(q, 0, end);
             p.pageOffset = q.getOffset();
         } else {
+            // Calculate the page that fits the full requested index range
             int size = end - start;
             while (start / size != (end - 1) / size) {
                 ++size;
             }
             p.pageable = getPageRequest(q, start / size, size);
+            // Set the offset on page to filter out unneeded results
             p.pageOffset = start % size;
         }
 

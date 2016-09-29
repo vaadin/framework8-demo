@@ -116,7 +116,7 @@ public class SampleCrudView extends CssLayout implements View {
         form.editProduct(product);
     }
 
-    public void refreshProduct(Product product) {
+    public void updateProduct(Product product) {
         dataSource.save(product);
         // TODO: Grid used to scroll to the updated item
     }
