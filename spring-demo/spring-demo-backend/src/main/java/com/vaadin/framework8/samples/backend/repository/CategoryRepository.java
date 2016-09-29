@@ -15,6 +15,8 @@
  */
 package com.vaadin.framework8.samples.backend.repository;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -33,5 +35,7 @@ import com.vaadin.framework8.samples.backend.data.Category;
  */
 @Transactional(TxType.MANDATORY)
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
+
+    List<Category> findAllByNameContainingIgnoreCase(String name);
 
 }

@@ -54,8 +54,6 @@ public class SampleCrudLogic implements Serializable {
         if (!SampleUI.get().getAccessControl().isUserInRole("admin")) {
             view.setNewProductEnabled(false);
         }
-
-        view.showProducts(dataService.getAllProducts());
     }
 
     public void cancelProduct() {
@@ -107,7 +105,7 @@ public class SampleCrudLogic implements Serializable {
                 + product.getId() + ") updated");
         view.clearSelection();
         view.editProduct(null);
-        view.refreshProduct(product);
+        view.updateProduct(product);
         setFragmentParameter("");
     }
 

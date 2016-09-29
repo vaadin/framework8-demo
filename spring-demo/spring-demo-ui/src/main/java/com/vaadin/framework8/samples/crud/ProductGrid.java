@@ -1,10 +1,7 @@
 package com.vaadin.framework8.samples.crud;
 
-import java.util.Collection;
-import java.util.Locale;
-import java.util.function.Predicate;
+import java.util.Comparator;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
@@ -24,19 +21,24 @@ public class ProductGrid extends Grid<Product> {
     public ProductGrid() {
         setSizeFull();
 
-        addColumn("Id", p -> String.valueOf(p.getId()));
-        addColumn("Product Name", Product::getProductName);
+        // TODO: Add sorting for backend
+        addColumn("Id", p -> String.valueOf(p.getId())).setSortProperty("id");
+        addColumn("Product Name", Product::getProductName)
+                .setSortProperty("productName");
         addColumn("Price", Product::getPrice, new NumberRenderer())
-                .setStyleGenerator(c -> "align-right");
+                .setStyleGenerator(c -> "align-right").setSortProperty("price");
         addColumn("Availability", p -> {
             Availability availability = p.getAvailability();
             return getTrafficLightIconHtml(availability) + " "
                     + availability.name();
-        }, new HtmlRenderer());
+        }, new HtmlRenderer()).setSortProperty("availability");
         addColumn("Stock Count", Product::getStockCount, new NumberRenderer())
-                .setStyleGenerator(c -> "align-right");
+                .setStyleGenerator(c -> "align-right")
+                .setSortProperty("stockCount");
         addColumn("Category", p -> p.getCategory().stream()
-                .map(Category::getName).collect(Collectors.joining(", ")));
+                .sorted(Comparator.comparing(Category::getId))
+                .map(Category::getName).collect(Collectors.joining(", ")))
+                        .setSortable(false);
     }
 
     private String getTrafficLightIconHtml(Availability availability) {
@@ -63,18 +65,5 @@ public class ProductGrid extends Grid<Product> {
 
     public void refresh(Product product) {
         getDataCommunicator().refresh(product);
-    }
-
-    public void setFilter(String text) {
-        Predicate<Product> filter = null;
-        if (text != null && !text.isEmpty()) {
-            filter = t -> Stream
-                    .of(t.getProductName(), t.getAvailability(),
-                            t.getCategory())
-                    .map(String::valueOf)
-                    .anyMatch(s -> s.toLowerCase(getLocale())
-                            .contains(text.toLowerCase(getLocale())));
-        }
-        getDataCommunicator().setInMemoryFilter(filter);
     }
 }
