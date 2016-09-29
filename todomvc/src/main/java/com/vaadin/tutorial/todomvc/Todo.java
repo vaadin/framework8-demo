@@ -16,11 +16,17 @@
 package com.vaadin.tutorial.todomvc;
 
 public class Todo {
+    private int id = -1;
     private String text = "";
     private boolean completed = false;
 
     public Todo() {
 
+    }
+
+    public Todo(int id, String text) {
+        this.id = id;
+        this.text = text;
     }
 
     public Todo(String text) {
@@ -43,4 +49,17 @@ public class Todo {
         this.completed = completed;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Todo{[%d] %s (%s)}", id, text,
+                completed ? "Completed" : "Active");
+    }
 }

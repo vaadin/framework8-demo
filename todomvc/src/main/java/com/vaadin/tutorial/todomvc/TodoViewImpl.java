@@ -1,9 +1,8 @@
 package com.vaadin.tutorial.todomvc;
 
-import java.util.List;
-
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.data.DataSource;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -40,8 +39,6 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     public TodoViewImpl() {
 
-        presenter = new TodoPresenter(this);
-
         setWidth("100%");
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
 
@@ -52,6 +49,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         initTopBar();
         initGrid();
         initBottomBar();
+        presenter = new TodoPresenter(this);
     }
 
     private void initTopBar() {
@@ -144,8 +142,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     }
 
     @Override
-    public void refresh(List<Todo> todos) {
-        grid.setItems(todos);
+    public void refresh() {
+        grid.getDataSource().refreshAll();
     }
 
     @Override
@@ -164,6 +162,17 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         }
     }
 
+    /**
+     * Temporary method
+     * todo remove when filtering has been implemented on DataSource level
+     *
+     * @param dataSource dataSource
+     */
+    @Override
+    public void setDataSource(DataSource<Todo> dataSource) {
+        grid.setDataSource(dataSource);
+    }
+
     private void onNewTodoFieldEnter() {
         String value = newTodoField.getValue().trim();
         if (!value.isEmpty()) {
@@ -177,6 +186,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
             return;
         }
         if (currentlyEditedTodo != null) {
+            presenter.updateTodo(currentlyEditedTodo);
             grid.setDetailsVisible(currentlyEditedTodo, false);
             newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
         }
