@@ -16,7 +16,6 @@ import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class TodoViewImpl extends VerticalLayout implements TodoView {
 
@@ -93,19 +92,20 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         grid.setHeight(null);
         grid.setDetailsGenerator(this::createTodoEditor);
         grid.setStyleGenerator(this::createStyle);
-        grid.addColumn("", t -> "", new ButtonRenderer<>(
+
+        Grid.Column<Todo, String> completeButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
                 event -> presenter.markCompleted(event.getItem(),
                         !event.getItem().isCompleted())));
+        completeButtonColumn.setWidth(80);
 
-        // TODO make text column expand
-        grid.addColumn("", Todo::getText,
+        Grid.Column<Todo, String> todoStringColumn = grid.addColumn("", Todo::getText,
                 new ButtonRenderer<>(e -> editTodo(e.getItem())));
+        todoStringColumn.setExpandRatio(1);
 
-        grid.addColumn("", t -> "", new ButtonRenderer<>(
+        Grid.Column<Todo, String> deleteButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
                 event -> presenter.delete(event.getItem())));
-
-        // TODO remove header once supported
-        // grid.removeHeaderRow(0);
+        deleteButtonColumn.setWidth(60);
+        grid.removeHeaderRow(0);
 
         addComponent(grid);
     }
@@ -113,11 +113,11 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private void initBottomBar() {
         itemCountLabel = new Label();
         itemCountLabel.setId("count");
-        itemCountLabel.setWidth(13,Unit.EX);
+        itemCountLabel.setWidth(13, Unit.EX);
 
         RadioButtonGroup<Completion> filters = new RadioButtonGroup<>(null,
                 EnumSet.allOf(Completion.class));
-        filters.setItemCaptionProvider(Completion::getText);
+        filters.setItemCaptionGenerator(Completion::getText);
         filters.setId("filters");
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
