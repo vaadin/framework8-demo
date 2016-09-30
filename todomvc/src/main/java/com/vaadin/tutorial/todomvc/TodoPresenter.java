@@ -6,7 +6,7 @@ public class TodoPresenter {
 
     private TodoModel model = new TodoModel();
 
-    private Completion completionFilter = Completion.ALL;
+    private TaskFilter stateFilter = TaskFilter.ALL;
 
     public TodoPresenter(TodoView view) {
         this.view = view;
@@ -53,14 +53,14 @@ public class TodoPresenter {
         refreshView();
     }
 
-    public void filterTodos(Completion completionFilter) {
-        this.completionFilter = completionFilter;
+    public void filterTodos(TaskFilter stateFilter) {
+        this.stateFilter = stateFilter;
         refreshView();
     }
 
     private void refreshView() {
 /* TODO move to DataSource level when filtering is supported */
-        switch (completionFilter) {
+        switch (stateFilter) {
             case ACTIVE:
                 view.setDataSource(model.getDataSourceActive());
                 break;

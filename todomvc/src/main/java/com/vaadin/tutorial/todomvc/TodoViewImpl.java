@@ -115,13 +115,13 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         itemCountLabel.setId("count");
         itemCountLabel.setWidth(13, Unit.EX);
 
-        RadioButtonGroup<Completion> filters = new RadioButtonGroup<>(null,
-                EnumSet.allOf(Completion.class));
-        filters.setItemCaptionGenerator(Completion::getText);
+        RadioButtonGroup<TaskFilter> filters = new RadioButtonGroup<>(null,
+                EnumSet.allOf(TaskFilter.class));
+        filters.setItemCaptionGenerator(TaskFilter::getText);
         filters.setId("filters");
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        filters.select(Completion.ALL);
+        filters.select(TaskFilter.ALL);
         filters.addSelectionListener(event ->
                 presenter.filterTodos(event.getSelectedItem().orElseThrow(IllegalArgumentException::new)));
 

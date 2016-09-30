@@ -16,11 +16,11 @@
 package com.vaadin.tutorial.todomvc;
 
 /**
- * Task completion state
+ * Task state
  *
  * @author Vaadin Ltd
  */
-public enum Completion {
+public enum TaskFilter {
     ALL {
         @Override
         public String getText() {
