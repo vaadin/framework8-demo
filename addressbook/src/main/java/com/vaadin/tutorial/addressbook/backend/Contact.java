@@ -2,7 +2,7 @@ package com.vaadin.tutorial.addressbook.backend;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -22,7 +22,7 @@ public class Contact implements Serializable, Cloneable {
     private String lastName = "";
     private String phone = "";
     private String email = "";
-    private Date birthDate;
+    private LocalDate birthDate;
     private boolean doNotCall;
     private Instant createdTimestamp;
 
@@ -82,11 +82,11 @@ public class Contact implements Serializable, Cloneable {
         this.email = email;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 

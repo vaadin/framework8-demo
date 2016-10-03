@@ -26,6 +26,8 @@ import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.testbench.elements.ButtonElement;
+import com.vaadin.testbench.elements.DateFieldElement;
+import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.TextFieldElement;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
@@ -38,6 +40,7 @@ public class AddressbookIT extends AbstractDemoTest {
 
     @Before
     public void setUp() {
+        getDriver().resizeViewPortTo(1000, 800);
         open();
     }
 
@@ -120,6 +123,8 @@ public class AddressbookIT extends AbstractDemoTest {
         firstName.clear();
         firstName.sendKeys("Updated Name");
 
+        $(DateFieldElement.class).first().setValue("1/1/00");
+
         form.findElement(By.className("primary")).click();
 
         Assert.assertFalse(isElementPresent(By.className("contactform")));
@@ -129,6 +134,7 @@ public class AddressbookIT extends AbstractDemoTest {
         WebElement firstNameColumn = rows.get(index)
                 .findElement(By.tagName("td"));
         hasText(firstNameColumn, "Updated Name");
+        hasText($(GridElement.class).first().getCell(index, 3), "1/1/00");
     }
 
     @Test
