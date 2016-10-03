@@ -1,7 +1,7 @@
 package com.vaadin.tutorial.addressbook.backend;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -39,7 +39,6 @@ public class ContactService {
         final ContactService contactService = new ContactService();
 
         Random r = new Random(0);
-        Calendar cal = Calendar.getInstance();
         for (int i = 0; i < 100; i++) {
             Contact contact = new Contact();
             contact.setFirstName(fnames[r.nextInt(fnames.length)]);
@@ -47,8 +46,9 @@ public class ContactService {
             contact.setEmail(contact.getFirstName().toLowerCase() + "@"
                     + contact.getLastName().toLowerCase() + ".com");
             contact.setPhone("+ 358 555 " + (100 + r.nextInt(900)));
-            cal.set(1930 + r.nextInt(70), r.nextInt(11), r.nextInt(28));
-            contact.setBirthDate(cal.getTime());
+            LocalDate cal = LocalDate.of(1930 + r.nextInt(70),
+                    1 + r.nextInt(11), 1 + r.nextInt(27));
+            contact.setBirthDate(cal);
             contact.setDoNotCall(r.nextBoolean());
             contactService.save(contact);
         }
@@ -62,8 +62,8 @@ public class ContactService {
         ArrayList<Contact> arrayList = new ArrayList<>();
         for (Contact contact : contacts.values()) {
             try {
-                boolean passesFilter = (stringFilter == null
-                        || stringFilter.isEmpty())
+                boolean passesFilter = stringFilter == null
+                        || stringFilter.isEmpty()
                         || contact.toString().toLowerCase()
                                 .contains(stringFilter.toLowerCase());
                 if (passesFilter) {
