@@ -17,7 +17,6 @@ package com.vaadin.tutorial.todomvc;
 
 import com.vaadin.server.data.Query;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -68,7 +67,7 @@ public class TestDataSourceLimits {
         Query query = new Query(offset, limit, null, null);
         int size = dataSource.size(query);
         assertEquals("Response size", expectedLast - expectedFirst + 1, size);
-        List<Integer> values = dataSource.apply(query).collect(Collectors.toList());
+        List<Integer> values = dataSource.fetch(query).collect(Collectors.toList());
         assertEquals(size, values.size());
         for (int i = 0; i < values.size(); i++) {
             assertEquals(i + expectedFirst, values.get(i).intValue());

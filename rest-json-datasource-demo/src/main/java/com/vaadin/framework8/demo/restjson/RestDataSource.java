@@ -42,7 +42,7 @@ public class RestDataSource extends AbstractDataSource<JsonObject> {
     }
 
     @Override
-    public Stream<JsonObject> apply(Query t) {
+    public Stream<JsonObject> fetch(Query t) {
         URL url;
         try {
             url = new URL(restApiUrl);
