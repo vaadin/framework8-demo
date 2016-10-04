@@ -79,7 +79,7 @@ public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> im
             Query query) throws SQLException;
 
     @Override
-    public Stream<T> apply(Query query) {
+    public Stream<T> fetch(Query query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {

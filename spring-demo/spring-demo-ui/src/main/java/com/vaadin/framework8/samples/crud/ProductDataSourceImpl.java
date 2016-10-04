@@ -2,7 +2,6 @@ package com.vaadin.framework8.samples.crud;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -69,7 +68,7 @@ public class ProductDataSourceImpl extends AbstractDataSource<Product>
     }
 
     @Override
-    public Stream<Product> apply(Query t) {
+    public Stream<Product> fetch(Query t) {
         PageQuery pageQuery = getPaging(t);
         return getItems(pageQuery.pageable).skip(pageQuery.pageOffset)
                 .limit(t.getLimit());

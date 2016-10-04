@@ -9,11 +9,13 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.OptionGroup;
+
+import java.util.EnumSet;
 
 public class TodoViewImpl extends VerticalLayout implements TodoView {
 
@@ -28,8 +30,6 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private Button clearCompleted;
 
     private boolean allCompleted;
-
-    private OptionGroup filters;
 
     private Button markAllDoneButton;
 
@@ -92,19 +92,20 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         grid.setHeight(null);
         grid.setDetailsGenerator(this::createTodoEditor);
         grid.setStyleGenerator(this::createStyle);
-        grid.addColumn("", t -> "", new ButtonRenderer<>(
+
+        Grid.Column<Todo, String> completeButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
                 event -> presenter.markCompleted(event.getItem(),
                         !event.getItem().isCompleted())));
+        completeButtonColumn.setWidth(80);
 
-        // TODO make text column expand
-        grid.addColumn("", Todo::getText,
+        Grid.Column<Todo, String> todoStringColumn = grid.addColumn("", Todo::getText,
                 new ButtonRenderer<>(e -> editTodo(e.getItem())));
+        todoStringColumn.setExpandRatio(1);
 
-        grid.addColumn("", t -> "", new ButtonRenderer<>(
+        Grid.Column<Todo, String> deleteButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
                 event -> presenter.delete(event.getItem())));
-
-        // TODO remove header once supported
-        // grid.removeHeaderRow(0);
+        deleteButtonColumn.setWidth(60);
+        grid.removeHeaderRow(0);
 
         addComponent(grid);
     }
@@ -112,16 +113,17 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private void initBottomBar() {
         itemCountLabel = new Label();
         itemCountLabel.setId("count");
+        itemCountLabel.setWidth(13, Unit.EX);
 
-        filters = new OptionGroup(null);
+        RadioButtonGroup<TaskFilter> filters = new RadioButtonGroup<>(null,
+                EnumSet.allOf(TaskFilter.class));
+        filters.setItemCaptionGenerator(TaskFilter::getText);
         filters.setId("filters");
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        filters.setMultiSelect(false);
-        filters.addItems("All", "Active", "Completed");
-        filters.select("All");
-        filters.addValueChangeListener(event -> presenter
-                .filterTodos((String) event.getProperty().getValue()));
+        filters.select(TaskFilter.ALL);
+        filters.addSelectionListener(event ->
+                presenter.filterTodos(event.getSelectedItem().orElseThrow(IllegalArgumentException::new)));
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");
@@ -134,6 +136,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         bottomBar.setDefaultComponentAlignment(Alignment.MIDDLE_CENTER);
         bottomBar.addComponents(itemCountLabel, filters, clearCompleted);
         bottomBar.setExpandRatio(filters, 1);
+        bottomBar.setComponentAlignment(filters, Alignment.TOP_LEFT);
         bottomBar.setVisible(false);
         bottomBar.setSpacing(true);
         bottomBar.setWidth(WIDTH);
