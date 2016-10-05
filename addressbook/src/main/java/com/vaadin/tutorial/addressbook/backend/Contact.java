@@ -3,7 +3,6 @@ package com.vaadin.tutorial.addressbook.backend;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 
 import org.apache.commons.beanutils.BeanUtils;
 

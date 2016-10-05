@@ -15,6 +15,8 @@
  */
 package com.vaadin.tutorial.addressbook;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -67,8 +69,10 @@ public class LeftPanel extends VerticalLayout {
         contactList.addColumn("First Name", Contact::getFirstName);
         contactList.addColumn("Last Name", Contact::getLastName);
         contactList.addColumn("Email", Contact::getEmail);
-        contactList.addColumn("Created Timestamp",
-                c -> new Date(c.getCreatedTimestamp()), new DateRenderer());
+        contactList.addColumn("Birth Date",
+                c -> Date.from(c.getBirthDate().atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant()),
+                new DateRenderer(new SimpleDateFormat("M/d/yy")));
 
         contactList.addColumn("Do Not Call",
                 c -> c.isDoNotCall() ? "DO NOT CALL" : "");
