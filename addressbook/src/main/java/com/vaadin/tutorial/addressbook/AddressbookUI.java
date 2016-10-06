@@ -19,7 +19,6 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @Title("Addressbook")
 @Theme(ValoTheme.THEME_NAME)
-@Widgetset("com.vaadin.v7.Vaadin7WidgetSet")
 public class AddressbookUI extends UI {
 
     /*
