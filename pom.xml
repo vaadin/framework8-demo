@@ -230,12 +230,12 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-compatibility-server</artifactId>
-            <version>8.0-SNAPSHOT</version>
+            <version>${vaadin.version}</version>
         </dependency>
          <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-compatibility-client-compiled</artifactId>
-            <version>8.0-SNAPSHOT</version>
+            <version>${vaadin.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
