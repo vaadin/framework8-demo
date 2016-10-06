@@ -74,26 +74,16 @@
 
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-shared</artifactId>
+            <artifactId>vaadin-shared</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-compatibility-client-compiled</artifactId>
+            <artifactId>vaadin-client-compiled</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.vaadin.framework8</groupId>
             <artifactId>test-util</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>1.4.0.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
@@ -185,7 +175,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

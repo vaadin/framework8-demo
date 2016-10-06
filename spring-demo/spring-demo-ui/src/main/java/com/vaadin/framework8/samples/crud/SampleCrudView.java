@@ -1,9 +1,5 @@
 package com.vaadin.framework8.samples.crud;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.crud.ProductForm.ProductFormFactory;
@@ -21,7 +17,9 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.Grid.SelectionModel;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -98,7 +96,7 @@ public class SampleCrudView extends CssLayout implements View {
     }
 
     public void selectRow(Product row) {
-        ((SelectionModel.Single) grid.getSelectionModel()).select(row);
+        grid.getSelectionModel().select(row);
     }
 
     public Product getSelectedRow() {

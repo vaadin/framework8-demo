@@ -31,7 +31,6 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @Viewport("user-scalable=no,initial-scale=1.0")
 @Theme("mytheme")
-@Widgetset("com.vaadin.v7.Vaadin7WidgetSet")
 @SpringUI
 public class SampleUI extends UI {
 
