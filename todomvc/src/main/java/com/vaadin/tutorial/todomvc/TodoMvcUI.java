@@ -40,7 +40,7 @@ public class TodoMvcUI extends UI {
      * application.
      */
     @WebServlet(urlPatterns = "/*")
-    @VaadinServletConfiguration(ui = TodoMvcUI.class, productionMode = false, widgetset = "com.vaadin.v7.Vaadin7WidgetSet")
+    @VaadinServletConfiguration(ui = TodoMvcUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
     }
 
