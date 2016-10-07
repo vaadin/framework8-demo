@@ -108,7 +108,7 @@ public class SpringCrudIT extends AbstractDemoTest {
 
         WebElement form = findElement(By.className("product-form"));
         List<WebElement> buttons = form.findElements(By.className("v-button"));
-        Assert.assertEquals(3, buttons.size());
+        Assert.assertEquals(4, buttons.size());
 
         List<WebElement> fields = form
                 .findElements(By.className("v-textfield"));
@@ -240,6 +240,65 @@ public class SpringCrudIT extends AbstractDemoTest {
         rows.get(index).findElement(By.tagName("td")).click();
         // Element is not removed. It's made hidden in UI
         checkFormLocation(form);
+    }
+
+    @Test
+    public void initiallyDisabledButtonInEditor() {
+        doLogin();
+
+        // select a row
+        getRows().get(0).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.className("product-form"));
+        List<WebElement> buttons = form.findElements(By.className("v-button"));
+        Assert.assertTrue(isDisabled(buttons.get(0)));
+        Assert.assertTrue(isDisabled(buttons.get(1)));
+    }
+
+    @Test
+    public void changeProductNameToValid_bothButtonsAreEnabled() {
+        doLogin();
+
+        getRows().get(0).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.className("product-form"));
+
+        List<WebElement> fields = form
+                .findElements(By.className("v-textfield"));
+
+        WebElement productName = fields.get(0);
+        productName.clear();
+        productName.sendKeys("Updated Product Name");
+        productName.sendKeys(Keys.TAB);
+
+        List<WebElement> buttons = form.findElements(By.className("v-button"));
+        Assert.assertFalse(isDisabled(buttons.get(0)));
+        Assert.assertFalse(isDisabled(buttons.get(1)));
+    }
+
+    @Test
+    public void changeProductNameToInvalid_saveIsDisabledAndDiscardIsEnabled() {
+        doLogin();
+
+        getRows().get(0).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.className("product-form"));
+
+        List<WebElement> fields = form
+                .findElements(By.className("v-textfield"));
+
+        WebElement productName = fields.get(0);
+        productName.clear();
+        productName.sendKeys("a");
+        productName.sendKeys(Keys.TAB);
+
+        List<WebElement> buttons = form.findElements(By.className("v-button"));
+        Assert.assertTrue(isDisabled(buttons.get(0)));
+        Assert.assertFalse(isDisabled(buttons.get(1)));
+    }
+
+    private boolean isDisabled(WebElement element) {
+        return element.getAttribute("class").contains("v-disabled");
     }
 
     private void checkCategories(WebElement form, Product product) {

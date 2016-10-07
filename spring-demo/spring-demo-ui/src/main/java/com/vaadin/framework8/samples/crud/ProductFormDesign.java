@@ -29,6 +29,7 @@ public class ProductFormDesign extends CssLayout {
     protected ComboBox<Availability> availability;
     protected CheckBoxGroup<Category> category;
     protected Button save;
+    protected Button discard;
     protected Button cancel;
     protected Button delete;
 
