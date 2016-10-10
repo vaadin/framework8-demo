@@ -18,6 +18,7 @@ package com.vaadin.framework8.samples;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -41,6 +42,7 @@ import com.vaadin.demo.testutil.AbstractDemoTest;
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
+import com.vaadin.testbench.elements.GridElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
 
 /**
@@ -161,6 +163,59 @@ public class SpringCrudIT extends AbstractDemoTest {
         WebElement firstNameColumn = rows.get(index)
                 .findElements(By.tagName("td")).get(1);
         hasText(firstNameColumn, "Updated Product Name");
+    }
+
+    @Test
+    public void createContact() {
+        doLogin();
+
+        List<WebElement> primaries = findElements(By.className("primary"));
+        List<WebElement> newProduct = primaries.stream()
+                .filter(element -> element.getText().endsWith("New product"))
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(1, newProduct.size());
+
+        newProduct.get(0).click();
+
+        WebElement form = findElement(By.className("product-form"));
+
+        List<WebElement> fields = form
+                .findElements(By.className("v-textfield"));
+
+        WebElement productName = fields.get(0);
+        productName.clear();
+        productName.sendKeys("New item");
+
+        WebElement price = fields.get(1);
+        price.clear();
+        price.sendKeys("1.0");
+
+        WebElement stock = fields.get(2);
+        stock.clear();
+        stock.sendKeys("2");
+
+        WebElement combo = form
+                .findElement(By.className("v-filterselect-input"));
+        String availability = combo.getAttribute("value");
+
+        form.findElement(By.className("primary")).click();
+
+        Collection<Product> allProducts = dataService.getAllProducts();
+        $(GridElement.class).first().scrollToRow(allProducts.size());
+        List<WebElement> rows = getRows();
+
+        WebElement beforeLast = rows.get(rows.size() - 2);
+        List<WebElement> columns = beforeLast.findElements(By.tagName("td"));
+        Assert.assertFalse(hasText(columns.get(1), "New item"));
+
+        WebElement last = rows.get(rows.size() - 1);
+        columns = last.findElements(By.tagName("td"));
+        Assert.assertTrue(hasText(columns.get(1), "New item"));
+        Assert.assertTrue(hasText(columns.get(2), "1.0"));
+        Assert.assertTrue(hasText(columns.get(3),
+                availability.toUpperCase(Locale.ENGLISH)));
+        Assert.assertTrue(hasText(columns.get(4), "2"));
     }
 
     @Test
