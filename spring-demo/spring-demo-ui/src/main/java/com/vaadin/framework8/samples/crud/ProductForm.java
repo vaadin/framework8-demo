@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Scope;
 import com.vaadin.data.BeanBinder;
 import com.vaadin.data.BeanBinder.BeanBinding;
 import com.vaadin.data.Result;
+import com.vaadin.data.StatusChangeEvent;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Availability;
@@ -82,6 +84,8 @@ public class ProductForm extends ProductFormDesign {
 
     }
 
+    private Product currentProduct;
+
     private ProductForm() {
     }
 
@@ -90,12 +94,10 @@ public class ProductForm extends ProductFormDesign {
     }
 
     public void editProduct(Product product) {
-        if (product == null) {
-            product = new Product();
-        }
-        binder.bind(product);
+        currentProduct = product;
+        setUpData();
 
-        delete.setEnabled(product.getId() != -1);
+        delete.setEnabled(product != null && product.getId() != -1);
 
         // Scroll to the top
         // As this is not a Panel, using JavaScript
@@ -120,25 +122,48 @@ public class ProductForm extends ProductFormDesign {
 
         cancel.addClickListener(event -> viewLogic.cancelProduct());
         delete.addClickListener(event -> onDelete());
+        discard.addClickListener(event -> setUpData());
 
         category.setItemCaptionGenerator(Category::getName);
         ((BeanBinding<?, ?, ?>) binder.forSelect(category)).bind("category");
         binder.forField(stockCount).withConverter(new StockPriceConverter())
                 .bind("stockCount");
+
+        binder.addStatusChangeListener(this::updateButtons);
     }
 
     private void onSave() {
         Product product = binder.getBean().get();
+        if (currentProduct != null) {
+            BeanUtils.copyProperties(product, currentProduct);
+            product = currentProduct;
+        }
         dataService.updateProduct(product);
         viewLogic.saveProduct(product);
     }
 
     private void onDelete() {
-        binder.getBean().ifPresent(viewLogic::deleteProduct);
+        if (currentProduct != null) {
+            viewLogic.deleteProduct(currentProduct);
+        }
     }
 
     private void init(SampleCrudLogic logic) {
         this.viewLogic = logic;
+    }
+
+    private void updateButtons(StatusChangeEvent event) {
+        save.setEnabled(
+                !event.hasValidationErrors() && event.getBinder().hasChanges());
+        discard.setEnabled(event.getBinder().hasChanges());
+    }
+
+    private void setUpData() {
+        Product copy = new Product();
+        if (currentProduct != null) {
+            BeanUtils.copyProperties(currentProduct, copy);
+        }
+        binder.bind(copy);
     }
 
 }
