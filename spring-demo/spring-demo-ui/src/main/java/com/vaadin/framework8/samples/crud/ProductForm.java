@@ -18,7 +18,6 @@ import com.vaadin.data.BeanBinder.BeanBinding;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
-import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
@@ -38,9 +37,6 @@ public class ProductForm extends ProductFormDesign {
 
     private SampleCrudLogic viewLogic;
     private final BeanBinder<Product> binder = new BeanBinder<>(Product.class);
-
-    @Autowired
-    private DataService dataService;
 
     @SpringComponent
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
@@ -138,7 +134,6 @@ public class ProductForm extends ProductFormDesign {
             BeanUtils.copyProperties(product, currentProduct);
             product = currentProduct;
         }
-        dataService.updateProduct(product);
         viewLogic.saveProduct(product);
     }
 
