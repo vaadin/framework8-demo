@@ -17,7 +17,7 @@ public class PersonService {
 
     private final static WebTarget resource = ClientBuilder.newBuilder()
             .register(JacksonFeature.class).build()
-            .target("http://api.randomuser.me/");
+            .target("https://api.randomuser.me/");
 
     public static PersonService getInstance() {
         return instance;
