@@ -1,5 +1,7 @@
 package com.vaadin.tutorial.todomvc;
 
+import java.util.EnumSet;
+
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.data.DataSource;
@@ -14,8 +16,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-
-import java.util.EnumSet;
 
 public class TodoViewImpl extends VerticalLayout implements TodoView {
 
@@ -93,17 +93,21 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         grid.setDetailsGenerator(this::createTodoEditor);
         grid.setStyleGenerator(this::createStyle);
 
-        Grid.Column<Todo, String> completeButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
-                event -> presenter.markCompleted(event.getItem(),
-                        !event.getItem().isCompleted())));
+        Grid.Column<Todo, String> completeButtonColumn = grid
+                .addColumn(t -> "",
+                        new ButtonRenderer<>(event -> presenter.markCompleted(
+                                event.getItem(), !event.getItem()
+                                        .isCompleted())));
         completeButtonColumn.setWidth(80);
 
-        Grid.Column<Todo, String> todoStringColumn = grid.addColumn("", Todo::getText,
+        Grid.Column<Todo, String> todoStringColumn = grid.addColumn(
+                Todo::getText,
                 new ButtonRenderer<>(e -> editTodo(e.getItem())));
         todoStringColumn.setExpandRatio(1);
 
-        Grid.Column<Todo, String> deleteButtonColumn = grid.addColumn("", t -> "", new ButtonRenderer<>(
-                event -> presenter.delete(event.getItem())));
+        Grid.Column<Todo, String> deleteButtonColumn = grid.addColumn(t -> "",
+                new ButtonRenderer<>(
+                        event -> presenter.delete(event.getItem())));
         deleteButtonColumn.setWidth(60);
         grid.removeHeaderRow(0);
 
@@ -122,8 +126,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         filters.select(TaskFilter.ALL);
-        filters.addSelectionListener(event ->
-                presenter.filterTodos(event.getSelectedItem().orElseThrow(IllegalArgumentException::new)));
+        filters.addSelectionListener(event -> presenter.filterTodos(event
+                .getSelectedItem().orElseThrow(IllegalArgumentException::new)));
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");
@@ -166,10 +170,11 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     }
 
     /**
-     * Temporary method
-     * todo remove when filtering has been implemented on DataSource level
+     * Temporary method todo remove when filtering has been implemented on
+     * DataSource level
      *
-     * @param dataSource dataSource
+     * @param dataSource
+     *            dataSource
      */
     @Override
     public void setDataSource(DataSource<Todo> dataSource) {
