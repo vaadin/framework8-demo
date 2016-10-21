@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
 import com.vaadin.data.BeanBinder;
-import com.vaadin.data.BeanBinder.BeanBinding;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
@@ -111,8 +110,7 @@ public class ProductForm extends ProductFormDesign {
         binder.forField(price).withConverter(new EuroConverter()).bind("price");
         binder.forField(productName).bind("productName");
 
-        ((BeanBinding<?, ?, ?>) binder.forSelect(availability))
-                .bind("availability");
+        binder.forField(availability).bind("availability");
 
         save.addClickListener(event -> onSave());
 
@@ -121,7 +119,7 @@ public class ProductForm extends ProductFormDesign {
         discard.addClickListener(event -> setUpData());
 
         category.setItemCaptionGenerator(Category::getName);
-        ((BeanBinding<?, ?, ?>) binder.forSelect(category)).bind("category");
+        binder.forField(category).bind("category");
         binder.forField(stockCount).withConverter(new StockPriceConverter())
                 .bind("stockCount");
 
