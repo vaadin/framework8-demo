@@ -1,12 +1,11 @@
 package com.vaadin.tutorial.addressbook;
 
-import java.util.function.Predicate;
-
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.validator.EmailValidator;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.server.SerializablePredicate;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
 import com.vaadin.ui.Button;
@@ -48,8 +47,9 @@ public class ContactForm extends FormLayout {
 
     private void configureComponents() {
 
-        final Predicate<String> phoneOrEmailPredicate = v -> !phone.getValue()
-                .trim().isEmpty() || !email.getValue().trim().isEmpty();
+        final SerializablePredicate<String> phoneOrEmailPredicate = v -> !phone
+                .getValue().trim().isEmpty()
+                || !email.getValue().trim().isEmpty();
 
         Binding<Contact, String, String> emailBinding = binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
@@ -90,18 +90,16 @@ public class ContactForm extends FormLayout {
     }
 
     void edit(Contact contact) {
+        binder.setBean(contact);
         if (contact != null) {
-            binder.bind(contact);
             firstName.focus();
-        } else {
-            binder.unbind();
         }
         setVisible(contact != null);
     }
 
     public void save(Button.ClickEvent event) {
         binder.getBean().ifPresent(bean -> {
-            if (binder.saveIfValid(bean)) {
+            if (binder.writeBeanIfValid(bean)) {
                 ContactService.getDemoService().save(bean);
 
                 String msg = String.format("Saved '%s %s'.",
