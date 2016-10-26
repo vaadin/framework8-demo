@@ -157,7 +157,7 @@ public class ProductForm extends ProductFormDesign {
         if (currentProduct != null) {
             BeanUtils.copyProperties(currentProduct, copy);
         }
-        binder.bind(copy);
+        binder.setBean(copy);
     }
 
 }

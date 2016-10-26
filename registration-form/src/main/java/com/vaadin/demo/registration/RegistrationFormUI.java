@@ -115,7 +115,7 @@ public class RegistrationFormUI extends UI {
 
         fullNameField.focus();
 
-        binder.bind(new Person());
+        binder.setBean(new Person());
     }
 
     private Button createButton() {
@@ -168,7 +168,7 @@ public class RegistrationFormUI extends UI {
 
     private void save() {
         Person person = new Person();
-        if (binder.saveIfValid(person)) {
+        if (binder.writeBeanIfValid(person)) {
             Notification.show("Registration data saved successfully",
                     String.format("Full name '%s', email or phone '%s'",
                             person.getFullName(), person.getEmailOrPhone()),
