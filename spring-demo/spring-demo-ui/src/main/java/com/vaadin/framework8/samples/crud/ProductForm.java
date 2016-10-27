@@ -17,6 +17,7 @@ import com.vaadin.data.BeanBinder;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
+import com.vaadin.data.util.converter.ValueContext;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
@@ -72,8 +73,9 @@ public class ProductForm extends ProductFormDesign {
         }
 
         @Override
-        public Result<Integer> convertToModel(String value, Locale locale) {
-            Result<Integer> result = super.convertToModel(value, locale);
+        public Result<Integer> convertToModel(String value,
+                ValueContext context) {
+            Result<Integer> result = super.convertToModel(value, context);
             return result.map(stock -> stock == null ? 0 : stock);
         }
 
@@ -142,7 +144,7 @@ public class ProductForm extends ProductFormDesign {
     }
 
     private void init(SampleCrudLogic logic) {
-        this.viewLogic = logic;
+        viewLogic = logic;
     }
 
     private void updateButtons(StatusChangeEvent event) {

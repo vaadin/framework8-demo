@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import com.vaadin.data.Result;
 import com.vaadin.data.util.converter.StringToBigDecimalConverter;
+import com.vaadin.data.util.converter.ValueContext;
 
 /**
  * A converter that adds/removes the euro sign and formats currencies with two
@@ -19,17 +20,19 @@ public class EuroConverter extends StringToBigDecimalConverter {
     }
 
     @Override
-    public Result<BigDecimal> convertToModel(String value, Locale locale) {
+    public Result<BigDecimal> convertToModel(String value,
+            ValueContext context) {
         value = value.replaceAll("[€\\s]", "").trim();
         if ("".equals(value)) {
             value = "0";
         }
-        return super.convertToModel(value, locale);
+        return super.convertToModel(value, context);
     }
 
     @Override
-    public String convertToPresentation(BigDecimal value, Locale locale) {
-        return super.convertToPresentation(value, locale) + " €";
+    public String convertToPresentation(BigDecimal value,
+            ValueContext context) {
+        return super.convertToPresentation(value, context) + " €";
     }
 
     @Override
