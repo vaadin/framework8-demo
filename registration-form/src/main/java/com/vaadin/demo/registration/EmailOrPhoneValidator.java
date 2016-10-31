@@ -16,6 +16,7 @@
 package com.vaadin.demo.registration;
 
 import com.vaadin.data.Result;
+import com.vaadin.data.util.converter.ValueContext;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
 
@@ -30,13 +31,13 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
     }
 
     @Override
-    public Result<String> apply(String value) {
+    public Result<String> apply(String value, ValueContext context) {
         String val = value;
         // remove all spaces
         val = val.replace(" ", "");
         // if string starts from +0-9 ignoring spaces
         if (!startsWithCountryCode(val)) {
-            return emailValidator.apply(value);
+            return emailValidator.apply(value, context);
         }
         String digits = val.substring(1);
         // if string contains only + and digits (ignoring spaces)
