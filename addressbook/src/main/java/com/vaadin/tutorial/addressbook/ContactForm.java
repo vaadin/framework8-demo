@@ -90,18 +90,16 @@ public class ContactForm extends FormLayout {
     }
 
     void edit(Contact contact) {
+        binder.setBean(contact);
         if (contact != null) {
-            binder.bind(contact);
             firstName.focus();
-        } else {
-            binder.unbind();
         }
         setVisible(contact != null);
     }
 
     public void save(Button.ClickEvent event) {
         binder.getBean().ifPresent(bean -> {
-            if (binder.saveIfValid(bean)) {
+            if (binder.writeBeanIfValid(bean)) {
                 ContactService.getDemoService().save(bean);
 
                 String msg = String.format("Saved '%s %s'.",
