@@ -73,7 +73,8 @@ public class ProductForm extends ProductFormDesign {
         }
 
         @Override
-        public Result<Integer> convertToModel(String value, ValueContext context) {
+        public Result<Integer> convertToModel(String value,
+                ValueContext context) {
             Result<Integer> result = super.convertToModel(value, context);
             return result.map(stock -> stock == null ? 0 : stock);
         }
@@ -157,7 +158,7 @@ public class ProductForm extends ProductFormDesign {
         if (currentProduct != null) {
             BeanUtils.copyProperties(currentProduct, copy);
         }
-        binder.bind(copy);
+        binder.setBean(copy);
     }
 
 }
