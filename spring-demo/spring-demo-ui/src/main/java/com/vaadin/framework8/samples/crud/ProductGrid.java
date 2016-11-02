@@ -60,7 +60,7 @@ public class ProductGrid extends Grid<Product> {
     }
 
     public Product getSelectedRow() {
-        return getSelectedItem().orElse(null);
+        return asSingleSelect().getValue();
     }
 
     public void refresh(Product product) {

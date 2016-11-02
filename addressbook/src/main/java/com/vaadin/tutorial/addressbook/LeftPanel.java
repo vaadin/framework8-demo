@@ -87,12 +87,15 @@ public class LeftPanel extends VerticalLayout {
     }
 
     void addSelectionListener(Consumer<Contact> listener) {
-        contactList.addSelectionListener(
-                e -> listener.accept(e.getSelectedItem().orElse(null)));
+        contactList.asSingleSelect()
+                .addValueChangeListener(e -> listener.accept(e.getValue()));
     }
 
     void deselect() {
-        contactList.getSelectedItem().ifPresent(contactList::deselect);
+        Contact value = contactList.asSingleSelect().getValue();
+        if (value != null) {
+            contactList.getSelectionModel().deselect(value);
+        }
     }
 
     String getFilterValue() {

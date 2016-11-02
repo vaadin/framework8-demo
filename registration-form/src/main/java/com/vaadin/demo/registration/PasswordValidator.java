@@ -15,7 +15,8 @@
  */
 package com.vaadin.demo.registration;
 
-import com.vaadin.data.Result;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.util.converter.ValueContext;
 import com.vaadin.data.validator.StringLengthValidator;
 
 /**
@@ -29,13 +30,14 @@ public class PasswordValidator extends StringLengthValidator {
     }
 
     @Override
-    public Result<String> apply(String value) {
-        Result<String> result = super.apply(value);
+    public ValidationResult apply(String value, ValueContext context) {
+        ValidationResult result = super.apply(value, context);
         if (result.isError()) {
-            return Result
+            return ValidationResult
                     .error("Password should contain at least 6 characters");
         } else if (!hasDigit(value) || !hasLetter(value)) {
-            return Result.error("Password must contain a letter and a number");
+            return ValidationResult
+                    .error("Password must contain a letter and a number");
         }
         return result;
     }

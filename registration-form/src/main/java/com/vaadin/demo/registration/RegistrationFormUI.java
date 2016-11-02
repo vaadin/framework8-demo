@@ -13,7 +13,6 @@ import com.vaadin.data.HasValue;
 import com.vaadin.data.ValidationStatus;
 import com.vaadin.data.ValidationStatus.Status;
 import com.vaadin.data.Validator;
-import com.vaadin.data.validator.NotEmptyValidator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -70,9 +69,7 @@ public class RegistrationFormUI extends UI {
         TextField fullNameField = new TextField();
         addToLayout(layout, fullNameField, "Full name");
 
-        binder.forField(fullNameField)
-                .withValidator(
-                        new NotEmptyValidator<>("Full name may not be empty"))
+        binder.forField(fullNameField).setRequired("Full name may not be empty")
                 .withValidationStatusHandler(
                         status -> commonStatusChangeHandler(status,
                                 fullNameField))
@@ -115,7 +112,7 @@ public class RegistrationFormUI extends UI {
 
         fullNameField.focus();
 
-        binder.bind(new Person());
+        binder.setBean(new Person());
     }
 
     private Button createButton() {
@@ -168,7 +165,7 @@ public class RegistrationFormUI extends UI {
 
     private void save() {
         Person person = new Person();
-        if (binder.saveIfValid(person)) {
+        if (binder.writeBeanIfValid(person)) {
             Notification.show("Registration data saved successfully",
                     String.format("Full name '%s', email or phone '%s'",
                             person.getFullName(), person.getEmailOrPhone()),

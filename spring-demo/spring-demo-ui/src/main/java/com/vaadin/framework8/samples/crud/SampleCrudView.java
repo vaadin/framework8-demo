@@ -133,7 +133,7 @@ public class SampleCrudView extends CssLayout implements View {
         HorizontalLayout topLayout = createTopBar();
 
         grid = new ProductGrid();
-        grid.addSelectionListener(
+        grid.asSingleSelect().addValueChangeListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
         grid.setDataSource(dataSource);
 

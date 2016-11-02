@@ -125,9 +125,9 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.setId("filters");
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        filters.select(TaskFilter.ALL);
-        filters.addSelectionListener(event -> presenter.filterTodos(event
-                .getSelectedItem().orElseThrow(IllegalArgumentException::new)));
+        filters.setValue(TaskFilter.ALL);
+        filters.addValueChangeListener(
+                event -> presenter.filterTodos(event.getValue()));
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");

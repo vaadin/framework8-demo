@@ -15,7 +15,8 @@
  */
 package com.vaadin.demo.registration;
 
-import com.vaadin.data.Result;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.util.converter.ValueContext;
 import com.vaadin.data.validator.AbstractValidator;
 import com.vaadin.data.validator.EmailValidator;
 
@@ -30,27 +31,27 @@ class EmailOrPhoneValidator extends AbstractValidator<String> {
     }
 
     @Override
-    public Result<String> apply(String value) {
+    public ValidationResult apply(String value, ValueContext context) {
         String val = value;
         // remove all spaces
         val = val.replace(" ", "");
         // if string starts from +0-9 ignoring spaces
         if (!startsWithCountryCode(val)) {
-            return emailValidator.apply(value);
+            return emailValidator.apply(value, context);
         }
         String digits = val.substring(1);
         // if string contains only + and digits (ignoring spaces)
         if (!hasOnlyDigits(digits)) {
-            return Result.error(String.format(
+            return ValidationResult.error(String.format(
                     "The string '%s' is not a valid phone number. "
                             + "Phone numbers should start with a plus sign followed by digits.",
                     value));
         }
         // now there should be at least 10 digits
         if (digits.length() >= 10) {
-            return Result.ok(val);
+            return ValidationResult.ok();
         }
-        return Result.error(String.format(
+        return ValidationResult.error(String.format(
                 "The string '%s' is not a valid phone number. "
                         + "Phone should start with a plus sign and contain at least 10 digits",
                 value));
