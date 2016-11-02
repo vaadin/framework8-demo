@@ -66,8 +66,8 @@ public class ContactForm extends FormLayout {
         email.addValueChangeListener(event -> phoneBinding.validate());
         phone.addValueChangeListener(event -> emailBinding.validate());
 
-        firstName.setRequired(true);
-        lastName.setRequired(true);
+        firstName.setRequiredIndicatorVisible(true);
+        lastName.setRequiredIndicatorVisible(true);
 
         binder.bind(firstName, Contact::getFirstName, Contact::setFirstName);
         binder.bind(lastName, Contact::getLastName, Contact::setLastName);
@@ -91,17 +91,17 @@ public class ContactForm extends FormLayout {
 
     void edit(Contact contact) {
         if (contact != null) {
-            binder.bind(contact);
+            binder.setBean(contact);
             firstName.focus();
         } else {
-            binder.unbind();
+            binder.removeBean();
         }
         setVisible(contact != null);
     }
 
     public void save(Button.ClickEvent event) {
         binder.getBean().ifPresent(bean -> {
-            if (binder.saveIfValid(bean)) {
+            if (binder.writeBeanIfValid(bean)) {
                 ContactService.getDemoService().save(bean);
 
                 String msg = String.format("Saved '%s %s'.",
