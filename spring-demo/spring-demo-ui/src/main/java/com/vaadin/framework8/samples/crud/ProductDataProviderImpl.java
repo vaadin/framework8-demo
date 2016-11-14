@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 
 import javax.transaction.Transactional;
 
+import com.vaadin.server.data.AbstractDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,25 +25,25 @@ import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.backend.repository.CategoryRepository;
 import com.vaadin.framework8.samples.backend.repository.ProductRepository;
-import com.vaadin.server.data.AbstractDataSource;
+import com.vaadin.server.data.AbstractDataProvider;
 import com.vaadin.server.data.Query;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.UI;
 
 /**
- * DataSource implementation for managing {@code ProductRepository} and
+ * DataProvider implementation for managing {@code ProductRepository} and
  * filtering.
  * <p>
  * <strong>Note:</strong> This implementation can't be used between multiple
  * different components as the filtering is actually stateful and not stateless.
  */
 @Component
-// TODO: Use common data source for all UIs after backend filtering is done
+// TODO: Use common data provider for all UIs after backend filtering is done
 @UIScope
 @Transactional
-public class ProductDataSourceImpl extends AbstractDataSource<Product>
-        implements ProductDataSource {
+public class ProductDataProviderImpl extends AbstractDataProvider<Product>
+        implements ProductDataProvider {
 
     private static class PageQuery {
         Pageable pageable;

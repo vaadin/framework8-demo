@@ -10,7 +10,7 @@ public class TodoPresenter {
 
     public TodoPresenter(TodoView view) {
         this.view = view;
-        view.setDataSource(model.getDataSourceAll());
+        view.setDataProvider(model.getDataProviderAll());
         view.updateCounters(model.getCompleted(), model.getActive());
     }
 
@@ -59,16 +59,16 @@ public class TodoPresenter {
     }
 
     private void refreshView() {
-/* TODO move to DataSource level when filtering is supported */
+/* TODO move to DataProvider level when filtering is supported */
         switch (stateFilter) {
             case ACTIVE:
-                view.setDataSource(model.getDataSourceActive());
+                view.setDataProvider(model.getDataProviderActive());
                 break;
             case COMPLETED:
-                view.setDataSource(model.getDataSourceCompleted());
+                view.setDataProvider(model.getDataProviderCompleted());
                 break;
             default:
-                view.setDataSource(model.getDataSourceAll());
+                view.setDataProvider(model.getDataProviderAll());
         }
         view.refresh();
     }

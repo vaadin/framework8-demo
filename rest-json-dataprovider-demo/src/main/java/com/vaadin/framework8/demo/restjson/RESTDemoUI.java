@@ -33,7 +33,7 @@ public class RESTDemoUI extends UI {
         personGrid.addColumn("State",
                 json -> safeGetString(json, "location", "state"));
 
-        personGrid.setDataSource(new RestDataSource(
+        personGrid.setDataProvider(new RestDataProvider(
                 "https://api.randomuser.me/?seed=0&results=50&page=1"));
 
         personGrid.setSizeFull();

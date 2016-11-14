@@ -15,7 +15,7 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.AbstractDataSource;
+import com.vaadin.server.data.AbstractDataProvider;
 import com.vaadin.server.data.Query;
 
 import java.sql.Connection;
@@ -31,20 +31,20 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Vaadin datasource over pure JDBC, base class.
+ * Vaadin DataProvider over pure JDBC, base class.
  *
  * @param <T>
  *         data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
-public abstract class AbstractJDBCDataSource<T> extends AbstractDataSource<T> implements AutoCloseable {
-    public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataSource.class.getName());
+public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T> implements AutoCloseable {
+    public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataProvider.class.getName());
     private final java.sql.Connection connection;
     private final DataRetriever<T> jdbcReader;
 
     private int cachedSize = -1;
 
-    public AbstractJDBCDataSource(Connection connection,
+    public AbstractJDBCDataProvider(Connection connection,
             DataRetriever<T> jdbcReader) {
         this.connection = Objects.requireNonNull(connection);
         this.jdbcReader = Objects.requireNonNull(jdbcReader);

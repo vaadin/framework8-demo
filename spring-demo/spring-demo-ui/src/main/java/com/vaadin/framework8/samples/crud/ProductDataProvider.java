@@ -1,15 +1,15 @@
 package com.vaadin.framework8.samples.crud;
 
 import com.vaadin.framework8.samples.backend.data.Product;
-import com.vaadin.server.data.DataSource;
+import com.vaadin.server.data.DataProvider;
 
 /**
- * Interface for ProductDataSource.
+ * Interface for ProductDataProvider.
  */
-public interface ProductDataSource extends DataSource<Product> {
+public interface ProductDataProvider extends DataProvider<Product> {
 
     /**
-     * Sets the filtering text for this DataSource.
+     * Sets the filtering text for this DataProvider.
      * <p>
      * TODO: This method should be removed once more generic filtering support
      * is implemented. Should be replaced by a filter provided through the

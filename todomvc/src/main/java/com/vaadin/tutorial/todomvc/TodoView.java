@@ -1,6 +1,6 @@
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.DataSource;
+import com.vaadin.server.data.DataProvider;
 
 public interface TodoView {
 
@@ -10,10 +10,10 @@ public interface TodoView {
 
     /**
      * Temporary method
-     * todo remove when filtering has been implemented on DataSource level
+     * todo remove when filtering has been implemented on DataProvider level
      *
-     * @param dataSource
-     *         dataSource
+     * @param dataProvider
+     *         dataProvider
      */
-    void setDataSource(DataSource<Todo> dataSource);
+    void setDataProvider(DataProvider<Todo> dataProvider);
 }

@@ -15,6 +15,14 @@
  */
 package com.vaadin.framework8.demo.restjson;
 
+import com.vaadin.data.util.JsonUtil;
+import com.vaadin.server.data.AbstractDataProvider;
+import com.vaadin.server.data.Query;
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -23,21 +31,11 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.IOUtils;
-
-import com.vaadin.data.util.JsonUtil;
-import com.vaadin.server.data.AbstractDataSource;
-import com.vaadin.server.data.Query;
-
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
-
-public class RestDataSource extends AbstractDataSource<JsonObject> {
+public class RestDataProvider extends AbstractDataProvider<JsonObject> {
 
     private String restApiUrl;
 
-    public RestDataSource(String restApiUrl) {
+    public RestDataProvider(String restApiUrl) {
         this.restApiUrl = restApiUrl;
     }
 

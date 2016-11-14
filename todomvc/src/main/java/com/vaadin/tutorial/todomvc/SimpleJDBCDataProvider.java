@@ -26,18 +26,18 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
- * Vaadin datasource over pure JDBC. Only fixed SQL statements are supported,
+ * Vaadin DataProvider over pure JDBC. Only fixed SQL statements are supported,
  * no custom filtering or sorting.
  *
  * @author Vaadin Ltd
  */
-public class SimpleJDBCDataSource<T> extends AbstractJDBCDataSource<T> {
+public class SimpleJDBCDataProvider<T> extends AbstractJDBCDataProvider<T> {
 
-    public static final Logger LOGGER = Logger.getLogger(SimpleJDBCDataSource.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(SimpleJDBCDataProvider.class.getName());
     private final PreparedStatement resultSetStatement;
     private final PreparedStatement sizeStatement;
 
-    public SimpleJDBCDataSource(Connection connection,
+    public SimpleJDBCDataProvider(Connection connection,
             String sqlQuery, DataRetriever<T> jdbcReader) throws SQLException {
         super(connection, jdbcReader);
         resultSetStatement = connection.prepareStatement(sqlQuery,

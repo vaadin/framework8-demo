@@ -8,7 +8,7 @@ import com.vaadin.framework8.demo.rest.backend.PersonService;
 import com.vaadin.framework8.demo.rest.model.Person;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.data.BackEndDataSource;
+import com.vaadin.server.data.BackEndDataProvider;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -27,7 +27,7 @@ public class RESTDemoUI extends UI {
         personGrid.addColumn("Postal code", Person::getPostCode);
         personGrid.addColumn("State", Person::getState);
 
-        personGrid.setDataSource(new BackEndDataSource<Person>(
+        personGrid.setDataProvider(new BackEndDataProvider<Person>(
                 query -> PersonService.getInstance()
                         .fetchPeople(query.getOffset(), query.getLimit()),
                 query -> PersonService.getPersonCount()));
