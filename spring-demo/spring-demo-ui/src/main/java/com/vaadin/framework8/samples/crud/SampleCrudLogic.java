@@ -15,7 +15,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 
 /**
  * This class provides an interface for the logical operations between the CRUD
- * view, its parts like the product editor form and the data source, including
+ * view, its parts like the product editor form and the data provider, including
  * fetching and saving products.
  *
  * Having this separate from the view makes it easier to test various parts of

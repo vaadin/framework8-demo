@@ -1,9 +1,5 @@
 package com.vaadin.framework8.samples.crud;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.crud.ProductForm.ProductFormFactory;
@@ -21,6 +17,9 @@ import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 
 /**
  * A view for performing create-read-update-delete operations on products.
@@ -41,7 +40,7 @@ public class SampleCrudView extends CssLayout implements View {
     private DataService dataService;
 
     @Autowired
-    private ProductDataSource dataSource;
+    private ProductDataProvider dataProvider;
 
     private ProductForm form;
 
@@ -56,7 +55,7 @@ public class SampleCrudView extends CssLayout implements View {
         filter.setStyleName("filter-textfield");
         filter.setPlaceholder("Filter");
         filter.addValueChangeListener(
-                event -> dataSource.setFilterText(event.getValue()));
+                event -> dataProvider.setFilterText(event.getValue()));
 
         newProduct = new Button("New product");
         newProduct.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -116,12 +115,12 @@ public class SampleCrudView extends CssLayout implements View {
     }
 
     public void updateProduct(Product product) {
-        dataSource.save(product);
+        dataProvider.save(product);
         // TODO: Grid used to scroll to the updated item
     }
 
     public void removeProduct(Product product) {
-        dataSource.delete(product);
+        dataProvider.delete(product);
     }
 
     @PostConstruct
@@ -133,9 +132,9 @@ public class SampleCrudView extends CssLayout implements View {
         HorizontalLayout topLayout = createTopBar();
 
         grid = new ProductGrid();
-        grid.addSelectionListener(
+        grid.asSingleSelect().addValueChangeListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
-        grid.setDataSource(dataSource);
+        grid.setDataProvider(dataProvider);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);

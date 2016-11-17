@@ -29,26 +29,26 @@ import java.sql.Statement;
  */
 public class TodoModel {
     private final Connection conn;
-    private final SimpleJDBCDataSource<Todo> dataSourceAll;
-    private final SimpleJDBCDataSource<Todo> dataSourceActive;
-    private final SimpleJDBCDataSource<Todo> dataSourceCompleted;
+    private final SimpleJDBCDataProvider<Todo> dataProviderAll;
+    private final SimpleJDBCDataProvider<Todo> dataProviderActive;
+    private final SimpleJDBCDataProvider<Todo> dataProviderCompleted;
 
     public TodoModel() {
         try {
             DriverManager.registerDriver(org.hsqldb.jdbc.JDBCDriver.driverInstance);
             conn = DriverManager.getConnection("jdbc:hsqldb:mem:tododb", "SA", "");
             setupDatabase(conn);
-            dataSourceAll = setupDataSource("SELECT * FROM todo");
-            dataSourceActive = setupDataSource(" SELECT * FROM todo WHERE NOT completed");
-            dataSourceCompleted = setupDataSource(" SELECT * FROM todo WHERE completed");
+            dataProviderAll = setupDataProvider("SELECT * FROM todo");
+            dataProviderActive = setupDataProvider(" SELECT * FROM todo WHERE NOT completed");
+            dataProviderCompleted = setupDataProvider(" SELECT * FROM todo WHERE completed");
         } catch (SQLException e) {
             throw new RuntimeException("Model initialization failed", e);
         }
     }
 
-    private SimpleJDBCDataSource<Todo> setupDataSource(
+    private SimpleJDBCDataProvider<Todo> setupDataProvider(
             String sqlQuery) throws SQLException {
-        return new SimpleJDBCDataSource<>(conn, sqlQuery, resultSet ->
+        return new SimpleJDBCDataProvider<>(conn, sqlQuery, resultSet ->
         {
             Todo todo = new Todo();
             todo.setId(resultSet.getInt("id"));
@@ -86,16 +86,16 @@ public class TodoModel {
         return readInteger("select count(*) from todo where not COMPLETED");
     }
 
-    public SimpleJDBCDataSource<Todo> getDataSourceAll() {
-        return dataSourceAll;
+    public SimpleJDBCDataProvider<Todo> getDataProviderAll() {
+        return dataProviderAll;
     }
 
-    public SimpleJDBCDataSource<Todo> getDataSourceActive() {
-        return dataSourceActive;
+    public SimpleJDBCDataProvider<Todo> getDataProviderActive() {
+        return dataProviderActive;
     }
 
-    public SimpleJDBCDataSource<Todo> getDataSourceCompleted() {
-        return dataSourceCompleted;
+    public SimpleJDBCDataProvider<Todo> getDataProviderCompleted() {
+        return dataProviderCompleted;
     }
 
     public Todo persist(Todo todo) {

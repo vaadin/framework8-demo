@@ -1,4 +1,4 @@
-Vaadin 8 Simple REST Data Source Demo
+Vaadin 8 Simple REST Data Provider Demo
 ====================
 
 A short demonstration of how Vaadin 8 can be used to bind data from a REST API directly to a listing component.

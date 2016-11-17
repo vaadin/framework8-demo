@@ -11,7 +11,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <encoding>UTF-8</encoding>
         <jetty.version>9.3.7.v20160115</jetty.version>
         <vaadin.version>${project.version}</vaadin.version>
         <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -35,8 +35,8 @@
 
     <modules>
         <module>addressbook</module>
-        <module>rest-datasource-demo</module>
-        <module>rest-json-datasource-demo</module>
+        <module>rest-dataprovider-demo</module>
+        <module>rest-json-dataprovider-demo</module>
         <module>test-util</module>
         <module>registration-form</module>
         <module>spring-demo</module>

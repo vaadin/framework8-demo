@@ -35,14 +35,14 @@ import static org.junit.Assert.assertEquals;
  *
  * @author Vaadin Ltd
  */
-public class TestDataSourceLimits {
+public class TestDataProviderLimits {
     private static Connection conn;
-    private static SimpleJDBCDataSource<Integer> dataSource;
+    private static SimpleJDBCDataProvider<Integer> dataProvider;
 
     @BeforeClass
     public static void setUpAll() throws SQLException {
         DriverManager.registerDriver(org.hsqldb.jdbc.JDBCDriver.driverInstance);
-        conn = DriverManager.getConnection("jdbc:hsqldb:mem:datasourcedb", "SA", "");
+        conn = DriverManager.getConnection("jdbc:hsqldb:mem:dataproviderdb", "SA", "");
         //For safety sake
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE long_table");
@@ -57,7 +57,7 @@ public class TestDataSourceLimits {
                 preparedStatement.executeUpdate();
             }
         }
-        dataSource = new SimpleJDBCDataSource<>(conn, "SELECT i FROM long_table ORDER BY i",
+        dataProvider = new SimpleJDBCDataProvider<>(conn, "SELECT i FROM long_table ORDER BY i",
                 resultSet -> resultSet.getInt(1));
     }
 
@@ -65,9 +65,9 @@ public class TestDataSourceLimits {
     private void doRetrieveTest(int offset, int limit, int expectedFirst,
             int expectedLast) {
         Query query = new Query(offset, limit, null, null);
-        int size = dataSource.size(query);
+        int size = dataProvider.size(query);
         assertEquals("Response size", expectedLast - expectedFirst + 1, size);
-        List<Integer> values = dataSource.fetch(query).collect(Collectors.toList());
+        List<Integer> values = dataProvider.fetch(query).collect(Collectors.toList());
         assertEquals(size, values.size());
         for (int i = 0; i < values.size(); i++) {
             assertEquals(i + expectedFirst, values.get(i).intValue());
@@ -104,7 +104,7 @@ public class TestDataSourceLimits {
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE long_table");
         }
-        dataSource.close();
+        dataProvider.close();
         conn.close();
     }
 }

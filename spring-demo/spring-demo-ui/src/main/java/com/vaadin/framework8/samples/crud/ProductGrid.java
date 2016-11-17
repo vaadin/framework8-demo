@@ -13,7 +13,7 @@ import com.vaadin.ui.renderers.NumberRenderer;
 
 /**
  * Grid of products, handling the visual presentation and filtering of a set of
- * items. This version uses an in-memory data source that is suitable for small
+ * items. This version uses an in-memory data provider that is suitable for small
  * data sets.
  */
 public class ProductGrid extends Grid<Product> {
@@ -60,7 +60,7 @@ public class ProductGrid extends Grid<Product> {
     }
 
     public Product getSelectedRow() {
-        return getSelectedItem().orElse(null);
+        return asSingleSelect().getValue();
     }
 
     public void refresh(Product product) {

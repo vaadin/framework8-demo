@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.data.DataSource;
+import com.vaadin.server.data.DataProvider;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -125,9 +125,9 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.setId("filters");
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
-        filters.select(TaskFilter.ALL);
-        filters.addSelectionListener(event -> presenter.filterTodos(event
-                .getSelectedItem().orElseThrow(IllegalArgumentException::new)));
+        filters.setValue(TaskFilter.ALL);
+        filters.addValueChangeListener(
+                event -> presenter.filterTodos(event.getValue()));
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");
@@ -150,7 +150,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     @Override
     public void refresh() {
-        grid.getDataSource().refreshAll();
+        grid.getDataProvider().refreshAll();
     }
 
     @Override
@@ -170,15 +170,15 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     }
 
     /**
-     * Temporary method todo remove when filtering has been implemented on
-     * DataSource level
+     * Temporary method
+     * todo remove when filtering has been implemented on DataProvider level
      *
-     * @param dataSource
-     *            dataSource
+     * @param dataProvider
+     *         dataProvider
      */
     @Override
-    public void setDataSource(DataSource<Todo> dataSource) {
-        grid.setDataSource(dataSource);
+    public void setDataProvider(DataProvider<Todo> dataProvider) {
+        grid.setDataProvider(dataProvider);
     }
 
     private void onNewTodoFieldEnter() {
