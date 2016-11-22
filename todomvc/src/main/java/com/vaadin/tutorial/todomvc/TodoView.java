@@ -15,5 +15,5 @@ public interface TodoView {
      * @param dataProvider
      *         dataProvider
      */
-    void setDataProvider(DataProvider<Todo, ?> dataProvider);
+    void setDataProvider(DataProvider<Todo, Void> dataProvider);
 }

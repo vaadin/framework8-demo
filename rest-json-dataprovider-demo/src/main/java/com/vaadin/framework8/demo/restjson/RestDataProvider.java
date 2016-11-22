@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class RestDataProvider extends AbstractDataProvider<JsonObject, Object> {
+public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
 
     private String restApiUrl;
 
@@ -40,7 +40,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Object> {
     }
 
     @Override
-    public Stream<JsonObject> fetch(Query<Object> t) {
+    public Stream<JsonObject> fetch(Query<Void> t) {
         URL url;
         try {
             url = new URL(restApiUrl);
@@ -64,7 +64,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Object> {
     }
 
     @Override
-    public int size(Query<Object> t) {
+    public int size(Query<Void> t) {
         return 200;
     }
 

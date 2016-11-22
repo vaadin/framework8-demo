@@ -27,7 +27,7 @@ public class RESTDemoUI extends UI {
         personGrid.addColumn("Postal code", Person::getPostCode);
         personGrid.addColumn("State", Person::getState);
 
-        personGrid.setDataProvider(new BackEndDataProvider<Person, Object>(
+        personGrid.setDataProvider(new BackEndDataProvider<Person, Void>(
                 query -> PersonService.getInstance()
                         .fetchPeople(query.getOffset(), query.getLimit()),
                 query -> PersonService.getPersonCount()));
