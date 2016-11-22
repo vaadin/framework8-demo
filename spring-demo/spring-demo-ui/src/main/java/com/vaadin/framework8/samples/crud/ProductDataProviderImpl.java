@@ -11,7 +11,6 @@ import java.util.stream.StreamSupport;
 
 import javax.transaction.Transactional;
 
-import com.vaadin.server.data.AbstractDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +41,7 @@ import com.vaadin.ui.UI;
 // TODO: Use common data provider for all UIs after backend filtering is done
 @UIScope
 @Transactional
-public class ProductDataProviderImpl extends AbstractDataProvider<Product>
+public class ProductDataProviderImpl extends AbstractDataProvider<Product, String>
         implements ProductDataProvider {
 
     private static class PageQuery {
@@ -64,12 +63,12 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product>
     }
 
     @Override
-    public int size(Query t) {
+    public int size(Query<String> t) {
         return (int) getItems(getPaging(t).pageable).count();
     }
 
     @Override
-    public Stream<Product> fetch(Query t) {
+    public Stream<Product> fetch(Query<String> t) {
         PageQuery pageQuery = getPaging(t);
         return getItems(pageQuery.pageable).skip(pageQuery.pageOffset)
                 .limit(t.getLimit());
@@ -124,7 +123,7 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product>
      *            the original query
      * @return paged query
      */
-    private PageQuery getPaging(Query q) {
+    private PageQuery getPaging(Query<String> q) {
         final PageQuery p = new PageQuery();
         int start = q.getOffset();
         int end = q.getOffset() + q.getLimit();
@@ -146,7 +145,7 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product>
         return p;
     }
 
-    private PageRequest getPageRequest(Query q, int pageIndex, int pageLength) {
+    private PageRequest getPageRequest(Query<String> q, int pageIndex, int pageLength) {
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
         } else {
@@ -154,7 +153,7 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product>
         }
     }
 
-    private Sort getSorting(Query q) {
+    private Sort getSorting(Query<String> q) {
         return new Sort(q.getSortOrders().stream()
                 .map(so -> new Order(
                         so.getDirection() == SortDirection.ASCENDING

@@ -177,7 +177,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
      *         dataProvider
      */
     @Override
-    public void setDataProvider(DataProvider<Todo> dataProvider) {
+    public void setDataProvider(DataProvider<Todo, ?> dataProvider) {
         grid.setDataProvider(dataProvider);
     }
 

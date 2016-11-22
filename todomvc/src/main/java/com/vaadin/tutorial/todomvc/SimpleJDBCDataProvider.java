@@ -52,16 +52,14 @@ public class SimpleJDBCDataProvider<T> extends AbstractJDBCDataProvider<T> {
 
     @Override
     protected ResultSet rowCountStatement(Connection connection,
-            Query query) throws SQLException {
-        assert query.getFilters() == null || query.getFilters().isEmpty();
+            Query<Object> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return sizeStatement.executeQuery();
     }
 
     @Override
     protected ResultSet resultSetStatement(
-            Query query) throws SQLException {
-        assert query.getFilters() == null || query.getFilters().isEmpty();
+            Query<Object> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return resultSetStatement.executeQuery();
     }

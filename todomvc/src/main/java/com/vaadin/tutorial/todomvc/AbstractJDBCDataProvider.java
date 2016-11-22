@@ -37,7 +37,7 @@ import java.util.stream.StreamSupport;
  *         data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
-public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T> implements AutoCloseable {
+public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T, Object> implements AutoCloseable {
     public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataProvider.class.getName());
     private final java.sql.Connection connection;
     private final DataRetriever<T> jdbcReader;
@@ -56,7 +56,7 @@ public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T
     }
 
     @Override
-    public int size(Query query) {
+    public int size(Query<Object> query) {
         if (cachedSize < 0) {
             try (ResultSet resultSet = rowCountStatement(connection, query)) {
                 resultSet.next();
@@ -73,13 +73,13 @@ public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T
     }
 
     protected abstract ResultSet rowCountStatement(
-            Connection connection, Query query) throws SQLException;
+            Connection connection, Query<Object> query) throws SQLException;
 
     protected abstract ResultSet resultSetStatement(
-            Query query) throws SQLException;
+            Query<Object> query) throws SQLException;
 
     @Override
-    public Stream<T> fetch(Query query) {
+    public Stream<T> fetch(Query<Object> query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {

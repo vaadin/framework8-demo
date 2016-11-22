@@ -6,7 +6,7 @@ import com.vaadin.server.data.DataProvider;
 /**
  * Interface for ProductDataProvider.
  */
-public interface ProductDataProvider extends DataProvider<Product> {
+public interface ProductDataProvider extends DataProvider<Product, String> {
 
     /**
      * Sets the filtering text for this DataProvider.
