@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -17,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
@@ -27,21 +27,15 @@ import com.vaadin.framework8.samples.backend.repository.ProductRepository;
 import com.vaadin.server.data.AbstractDataProvider;
 import com.vaadin.server.data.Query;
 import com.vaadin.shared.data.sort.SortDirection;
-import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.UI;
 
 /**
  * DataProvider implementation for managing {@code ProductRepository} and
  * filtering.
- * <p>
- * <strong>Note:</strong> This implementation can't be used between multiple
- * different components as the filtering is actually stateful and not stateless.
  */
-@Component
-// TODO: Use common data provider for all UIs after backend filtering is done
-@UIScope
-@Transactional
-public class ProductDataProviderImpl extends AbstractDataProvider<Product, String>
+@Service
+public class ProductDataProviderImpl
+        extends AbstractDataProvider<Product, Supplier<String>>
         implements ProductDataProvider {
 
     private static class PageQuery {
@@ -55,38 +49,36 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product, Strin
     @Autowired
     private CategoryRepository categoryRepo;
 
-    private String filterText;
-
     @Override
     public boolean isInMemory() {
         return false;
     }
 
     @Override
-    public int size(Query<String> t) {
-        return (int) getItems(getPaging(t).pageable).count();
+    @Transactional
+    public int size(Query<Supplier<String>> t) {
+        return (int) getItems(getPaging(t).pageable,
+                t.getFilter().map(Supplier::get).orElse(null)).count();
     }
 
     @Override
-    public Stream<Product> fetch(Query<String> t) {
+    @Transactional
+    public Stream<Product> fetch(Query<Supplier<String>> t) {
         PageQuery pageQuery = getPaging(t);
-        return getItems(pageQuery.pageable).skip(pageQuery.pageOffset)
-                .limit(t.getLimit());
+        return getItems(pageQuery.pageable,
+                t.getFilter().map(Supplier::get).orElse(null))
+                        .skip(pageQuery.pageOffset).limit(t.getLimit());
     }
 
-    public void setFilterText(String filterText) {
-        if (Objects.equals(this.filterText, filterText)) {
-            return;
-        }
-        this.filterText = filterText;
-        refreshAll();
-    }
-
+    @Transactional
+    @Override
     public void save(Product product) {
         productRepo.save(product);
         refreshAll();
     }
 
+    @Transactional
+    @Override
     public void delete(Product product) {
         productRepo.delete(product);
         refreshAll();
@@ -103,14 +95,14 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product, Strin
                 .collect(Collectors.toList());
     }
 
-    private Stream<Product> getItems(Pageable page) {
+    private Stream<Product> getItems(Pageable page, String filterText) {
         if (filterText == null || filterText.isEmpty()) {
             return StreamSupport.stream(productRepo.findAll(page).spliterator(),
                     false);
         }
         String filter = filterText.toLowerCase(UI.getCurrent().getLocale());
         return productRepo
-                .findAllByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
+                .findDistinctByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
                         filter, getFilteredAvailabilities(filter),
                         getFilteredCategories(filter), page)
                 .stream();
@@ -123,7 +115,7 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product, Strin
      *            the original query
      * @return paged query
      */
-    private PageQuery getPaging(Query<String> q) {
+    private PageQuery getPaging(Query<Supplier<String>> q) {
         final PageQuery p = new PageQuery();
         int start = q.getOffset();
         int end = q.getOffset() + q.getLimit();
@@ -145,7 +137,8 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product, Strin
         return p;
     }
 
-    private PageRequest getPageRequest(Query<String> q, int pageIndex, int pageLength) {
+    private PageRequest getPageRequest(Query<Supplier<String>> q, int pageIndex,
+            int pageLength) {
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
         } else {
@@ -153,7 +146,7 @@ public class ProductDataProviderImpl extends AbstractDataProvider<Product, Strin
         }
     }
 
-    private Sort getSorting(Query<String> q) {
+    private Sort getSorting(Query<Supplier<String>> q) {
         return new Sort(q.getSortOrders().stream()
                 .map(so -> new Order(
                         so.getDirection() == SortDirection.ASCENDING
