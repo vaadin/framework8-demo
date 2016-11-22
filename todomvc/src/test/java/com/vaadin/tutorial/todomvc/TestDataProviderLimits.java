@@ -64,7 +64,7 @@ public class TestDataProviderLimits {
 
     private void doRetrieveTest(int offset, int limit, int expectedFirst,
             int expectedLast) {
-        Query query = new Query(offset, limit, null, null);
+        Query<Void> query = new Query<>(offset, limit, null, null);
         int size = dataProvider.size(query);
         assertEquals("Response size", expectedLast - expectedFirst + 1, size);
         List<Integer> values = dataProvider.fetch(query).collect(Collectors.toList());

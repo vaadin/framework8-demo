@@ -170,14 +170,14 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     }
 
     /**
-     * Temporary method
-     * todo remove when filtering has been implemented on DataProvider level
+     * Temporary method todo remove when filtering has been implemented on
+     * DataProvider level
      *
      * @param dataProvider
-     *         dataProvider
+     *            dataProvider
      */
     @Override
-    public void setDataProvider(DataProvider<Todo> dataProvider) {
+    public void setDataProvider(DataProvider<Todo, Void> dataProvider) {
         grid.setDataProvider(dataProvider);
     }
 
