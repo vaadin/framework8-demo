@@ -15,6 +15,8 @@
  */
 package com.vaadin.tutorial.todomvc;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -28,37 +30,47 @@ import java.sql.Statement;
  * @author Vaadin Ltd
  */
 public class TodoModel {
+
+    /*
+             Basic pollable DataSource is used here.
+             That is mandatory for any web application:
+             In case of high load application the pool limits number of physical
+             database connections.
+             In case of low load application, connection pool fixes
+             stall jdbc connection problem.
+    */
+    private static final BasicDataSource dataSource;
+
+    static {
+        dataSource = new BasicDataSource();
+        dataSource.setUrl("jdbc:hsqldb:mem:tododb");
+        dataSource.setUsername("SA");
+        dataSource.setPassword("");
+        try (Connection connection = dataSource.getConnection()){
+            setupDatabase(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private final Connection conn;
-    private final SimpleJDBCDataProvider<Todo> dataProviderAll;
-    private final SimpleJDBCDataProvider<Todo> dataProviderActive;
-    private final SimpleJDBCDataProvider<Todo> dataProviderCompleted;
+    private final TodoJDBCDataProvider dataProvider;
 
     public TodoModel() {
         try {
             DriverManager.registerDriver(org.hsqldb.jdbc.JDBCDriver.driverInstance);
-            conn = DriverManager.getConnection("jdbc:hsqldb:mem:tododb", "SA", "");
-            setupDatabase(conn);
-            dataProviderAll = setupDataProvider("SELECT * FROM todo");
-            dataProviderActive = setupDataProvider(" SELECT * FROM todo WHERE NOT completed");
-            dataProviderCompleted = setupDataProvider(" SELECT * FROM todo WHERE completed");
+            conn = dataSource.getConnection();
+            dataProvider = setupDataProvider();
         } catch (SQLException e) {
             throw new RuntimeException("Model initialization failed", e);
         }
     }
 
-    private SimpleJDBCDataProvider<Todo> setupDataProvider(
-            String sqlQuery) throws SQLException {
-        return new SimpleJDBCDataProvider<>(conn, sqlQuery, resultSet ->
-        {
-            Todo todo = new Todo();
-            todo.setId(resultSet.getInt("id"));
-            todo.setText(resultSet.getString("text"));
-            todo.setCompleted(resultSet.getBoolean("completed"));
-            return todo;
-        });
+    private TodoJDBCDataProvider setupDataProvider() throws SQLException {
+        return new TodoJDBCDataProvider(this.conn);
     }
 
-    private void setupDatabase(Connection connection) {
+    private static void setupDatabase(Connection connection) {
         try (Statement s = connection.createStatement()) {
             s.execute("CREATE TABLE todo (id INTEGER IDENTITY PRIMARY KEY, text VARCHAR(255) , completed BOOLEAN)");
         } catch (SQLException ignored) {
@@ -86,16 +98,8 @@ public class TodoModel {
         return readInteger("select count(*) from todo where not COMPLETED");
     }
 
-    public SimpleJDBCDataProvider<Todo> getDataProviderAll() {
-        return dataProviderAll;
-    }
-
-    public SimpleJDBCDataProvider<Todo> getDataProviderActive() {
-        return dataProviderActive;
-    }
-
-    public SimpleJDBCDataProvider<Todo> getDataProviderCompleted() {
-        return dataProviderCompleted;
+    public TodoJDBCDataProvider getDataProvider() {
+        return dataProvider;
     }
 
     public Todo persist(Todo todo) {
@@ -154,4 +158,5 @@ public class TodoModel {
             throw new RuntimeException("Update failed", e);
         }
     }
+
 }
