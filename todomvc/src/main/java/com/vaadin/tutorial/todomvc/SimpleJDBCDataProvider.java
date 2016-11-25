@@ -18,7 +18,6 @@ package com.vaadin.tutorial.todomvc;
 import com.vaadin.server.data.Query;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -28,18 +27,11 @@ import java.sql.SQLException;
  *
  * @author Vaadin Ltd
  */
-public class SimpleJDBCDataProvider<T> extends PreparedJDBCDataProvider<T, Void> {
-
-    protected final PreparedStatement resultSetStatement;
-    protected final PreparedStatement sizeStatement;
+public class SimpleJDBCDataProvider<T> extends PreparedJDBCDataProvider<T,Void> {
 
     public SimpleJDBCDataProvider(Connection connection,
-            String sqlQuery, DataRetriever<T> jdbcReader) {
-        super(connection, jdbcReader);
-        resultSetStatement = openStatement(sqlQuery);
-
-        sizeStatement = openStatement(
-                "select count(*) from (" + sqlQuery + ")");
+            String sqlQuery, DataRetriever<T> jdbcReader) throws SQLException {
+        super(connection,sqlQuery, jdbcReader);
     }
 
 

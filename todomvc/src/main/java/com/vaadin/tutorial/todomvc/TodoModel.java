@@ -17,7 +17,6 @@ package com.vaadin.tutorial.todomvc;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -40,8 +39,19 @@ public class TodoModel {
              In case of low load application, connection pool fixes
              stall jdbc connection problem.
     */
-    private volatile static BasicDataSource dataSource;
+    private static final BasicDataSource dataSource;
 
+    static {
+        dataSource = new BasicDataSource();
+        dataSource.setUrl("jdbc:hsqldb:mem:tododb");
+        dataSource.setUsername("SA");
+        dataSource.setPassword("");
+        try (Connection connection = dataSource.getConnection()){
+            setupDatabase(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private final Connection conn;
     private final TodoJDBCDataProvider dataProvider;
@@ -49,34 +59,12 @@ public class TodoModel {
     public TodoModel() {
         try {
             DriverManager.registerDriver(org.hsqldb.jdbc.JDBCDriver.driverInstance);
-            conn = getDataSource().getConnection();
+            conn = dataSource.getConnection();
             dataProvider = setupDataProvider();
         } catch (SQLException e) {
             throw new RuntimeException("Model initialization failed", e);
         }
     }
-
-    private static DataSource getDataSource() {
-        if(dataSource == null) {
-            synchronized (TodoModel.class) {
-                // Standard double check trick to avoid double initialization
-                // in case of race conditions
-                if(dataSource == null) {
-                    dataSource = new BasicDataSource();
-                    dataSource.setUrl("jdbc:hsqldb:mem:tododb");
-                    dataSource.setUsername("SA");
-                    dataSource.setPassword("");
-                    try (Connection connection = dataSource.getConnection()){
-                        setupDatabase(connection);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
-        return dataSource;
-    }
-
 
     private TodoJDBCDataProvider setupDataProvider() throws SQLException {
         return new TodoJDBCDataProvider(this.conn);

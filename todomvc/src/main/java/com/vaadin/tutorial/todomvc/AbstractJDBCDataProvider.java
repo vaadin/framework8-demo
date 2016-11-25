@@ -37,12 +37,10 @@ import java.util.stream.StreamSupport;
  *         data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
-public abstract class AbstractJDBCDataProvider<T,F> extends
-        AbstractDataProvider<T, F> implements AutoCloseable {
-    private static final Logger LOGGER =
-            Logger.getLogger(AbstractJDBCDataProvider.class.getName());
-    protected final java.sql.Connection connection;
-    protected final DataRetriever<T> jdbcReader;
+public abstract class AbstractJDBCDataProvider<T,F> extends AbstractDataProvider<T, F> implements AutoCloseable {
+    public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataProvider.class.getName());
+    private final java.sql.Connection connection;
+    private final DataRetriever<T> jdbcReader;
 
     private int cachedSize = -1;
 
