@@ -6,11 +6,9 @@ public class TodoPresenter {
 
     private TodoModel model = new TodoModel();
 
-    private TaskFilter stateFilter = TaskFilter.ALL;
-
     public TodoPresenter(TodoView view) {
         this.view = view;
-        view.setDataProvider(model.getDataProviderAll());
+        view.setDataProvider(model.getDataProvider());
         view.updateCounters(model.getCompleted(), model.getActive());
     }
 
@@ -53,23 +51,7 @@ public class TodoPresenter {
         refreshView();
     }
 
-    public void filterTodos(TaskFilter stateFilter) {
-        this.stateFilter = stateFilter;
-        refreshView();
-    }
-
-    private void refreshView() {
-/* TODO move to DataProvider level when filtering is supported */
-        switch (stateFilter) {
-            case ACTIVE:
-                view.setDataProvider(model.getDataProviderActive());
-                break;
-            case COMPLETED:
-                view.setDataProvider(model.getDataProviderCompleted());
-                break;
-            default:
-                view.setDataProvider(model.getDataProviderAll());
-        }
+    public void refreshView() {
         view.refresh();
     }
 }
