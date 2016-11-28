@@ -55,6 +55,7 @@ public class SampleCrudView extends CssLayout implements View {
         filter = new TextField();
         filter.setStyleName("filter-textfield");
         filter.setPlaceholder("Filter");
+        // Trigger a refresh of data when the filter is updated
         filter.addValueChangeListener(event -> dataProvider.refreshAll());
 
         newProduct = new Button("New product");

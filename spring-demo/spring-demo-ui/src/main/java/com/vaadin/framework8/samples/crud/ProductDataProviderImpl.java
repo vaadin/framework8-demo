@@ -57,17 +57,19 @@ public class ProductDataProviderImpl
     @Override
     @Transactional
     public int size(Query<Supplier<String>> t) {
-        return (int) getItems(getPaging(t).pageable,
-                t.getFilter().map(Supplier::get).orElse(null)).count();
+        return (int) getItems(getPaging(t).pageable, getFilter(t)).count();
+    }
+
+    private String getFilter(Query<Supplier<String>> t) {
+        return t.getFilter().map(Supplier::get).orElse(null);
     }
 
     @Override
     @Transactional
     public Stream<Product> fetch(Query<Supplier<String>> t) {
         PageQuery pageQuery = getPaging(t);
-        return getItems(pageQuery.pageable,
-                t.getFilter().map(Supplier::get).orElse(null))
-                        .skip(pageQuery.pageOffset).limit(t.getLimit());
+        return getItems(pageQuery.pageable, getFilter(t))
+                .skip(pageQuery.pageOffset).limit(t.getLimit());
     }
 
     @Transactional
