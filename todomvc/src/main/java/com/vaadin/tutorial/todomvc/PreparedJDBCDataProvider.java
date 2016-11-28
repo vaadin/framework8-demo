@@ -19,45 +19,48 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 /**
- * Vaadin DataProvider over pure JDBC. Filtering ans sorting to be implemented
+ * Vaadin DataProvider over pure JDBC. Filtering and sorting to be implemented
  * in subclasses.
  *
  * @author Vaadin Ltd
  */
-public abstract class PreparedJDBCDataProvider<T,F> extends AbstractJDBCDataProvider<T,F> {
+public abstract class PreparedJDBCDataProvider<T, F> extends AbstractJDBCDataProvider<T, F> {
 
-    public static final Logger LOGGER = Logger.getLogger(PreparedJDBCDataProvider.class.getName());
-    protected final PreparedStatement resultSetStatement;
-    protected final PreparedStatement sizeStatement;
+    private static final Logger LOGGER
+            = Logger.getLogger(PreparedJDBCDataProvider.class.getName());
+
+    protected List<PreparedStatement> statements = new ArrayList<>();
 
     public PreparedJDBCDataProvider(Connection connection,
-            String sqlQuery, DataRetriever<T> jdbcReader) throws SQLException {
+            DataRetriever<T> jdbcReader) {
         super(connection, jdbcReader);
-        resultSetStatement = connection.prepareStatement(sqlQuery,
-                ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-
-        sizeStatement = connection.prepareStatement(
-                "select count(*) from (" + sqlQuery + ")",
-                ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-
     }
 
     @Override
     public void close() throws Exception {
-        Stream.of(resultSetStatement, sizeStatement).forEach(statement ->
-                {
-                    try {
-                        statement.close();
-                    } catch (SQLException e) {
-                        LOGGER.log(Level.WARNING, "Prepared statement was closed with error", e);
-                    }
-                }
-        );
+        for (PreparedStatement statement : statements) {
+            try {
+                statement.close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.WARNING, "Prepared statement was closed with error", e);
+            }
+        }
     }
 
+    protected PreparedStatement openStatement(String sqlQuery) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery,
+                    ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            statements.add(preparedStatement);
+            return preparedStatement;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
