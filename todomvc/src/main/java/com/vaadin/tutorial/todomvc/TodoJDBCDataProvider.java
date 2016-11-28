@@ -28,9 +28,15 @@ import java.util.function.Supplier;
  */
 class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskFilter>> {
 
+    protected final PreparedStatement resultSetStatement;
+    protected final PreparedStatement sizeStatement;
+
+    protected final PreparedStatement resultSetStatementFiltered;
+    protected final PreparedStatement sizeStatementFiltered;
+
     public TodoJDBCDataProvider(
             Connection connection) throws SQLException {
-        super(connection, "SELECT * FROM todo WHERE completed = ? or ?", resultSet ->
+        super(connection, resultSet ->
         {
             Todo todo = new Todo();
             todo.setId(resultSet.getInt("id"));
@@ -38,38 +44,45 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
             todo.setCompleted(resultSet.getBoolean("completed"));
             return todo;
         });
+
+        resultSetStatementFiltered =
+                openStatement("SELECT * FROM todo WHERE completed = ?");
+        sizeStatementFiltered =
+                openStatement("SELECT count(*) FROM todo WHERE completed = ?");
+
+        resultSetStatement = openStatement("SELECT * FROM todo");
+        sizeStatement = openStatement("SELECT count(*) FROM todo");
+
     }
 
     @Override
-    protected ResultSet rowCountStatement(Connection connection,
+    protected synchronized ResultSet rowCountStatement(Connection connection,
             Query<Supplier<TaskFilter>> query) throws SQLException {
-        return runStatement(sizeStatement, query);
+        TaskFilter taskFilter = filterValue(query);
+        if(taskFilter ==TaskFilter.ALL) {
+            return sizeStatement.executeQuery();
+        } else {
+            sizeStatementFiltered.setBoolean(1,
+                    taskFilter == TaskFilter.COMPLETED);
+            return sizeStatementFiltered.executeQuery();
+        }
     }
 
     @Override
     protected ResultSet resultSetStatement(
             Query<Supplier<TaskFilter>> query) throws SQLException {
-        return runStatement(resultSetStatement, query);
-    }
-
-    private synchronized ResultSet runStatement(PreparedStatement preparedStatement,
-            Query<Supplier<TaskFilter>> query) throws SQLException {
-        TaskFilter taskFilter = query.getFilter().map(Supplier::get).orElse(TaskFilter.ALL);
-        switch (taskFilter) {
-            case ACTIVE:
-                preparedStatement.setBoolean(1, false);
-                preparedStatement.setBoolean(2, false);
-                break;
-            case COMPLETED:
-                preparedStatement.setBoolean(1, true);
-                preparedStatement.setBoolean(2, false);
-                break;
-            default:
-                preparedStatement.setBoolean(1, true);
-                preparedStatement.setBoolean(2, true);
-                break;
-
+        TaskFilter taskFilter = filterValue(query);
+        if(taskFilter ==TaskFilter.ALL) {
+            return resultSetStatement.executeQuery();
+        } else {
+            resultSetStatementFiltered.setBoolean(1,
+                    taskFilter == TaskFilter.COMPLETED);
+            return resultSetStatementFiltered.executeQuery();
         }
-        return preparedStatement.executeQuery();
     }
+
+    private TaskFilter filterValue(Query<Supplier<TaskFilter>> query) {
+        return query.getFilter().map(Supplier::get).orElse(TaskFilter.ALL);
+    }
+
 }
