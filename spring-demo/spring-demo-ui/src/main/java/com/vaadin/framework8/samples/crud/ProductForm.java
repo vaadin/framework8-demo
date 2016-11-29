@@ -129,12 +129,9 @@ public class ProductForm extends ProductFormDesign {
     }
 
     private void onSave() {
-        Product product = binder.getBean().get();
-        if (currentProduct != null) {
-            BeanUtils.copyProperties(product, currentProduct);
-            product = currentProduct;
+        if (binder.writeBeanIfValid(currentProduct)) {
+            viewLogic.saveProduct(currentProduct);
         }
-        viewLogic.saveProduct(product);
     }
 
     private void onDelete() {
@@ -148,17 +145,19 @@ public class ProductForm extends ProductFormDesign {
     }
 
     private void updateButtons(StatusChangeEvent event) {
-        save.setEnabled(
-                !event.hasValidationErrors() && event.getBinder().hasChanges());
-        discard.setEnabled(event.getBinder().hasChanges());
+        boolean changes = event.getBinder().hasChanges();
+        boolean validationErrors = event.hasValidationErrors();
+
+        save.setEnabled(!validationErrors && changes);
+        discard.setEnabled(changes);
     }
 
     private void setUpData() {
-        Product copy = new Product();
         if (currentProduct != null) {
-            BeanUtils.copyProperties(currentProduct, copy);
+            binder.readBean(currentProduct);
+        } else {
+            binder.removeBean();
         }
-        binder.setBean(copy);
     }
 
 }

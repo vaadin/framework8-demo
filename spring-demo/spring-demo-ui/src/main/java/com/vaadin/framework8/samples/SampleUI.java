@@ -2,6 +2,7 @@ package com.vaadin.framework8.samples;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
 import com.vaadin.annotations.Widgetset;
@@ -32,6 +33,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @Viewport("user-scalable=no,initial-scale=1.0")
 @Theme("mytheme")
 @SpringUI
+@Push
 public class SampleUI extends UI {
 
     @Autowired

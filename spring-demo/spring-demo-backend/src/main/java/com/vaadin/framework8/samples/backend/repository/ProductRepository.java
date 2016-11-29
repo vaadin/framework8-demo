@@ -18,9 +18,6 @@ package com.vaadin.framework8.samples.backend.repository;
 import java.util.Collection;
 import java.util.List;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -37,10 +34,9 @@ import com.vaadin.framework8.samples.backend.data.Product;
  * @author Vaadin Ltd
  *
  */
-@Transactional(TxType.MANDATORY)
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    List<Product> findAllByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
+    List<Product> findDistinctByProductNameContainingIgnoreCaseOrAvailabilityInOrCategoryIn(
             String productName, Collection<Availability> availability,
             Collection<Category> category, Pageable page);
 
