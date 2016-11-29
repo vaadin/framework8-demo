@@ -45,14 +45,14 @@ public class SimpleJDBCDataProvider<T> extends PreparedJDBCDataProvider<T, Void>
 
     @Override
     protected ResultSet rowCountStatement(Connection connection,
-            Query<Void> query) throws SQLException {
+            Query<T,Void> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return sizeStatement.executeQuery();
     }
 
     @Override
     protected ResultSet resultSetStatement(
-            Query<Void> query) throws SQLException {
+            Query<T,Void> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return resultSetStatement.executeQuery();
     }

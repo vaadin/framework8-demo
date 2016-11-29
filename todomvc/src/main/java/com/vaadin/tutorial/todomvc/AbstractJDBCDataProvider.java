@@ -58,7 +58,7 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
     }
 
     @Override
-    public int size(Query<F> query) {
+    public int size(Query<T,F> query) {
         if (cachedSize < 0) {
             try (ResultSet resultSet = rowCountStatement(connection, query)) {
                 resultSet.next();
@@ -75,13 +75,13 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
     }
 
     protected abstract ResultSet rowCountStatement(
-            Connection connection, Query<F> query) throws SQLException;
+            Connection connection, Query<T,F> query) throws SQLException;
 
     protected abstract ResultSet resultSetStatement(
-            Query<F> query) throws SQLException;
+            Query<T,F> query) throws SQLException;
 
     @Override
-    public Stream<T> fetch(Query<F> query) {
+    public Stream<T> fetch(Query<T,F> query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {

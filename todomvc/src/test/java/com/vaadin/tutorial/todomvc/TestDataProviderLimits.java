@@ -25,6 +25,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,8 @@ public class TestDataProviderLimits {
 
     private void doRetrieveTest(int offset, int limit, int expectedFirst,
             int expectedLast) {
-        Query<Void> query = new Query<>(offset, limit, null, null);
+        Query<Integer,Void> query = new Query<>(offset, limit,
+                Collections.emptyList(), null, null);
         int size = dataProvider.size(query);
         assertEquals("Response size", expectedLast - expectedFirst + 1, size);
         List<Integer> values = dataProvider.fetch(query).collect(Collectors.toList());
