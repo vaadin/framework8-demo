@@ -51,13 +51,13 @@ public class ContactForm extends FormLayout {
                 .getValue().trim().isEmpty()
                 || !email.getValue().trim().isEmpty();
 
-        Binding<Contact, String, String> emailBinding = binder.forField(email)
+        Binding<Contact, String> emailBinding = binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty")
                 .withValidator(new EmailValidator("Incorrect email address"));
         emailBinding.bind(Contact::getEmail, Contact::setEmail);
 
-        Binding<Contact, String, String> phoneBinding = binder.forField(phone)
+        Binding<Contact, String> phoneBinding = binder.forField(phone)
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty");
         phoneBinding.bind(Contact::getPhone, Contact::setPhone);
