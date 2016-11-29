@@ -37,8 +37,8 @@ public class RegistrationFormUI extends UI {
 
     private final Binder<Person> binder = new Binder<>();
 
-    private Binding<Person, String, String> passwordBinding;
-    private Binding<Person, String, String> confirmPasswordBinding;
+    private Binding<Person, String> passwordBinding;
+    private Binding<Person, String> confirmPasswordBinding;
 
     private boolean showConfirmPasswordStatus;
 

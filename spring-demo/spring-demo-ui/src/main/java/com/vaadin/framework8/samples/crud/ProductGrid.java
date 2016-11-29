@@ -21,7 +21,6 @@ public class ProductGrid extends Grid<Product> {
     public ProductGrid() {
         setSizeFull();
 
-        // TODO: Add sorting for backend
         addColumn("Id", p -> String.valueOf(p.getId())).setSortProperty("id");
         addColumn("Product Name", Product::getProductName)
                 .setSortProperty("productName");

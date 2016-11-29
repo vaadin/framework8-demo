@@ -49,13 +49,14 @@ public class SampleCrudView extends CssLayout implements View {
 
     @Autowired
     private SampleCrudLogicFactory logicFactory;
+    private TextField filter;
 
     public HorizontalLayout createTopBar() {
-        TextField filter = new TextField();
+        filter = new TextField();
         filter.setStyleName("filter-textfield");
         filter.setPlaceholder("Filter");
-        filter.addValueChangeListener(
-                event -> dataProvider.setFilterText(event.getValue()));
+        // Trigger a refresh of data when the filter is updated
+        filter.addValueChangeListener(event -> dataProvider.refreshAll());
 
         newProduct = new Button("New product");
         newProduct.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -134,7 +135,7 @@ public class SampleCrudView extends CssLayout implements View {
         grid = new ProductGrid();
         grid.asSingleSelect().addValueChangeListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
-        grid.setDataProvider(dataProvider);
+        grid.setDataProvider(dataProvider.setFilter(() -> filter.getValue()));
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);
