@@ -40,7 +40,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
     }
 
     @Override
-    public Stream<JsonObject> fetch(Query<Void> t) {
+    public Stream<JsonObject> fetch(Query<JsonObject, Void> t) {
         URL url;
         try {
             url = new URL(restApiUrl);
@@ -64,7 +64,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
     }
 
     @Override
-    public int size(Query<Void> t) {
+    public int size(Query<JsonObject, Void> t) {
         return 200;
     }
 

@@ -56,17 +56,17 @@ public class ProductDataProviderImpl
 
     @Override
     @Transactional
-    public int size(Query<Supplier<String>> t) {
+    public int size(Query<Product, Supplier<String>> t) {
         return (int) getItems(getPaging(t).pageable, getFilter(t)).count();
     }
 
-    private String getFilter(Query<Supplier<String>> t) {
+    private String getFilter(Query<Product, Supplier<String>> t) {
         return t.getFilter().map(Supplier::get).orElse(null);
     }
 
     @Override
     @Transactional
-    public Stream<Product> fetch(Query<Supplier<String>> t) {
+    public Stream<Product> fetch(Query<Product, Supplier<String>> t) {
         PageQuery pageQuery = getPaging(t);
         return getItems(pageQuery.pageable, getFilter(t))
                 .skip(pageQuery.pageOffset).limit(t.getLimit());
@@ -117,7 +117,7 @@ public class ProductDataProviderImpl
      *            the original query
      * @return paged query
      */
-    private PageQuery getPaging(Query<Supplier<String>> q) {
+    private PageQuery getPaging(Query<Product, Supplier<String>> q) {
         final PageQuery p = new PageQuery();
         int start = q.getOffset();
         int end = q.getOffset() + q.getLimit();
@@ -139,7 +139,7 @@ public class ProductDataProviderImpl
         return p;
     }
 
-    private PageRequest getPageRequest(Query<Supplier<String>> q, int pageIndex,
+    private PageRequest getPageRequest(Query<Product, Supplier<String>> q, int pageIndex,
             int pageLength) {
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
@@ -148,7 +148,7 @@ public class ProductDataProviderImpl
         }
     }
 
-    private Sort getSorting(Query<Supplier<String>> q) {
+    private Sort getSorting(Query<Product, Supplier<String>> q) {
         return new Sort(q.getSortOrders().stream()
                 .map(so -> new Order(
                         so.getDirection() == SortDirection.ASCENDING
