@@ -57,9 +57,9 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
 
     @Override
     protected synchronized ResultSet rowCountStatement(Connection connection,
-            Query<Supplier<TaskFilter>> query) throws SQLException {
-        TaskFilter taskFilter = filterValue(query);
-        if(taskFilter ==TaskFilter.ALL) {
+            Query<Todo, Supplier<TaskFilter>> query) throws SQLException {
+        TaskFilter taskFilter = obtainFilterValue(query);
+        if (taskFilter == TaskFilter.ALL) {
             return sizeStatement.executeQuery();
         } else {
             sizeStatementFiltered.setBoolean(1,
@@ -70,9 +70,9 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
 
     @Override
     protected ResultSet resultSetStatement(
-            Query<Supplier<TaskFilter>> query) throws SQLException {
-        TaskFilter taskFilter = filterValue(query);
-        if(taskFilter ==TaskFilter.ALL) {
+            Query<Todo, Supplier<TaskFilter>> query) throws SQLException {
+        TaskFilter taskFilter = obtainFilterValue(query);
+        if (taskFilter == TaskFilter.ALL) {
             return resultSetStatement.executeQuery();
         } else {
             resultSetStatementFiltered.setBoolean(1,
@@ -81,7 +81,8 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
         }
     }
 
-    private TaskFilter filterValue(Query<Supplier<TaskFilter>> query) {
+    private TaskFilter obtainFilterValue(Query<Todo, Supplier<TaskFilter>> query) {
+        assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return query.getFilter().map(Supplier::get).orElse(TaskFilter.ALL);
     }
 
