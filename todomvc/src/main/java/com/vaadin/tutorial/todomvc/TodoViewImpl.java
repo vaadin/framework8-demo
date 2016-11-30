@@ -1,10 +1,7 @@
 package com.vaadin.tutorial.todomvc;
 
-import java.util.EnumSet;
-
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.data.DataProvider;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -16,6 +13,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
+
+import java.util.EnumSet;
 
 public class TodoViewImpl extends VerticalLayout implements TodoView {
 
@@ -36,6 +35,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private Todo currentlyEditedTodo;
 
     private EnterPressHandler newTodoFieldEnterPressHandler;
+    private TaskFilter taskFilter;
 
     public TodoViewImpl() {
 
@@ -75,7 +75,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         newTodoField.setPlaceholder("What needs to be done?");
         newTodoField.focus(); // auto-focus
         // there can only be one shortcut listener set, so need to add/remove
-        // this in editTodo(Todo)
+        // this in editTodo()
         newTodoFieldEnterPressHandler = new EnterPressHandler(
                 this::onNewTodoFieldEnter);
         newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
@@ -127,7 +127,10 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         filters.setValue(TaskFilter.ALL);
         filters.addValueChangeListener(
-                event -> presenter.filterTodos(event.getValue()));
+                event -> {
+                    taskFilter = event.getValue();
+                    presenter.refreshView();
+                });
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");
@@ -169,16 +172,9 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         }
     }
 
-    /**
-     * Temporary method todo remove when filtering has been implemented on
-     * DataProvider level
-     *
-     * @param dataProvider
-     *            dataProvider
-     */
     @Override
-    public void setDataProvider(DataProvider<Todo, Void> dataProvider) {
-        grid.setDataProvider(dataProvider);
+    public void setDataProvider(TodoJDBCDataProvider dataProvider) {
+        grid.setDataProvider(dataProvider.setFilter(() -> taskFilter));
     }
 
     private void onNewTodoFieldEnter() {

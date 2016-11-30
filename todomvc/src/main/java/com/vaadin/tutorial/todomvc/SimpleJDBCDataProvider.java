@@ -21,9 +21,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Stream;
 
 /**
  * Vaadin DataProvider over pure JDBC. Only fixed SQL statements are supported,
@@ -31,22 +28,18 @@ import java.util.stream.Stream;
  *
  * @author Vaadin Ltd
  */
-public class SimpleJDBCDataProvider<T> extends AbstractJDBCDataProvider<T> {
+public class SimpleJDBCDataProvider<T> extends PreparedJDBCDataProvider<T, Void> {
 
-    public static final Logger LOGGER = Logger.getLogger(SimpleJDBCDataProvider.class.getName());
-    private final PreparedStatement resultSetStatement;
-    private final PreparedStatement sizeStatement;
+    protected final PreparedStatement resultSetStatement;
+    protected final PreparedStatement sizeStatement;
 
     public SimpleJDBCDataProvider(Connection connection,
-            String sqlQuery, DataRetriever<T> jdbcReader) throws SQLException {
+            String sqlQuery, DataRetriever<T> jdbcReader) {
         super(connection, jdbcReader);
-        resultSetStatement = connection.prepareStatement(sqlQuery,
-                ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+        resultSetStatement = openStatement(sqlQuery);
 
-        sizeStatement = connection.prepareStatement(
-                "select count(*) from (" + sqlQuery + ")",
-                ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-
+        sizeStatement = openStatement(
+                "select count(*) from (" + sqlQuery + ")");
     }
 
 
@@ -62,19 +55,6 @@ public class SimpleJDBCDataProvider<T> extends AbstractJDBCDataProvider<T> {
             Query<T,Void> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return resultSetStatement.executeQuery();
-    }
-
-    @Override
-    public void close() throws Exception {
-        Stream.of(resultSetStatement, sizeStatement).forEach(statement ->
-                {
-                    try {
-                        statement.close();
-                    } catch (SQLException e) {
-                        LOGGER.log(Level.WARNING, "Prepared statement was closed with error", e);
-                    }
-                }
-        );
     }
 
 }

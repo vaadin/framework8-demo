@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2014 Vaadin Ltd.
+ * Copyright 2000-2016 Vaadin Ltd.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -37,10 +37,12 @@ import java.util.stream.StreamSupport;
  *         data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
-public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T, Void> implements AutoCloseable {
-    public static final Logger LOGGER = Logger.getLogger(AbstractJDBCDataProvider.class.getName());
-    private final java.sql.Connection connection;
-    private final DataRetriever<T> jdbcReader;
+public abstract class AbstractJDBCDataProvider<T,F> extends
+        AbstractDataProvider<T, F> implements AutoCloseable {
+    private static final Logger LOGGER =
+            Logger.getLogger(AbstractJDBCDataProvider.class.getName());
+    protected final java.sql.Connection connection;
+    protected final DataRetriever<T> jdbcReader;
 
     private int cachedSize = -1;
 
@@ -56,7 +58,7 @@ public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T
     }
 
     @Override
-    public int size(Query<T, Void> query) {
+    public int size(Query<T, F> query) {
         if (cachedSize < 0) {
             try (ResultSet resultSet = rowCountStatement(connection, query)) {
                 resultSet.next();
@@ -73,13 +75,13 @@ public abstract class AbstractJDBCDataProvider<T> extends AbstractDataProvider<T
     }
 
     protected abstract ResultSet rowCountStatement(
-            Connection connection, Query<T, Void> query) throws SQLException;
+            Connection connection, Query<T,F> query) throws SQLException;
 
     protected abstract ResultSet resultSetStatement(
-            Query<T, Void> query) throws SQLException;
+            Query<T,F> query) throws SQLException;
 
     @Override
-    public Stream<T> fetch(Query<T, Void> query) {
+    public Stream<T> fetch(Query<T,F> query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {
