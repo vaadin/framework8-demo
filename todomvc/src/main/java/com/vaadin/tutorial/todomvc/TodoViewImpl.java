@@ -2,6 +2,7 @@ package com.vaadin.tutorial.todomvc;
 
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -11,6 +12,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.RadioButtonGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.NoSelectionModel;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -36,6 +38,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     private EnterPressHandler newTodoFieldEnterPressHandler;
     private TaskFilter taskFilter;
+    private Registration enterHandler;
 
     public TodoViewImpl() {
 
@@ -88,7 +91,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     private void initGrid() {
         grid = new Grid<>();
-        // TODO disable grid selection once supported
+        grid.setSelectionModel(new NoSelectionModel<>(grid));
         grid.setHeight(null);
         grid.setDetailsGenerator(this::createTodoEditor);
         grid.setStyleGenerator(this::createStyle);
@@ -192,12 +195,15 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         if (currentlyEditedTodo != null) {
             presenter.updateTodo(currentlyEditedTodo);
             grid.setDetailsVisible(currentlyEditedTodo, false);
-            newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
+            enterHandler = newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
         }
 
         currentlyEditedTodo = newTodo;
         if (currentlyEditedTodo != null) {
-            newTodoField.removeShortcutListener(newTodoFieldEnterPressHandler);
+            if (enterHandler != null) {
+                enterHandler.remove();
+                enterHandler = null;
+            }
             grid.setDetailsVisible(currentlyEditedTodo, true);
         }
     }
