@@ -80,7 +80,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         // this in editTodo()
         newTodoFieldEnterPressHandler = new EnterPressHandler(
                 this::onNewTodoFieldEnter);
-        newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
+        enterHandler = newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
 
         topBar.addComponents(markAllDoneButton, newTodoField);
         topBar.setExpandRatio(newTodoField, 1);
