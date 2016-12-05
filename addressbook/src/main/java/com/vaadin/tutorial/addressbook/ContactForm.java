@@ -54,13 +54,13 @@ public class ContactForm extends FormLayout {
         Binding<Contact, String> emailBinding = binder.forField(email)
                 .withValidator(phoneOrEmailPredicate,
                         "Both phone and email cannot be empty")
-                .withValidator(new EmailValidator("Incorrect email address"));
-        emailBinding.bind(Contact::getEmail, Contact::setEmail);
+                .withValidator(new EmailValidator("Incorrect email address"))
+                .bind(Contact::getEmail, Contact::setEmail);
 
         Binding<Contact, String> phoneBinding = binder.forField(phone)
                 .withValidator(phoneOrEmailPredicate,
-                        "Both phone and email cannot be empty");
-        phoneBinding.bind(Contact::getPhone, Contact::setPhone);
+                        "Both phone and email cannot be empty")
+                .bind(Contact::getPhone, Contact::setPhone);
 
         // Trigger cross-field validation when the other field is changed
         email.addValueChangeListener(event -> phoneBinding.validate());

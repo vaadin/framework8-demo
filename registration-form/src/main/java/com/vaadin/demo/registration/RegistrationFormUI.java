@@ -90,16 +90,15 @@ public class RegistrationFormUI extends UI {
                 .withValidator(new PasswordValidator())
                 .withValidationStatusHandler(
                         status -> commonStatusChangeHandler(status,
-                                passwordField));
+                                passwordField))
+                .bind(Person::getPassword, Person::setPassword);
         passwordField.addValueChangeListener(
                 event -> confirmPasswordBinding.validate());
-        passwordBinding.bind(Person::getPassword, Person::setPassword);
 
         PasswordField confirmPasswordField = new PasswordField();
         addToLayout(layout, confirmPasswordField, "Password again");
 
-        confirmPasswordBinding = binder.forField(confirmPasswordField);
-        confirmPasswordBinding
+        confirmPasswordBinding = binder.forField(confirmPasswordField)
                 .withValidator(Validator.from(this::validateConfirmPasswd,
                         "Password doesn't match"))
                 .withValidationStatusHandler(
