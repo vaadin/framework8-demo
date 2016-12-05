@@ -191,6 +191,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         if (currentlyEditedTodo == newTodo) {
             return;
         }
+        Registration oldEnterHandler = enterHandler;
         if (currentlyEditedTodo != null) {
             presenter.updateTodo(currentlyEditedTodo);
             grid.setDetailsVisible(currentlyEditedTodo, false);
@@ -199,9 +200,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
         currentlyEditedTodo = newTodo;
         if (currentlyEditedTodo != null) {
-            if (enterHandler != null) {
-                enterHandler.remove();
-                enterHandler = null;
+            if (oldEnterHandler != null) {
+                oldEnterHandler.remove();
             }
             grid.setDetailsVisible(currentlyEditedTodo, true);
         }
@@ -214,7 +214,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         textField.setValue(todo.getText());
         textField.focus();
         textField.addValueChangeListener(e -> todo.setText(e.getValue()));
-        textField.addShortcutListener(
+        enterHandler = textField.addShortcutListener(
                 new EnterPressHandler(() -> editTodo(null)));
         textField.addBlurListener(e -> editTodo(null));
         return textField;
