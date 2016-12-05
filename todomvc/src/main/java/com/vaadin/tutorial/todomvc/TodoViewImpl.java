@@ -2,6 +2,7 @@ package com.vaadin.tutorial.todomvc;
 
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.Registration;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -36,6 +37,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     private EnterPressHandler newTodoFieldEnterPressHandler;
     private TaskFilter taskFilter;
+    private Registration enterHandler;
 
     public TodoViewImpl() {
 
@@ -78,7 +80,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         // this in editTodo()
         newTodoFieldEnterPressHandler = new EnterPressHandler(
                 this::onNewTodoFieldEnter);
-        newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
+        enterHandler = newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
 
         topBar.addComponents(markAllDoneButton, newTodoField);
         topBar.setExpandRatio(newTodoField, 1);
@@ -189,15 +191,18 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         if (currentlyEditedTodo == newTodo) {
             return;
         }
+        Registration oldEnterHandler = enterHandler;
         if (currentlyEditedTodo != null) {
             presenter.updateTodo(currentlyEditedTodo);
             grid.setDetailsVisible(currentlyEditedTodo, false);
-            newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
+            enterHandler = newTodoField.addShortcutListener(newTodoFieldEnterPressHandler);
         }
 
         currentlyEditedTodo = newTodo;
         if (currentlyEditedTodo != null) {
-            newTodoField.removeShortcutListener(newTodoFieldEnterPressHandler);
+            if (oldEnterHandler != null) {
+                oldEnterHandler.remove();
+            }
             grid.setDetailsVisible(currentlyEditedTodo, true);
         }
     }
@@ -209,7 +214,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         textField.setValue(todo.getText());
         textField.focus();
         textField.addValueChangeListener(e -> todo.setText(e.getValue()));
-        textField.addShortcutListener(
+        enterHandler = textField.addShortcutListener(
                 new EnterPressHandler(() -> editTodo(null)));
         textField.addBlurListener(e -> editTodo(null));
         return textField;
