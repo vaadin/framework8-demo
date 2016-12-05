@@ -1,11 +1,14 @@
 package com.vaadin.tutorial.todomvc;
 
+import java.util.EnumSet;
+
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.RadioButtonGroup;
@@ -13,8 +16,6 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.renderers.ButtonRenderer;
 import com.vaadin.ui.themes.ValoTheme;
-
-import java.util.EnumSet;
 
 public class TodoViewImpl extends VerticalLayout implements TodoView {
 
@@ -88,7 +89,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     private void initGrid() {
         grid = new Grid<>();
-        // TODO disable grid selection once supported
+        grid.setSelectionMode(SelectionMode.NONE);
         grid.setHeight(null);
         grid.setDetailsGenerator(this::createTodoEditor);
         grid.setStyleGenerator(this::createStyle);
@@ -126,11 +127,10 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         filters.setValue(TaskFilter.ALL);
-        filters.addValueChangeListener(
-                event -> {
-                    taskFilter = event.getValue();
-                    presenter.refreshView();
-                });
+        filters.addValueChangeListener(event -> {
+            taskFilter = event.getValue();
+            presenter.refreshView();
+        });
 
         clearCompleted = new Button("Clear completed");
         clearCompleted.setId("clear-completed");
