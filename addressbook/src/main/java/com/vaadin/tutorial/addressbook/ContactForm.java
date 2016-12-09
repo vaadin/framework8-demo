@@ -100,16 +100,16 @@ public class ContactForm extends FormLayout {
     }
 
     public void save(Button.ClickEvent event) {
-        binder.getBean().ifPresent(bean -> {
-            if (binder.writeBeanIfValid(bean)) {
-                ContactService.getDemoService().save(bean);
+        Contact bean = binder.getBean();
+        if (binder.writeBeanIfValid(bean)) {
+            ContactService.getDemoService().save(bean);
 
-                String msg = String.format("Saved '%s %s'.",
-                        bean.getFirstName(), bean.getLastName());
-                Notification.show(msg, Type.TRAY_NOTIFICATION);
-                getUI().getContent().refreshContacts();
-            }
-        });
+            String msg = String.format("Saved '%s %s'.", bean.getFirstName(),
+                    bean.getLastName());
+            Notification.show(msg, Type.TRAY_NOTIFICATION);
+            getUI().getContent().refreshContacts();
+        }
+
     }
 
     public void cancel(Button.ClickEvent event) {
