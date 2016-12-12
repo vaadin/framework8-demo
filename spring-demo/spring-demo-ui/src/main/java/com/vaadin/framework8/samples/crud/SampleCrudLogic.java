@@ -22,7 +22,6 @@ import com.vaadin.spring.annotation.SpringComponent;
  * the system separately, and to e.g. provide alternative views for the same
  * data.
  */
-@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 @SpringComponent
 public class SampleCrudLogic implements Serializable {
 
