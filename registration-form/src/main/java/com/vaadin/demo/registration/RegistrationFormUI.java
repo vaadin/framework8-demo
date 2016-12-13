@@ -52,6 +52,7 @@ public class RegistrationFormUI extends UI {
         statusMessage.addStyleName("validation-message");
         textField.setData(statusMessage);
         HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(false);
         horizontalLayout.addComponent(textField);
         textField.setWidth(WIDTH, Unit.PIXELS);
         horizontalLayout.addComponent(statusMessage);
@@ -62,8 +63,6 @@ public class RegistrationFormUI extends UI {
     protected void init(VaadinRequest request) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
-        layout.setSpacing(true);
-        layout.setMargin(true);
         setContent(layout);
 
         TextField fullNameField = new TextField();
