@@ -135,7 +135,7 @@ public class SampleCrudView extends CssLayout implements View {
         grid = new ProductGrid();
         grid.asSingleSelect().addValueChangeListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
-        grid.setDataProvider(dataProvider.setFilter(() -> filter.getValue()));
+        grid.setDataProvider(dataProvider.withFilter(() -> filter.getValue()));
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);
