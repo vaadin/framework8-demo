@@ -85,6 +85,7 @@ public class SampleUI extends UI {
         layout.addComponent(viewContainer);
         layout.setExpandRatio(viewContainer, 1);
         layout.setSizeFull();
+        layout.setSpacing(false);
 
         navigator.navigateTo(SampleCrudView.VIEW_NAME);
     }
