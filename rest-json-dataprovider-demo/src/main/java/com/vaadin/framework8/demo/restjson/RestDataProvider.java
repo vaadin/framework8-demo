@@ -15,17 +15,18 @@
  */
 package com.vaadin.framework8.demo.restjson;
 
-import com.vaadin.data.util.JsonUtil;
 import com.vaadin.server.data.AbstractDataProvider;
 import com.vaadin.server.data.Query;
 import elemental.json.Json;
 import elemental.json.JsonArray;
 import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
@@ -48,7 +49,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
             JsonObject json = Json.parse(jsonData);
 
             JsonArray results = json.getArray("results");
-            return JsonUtil.objectStream(results);
+            return stream(results);
         } catch (IOException e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE,
                     "Error fetching JSON", e);
@@ -68,4 +69,25 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
         return 200;
     }
 
-}
+
+    /**
+     * Creates a stream from a JSON array.
+     *
+     * @param array
+     *            the JSON array to create a stream from
+     * @return a stream of JSON values
+     */
+    private static <T extends JsonValue> Stream<T> stream(JsonArray array) {
+        assert array != null;
+        return new AbstractList<T>() {
+            @Override
+            public T get(int index) {
+                return array.get(index);
+            }
+
+            @Override
+            public int size() {
+                return array.length();
+            }
+        }.stream();
+    }}
