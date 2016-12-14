@@ -16,7 +16,7 @@
 package com.vaadin.demo.registration;
 
 import com.vaadin.data.ValidationResult;
-import com.vaadin.data.converter.ValueContext;
+import com.vaadin.data.ValueContext;
 import com.vaadin.data.validator.StringLengthValidator;
 
 /**
