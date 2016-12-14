@@ -68,7 +68,7 @@ public class RegistrationFormUI extends UI {
         TextField fullNameField = new TextField();
         addToLayout(layout, fullNameField, "Full name");
 
-        binder.forField(fullNameField).setRequired("Full name may not be empty")
+        binder.forField(fullNameField).asRequired("Full name may not be empty")
                 .withValidationStatusHandler(
                         status -> commonStatusChangeHandler(status,
                                 fullNameField))
