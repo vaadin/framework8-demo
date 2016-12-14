@@ -9,9 +9,9 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Binder.Binding;
+import com.vaadin.data.BindingValidationStatus;
+import com.vaadin.data.BindingValidationStatus.Status;
 import com.vaadin.data.HasValue;
-import com.vaadin.data.ValidationStatus;
-import com.vaadin.data.ValidationStatus.Status;
 import com.vaadin.data.Validator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -120,7 +120,7 @@ public class RegistrationFormUI extends UI {
         return button;
     }
 
-    private void commonStatusChangeHandler(ValidationStatus<?> event,
+    private void commonStatusChangeHandler(BindingValidationStatus<?> event,
             AbstractTextField field) {
         Label statusLabel = (Label) field.getData();
         statusLabel.setVisible(!event.getStatus().equals(Status.UNRESOLVED));
@@ -139,8 +139,8 @@ public class RegistrationFormUI extends UI {
         }
     }
 
-    private void confirmPasswordStatusChangeHandler(ValidationStatus<?> event,
-            AbstractTextField field) {
+    private void confirmPasswordStatusChangeHandler(
+            BindingValidationStatus<?> event, AbstractTextField field) {
         commonStatusChangeHandler(event, field);
         Label statusLabel = (Label) field.getData();
         statusLabel.setVisible(showConfirmPasswordStatus);
@@ -152,7 +152,7 @@ public class RegistrationFormUI extends UI {
             return true;
 
         }
-        ValidationStatus<String> status = passwordBinding.validate();
+        BindingValidationStatus<String> status = passwordBinding.validate();
         if (status.isError()) {
             return true;
         }
