@@ -176,7 +176,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     @Override
     public void setDataProvider(TodoJDBCDataProvider dataProvider) {
-        grid.setDataProvider(dataProvider.setFilter(() -> taskFilter));
+        grid.setDataProvider(dataProvider.withFilter(() -> taskFilter));
     }
 
     private void onNewTodoFieldEnter() {
