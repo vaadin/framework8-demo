@@ -46,7 +46,6 @@ public class Menu extends CssLayout {
         final HorizontalLayout top = new HorizontalLayout();
         top.setDefaultComponentAlignment(Alignment.MIDDLE_LEFT);
         top.addStyleName(ValoTheme.MENU_TITLE);
-        top.setSpacing(true);
         Label title = new Label("My CRUD");
         title.addStyleName(ValoTheme.LABEL_H3);
         title.setSizeUndefined();

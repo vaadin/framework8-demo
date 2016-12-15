@@ -64,7 +64,6 @@ public class SampleCrudView extends CssLayout implements View {
         newProduct.addClickListener(event -> viewLogic.newProduct());
 
         HorizontalLayout topLayout = new HorizontalLayout();
-        topLayout.setSpacing(true);
         topLayout.setWidth("100%");
         topLayout.addComponent(filter);
         topLayout.addComponent(newProduct);
@@ -140,9 +139,9 @@ public class SampleCrudView extends CssLayout implements View {
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);
         barAndGridLayout.addComponent(grid);
-        barAndGridLayout.setMargin(true);
-        barAndGridLayout.setSpacing(true);
         barAndGridLayout.setSizeFull();
+        barAndGridLayout.setMargin(false);
+        barAndGridLayout.setSpacing(false);
         barAndGridLayout.setExpandRatio(grid, 1);
         barAndGridLayout.setStyleName("crud-main-layout");
 

@@ -7,7 +7,6 @@ import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -16,8 +15,8 @@ import org.springframework.context.annotation.Scope;
 import com.vaadin.data.BeanBinder;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
-import com.vaadin.data.util.converter.StringToIntegerConverter;
-import com.vaadin.data.util.converter.ValueContext;
+import com.vaadin.data.converter.StringToIntegerConverter;
+import com.vaadin.data.ValueContext;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;

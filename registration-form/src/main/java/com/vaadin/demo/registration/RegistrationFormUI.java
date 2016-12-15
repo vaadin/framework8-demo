@@ -9,9 +9,9 @@ import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.Binder;
 import com.vaadin.data.Binder.Binding;
+import com.vaadin.data.BindingValidationStatus;
+import com.vaadin.data.BindingValidationStatus.Status;
 import com.vaadin.data.HasValue;
-import com.vaadin.data.ValidationStatus;
-import com.vaadin.data.ValidationStatus.Status;
 import com.vaadin.data.Validator;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.VaadinRequest;
@@ -52,6 +52,7 @@ public class RegistrationFormUI extends UI {
         statusMessage.addStyleName("validation-message");
         textField.setData(statusMessage);
         HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.setSpacing(false);
         horizontalLayout.addComponent(textField);
         textField.setWidth(WIDTH, Unit.PIXELS);
         horizontalLayout.addComponent(statusMessage);
@@ -62,14 +63,12 @@ public class RegistrationFormUI extends UI {
     protected void init(VaadinRequest request) {
         VerticalLayout layout = new VerticalLayout();
         layout.setWidth(100, Unit.PERCENTAGE);
-        layout.setSpacing(true);
-        layout.setMargin(true);
         setContent(layout);
 
         TextField fullNameField = new TextField();
         addToLayout(layout, fullNameField, "Full name");
 
-        binder.forField(fullNameField).setRequired("Full name may not be empty")
+        binder.forField(fullNameField).asRequired("Full name may not be empty")
                 .withValidationStatusHandler(
                         status -> commonStatusChangeHandler(status,
                                 fullNameField))
@@ -121,7 +120,7 @@ public class RegistrationFormUI extends UI {
         return button;
     }
 
-    private void commonStatusChangeHandler(ValidationStatus<?> event,
+    private void commonStatusChangeHandler(BindingValidationStatus<?> event,
             AbstractTextField field) {
         Label statusLabel = (Label) field.getData();
         statusLabel.setVisible(!event.getStatus().equals(Status.UNRESOLVED));
@@ -140,8 +139,8 @@ public class RegistrationFormUI extends UI {
         }
     }
 
-    private void confirmPasswordStatusChangeHandler(ValidationStatus<?> event,
-            AbstractTextField field) {
+    private void confirmPasswordStatusChangeHandler(
+            BindingValidationStatus<?> event, AbstractTextField field) {
         commonStatusChangeHandler(event, field);
         Label statusLabel = (Label) field.getData();
         statusLabel.setVisible(showConfirmPasswordStatus);
@@ -153,7 +152,7 @@ public class RegistrationFormUI extends UI {
             return true;
 
         }
-        ValidationStatus<String> status = passwordBinding.validate();
+        BindingValidationStatus<String> status = passwordBinding.validate();
         if (status.isError()) {
             return true;
         }

@@ -42,6 +42,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
         setWidth("100%");
         setDefaultComponentAlignment(Alignment.TOP_CENTER);
+        setMargin(false);
+        setSpacing(false);
 
         Label headerLabel = new Label("todos");
         headerLabel.addStyleName(ValoTheme.LABEL_H1);
@@ -83,6 +85,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
         topBar.addComponents(markAllDoneButton, newTodoField);
         topBar.setExpandRatio(newTodoField, 1);
+        topBar.setSpacing(false);
 
         addComponent(topBar);
     }
@@ -145,7 +148,6 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         bottomBar.setExpandRatio(filters, 1);
         bottomBar.setComponentAlignment(filters, Alignment.TOP_LEFT);
         bottomBar.setVisible(false);
-        bottomBar.setSpacing(true);
         bottomBar.setWidth(WIDTH);
 
         addComponents(bottomBar);

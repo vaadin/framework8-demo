@@ -49,6 +49,7 @@ public class LoginScreen extends CssLayout {
         VerticalLayout centeringLayout = new VerticalLayout();
         centeringLayout.setStyleName("centering-layout");
         centeringLayout.addComponent(loginForm);
+        centeringLayout.setMargin(false);
         centeringLayout.setComponentAlignment(loginForm,
                 Alignment.MIDDLE_CENTER);
 
