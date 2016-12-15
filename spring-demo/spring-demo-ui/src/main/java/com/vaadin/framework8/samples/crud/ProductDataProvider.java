@@ -2,8 +2,8 @@ package com.vaadin.framework8.samples.crud;
 
 import java.util.function.Supplier;
 
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.framework8.samples.backend.data.Product;
-import com.vaadin.server.data.DataProvider;
 
 /**
  * Interface for ProductDataProvider.

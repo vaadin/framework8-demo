@@ -1,8 +1,8 @@
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.DataProvider;
-
 import java.util.function.Supplier;
+
+import com.vaadin.data.provider.DataProvider;
 
 public interface TodoView {
 

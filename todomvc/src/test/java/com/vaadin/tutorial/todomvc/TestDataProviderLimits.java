@@ -15,10 +15,11 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.Query;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.vaadin.data.provider.Query;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

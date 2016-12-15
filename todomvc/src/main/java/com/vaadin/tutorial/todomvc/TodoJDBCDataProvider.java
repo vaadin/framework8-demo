@@ -15,13 +15,13 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.Query;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Supplier;
+
+import com.vaadin.data.provider.Query;
 
 /**
  * JDBC DataProvider implementation with filtering supported.

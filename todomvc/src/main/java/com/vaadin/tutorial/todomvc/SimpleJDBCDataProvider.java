@@ -15,12 +15,12 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.Query;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.vaadin.data.provider.Query;
 
 /**
  * Vaadin DataProvider over pure JDBC. Only fixed SQL statements are supported,
