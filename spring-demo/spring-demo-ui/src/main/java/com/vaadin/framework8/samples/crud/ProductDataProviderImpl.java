@@ -19,13 +19,13 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
+import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.Query;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.backend.repository.CategoryRepository;
 import com.vaadin.framework8.samples.backend.repository.ProductRepository;
-import com.vaadin.server.data.AbstractDataProvider;
-import com.vaadin.server.data.Query;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.ui.UI;
 

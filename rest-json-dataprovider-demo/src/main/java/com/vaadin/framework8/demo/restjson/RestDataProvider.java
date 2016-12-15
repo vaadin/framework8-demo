@@ -15,14 +15,6 @@
  */
 package com.vaadin.framework8.demo.restjson;
 
-import com.vaadin.server.data.AbstractDataProvider;
-import com.vaadin.server.data.Query;
-import elemental.json.Json;
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
-import elemental.json.JsonValue;
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +23,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
+
+import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.Query;
+
+import elemental.json.Json;
+import elemental.json.JsonArray;
+import elemental.json.JsonObject;
+import elemental.json.JsonValue;
 
 public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
 
@@ -69,7 +71,6 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
         return 200;
     }
 
-
     /**
      * Creates a stream from a JSON array.
      *
@@ -90,4 +91,5 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
                 return array.length();
             }
         }.stream();
-    }}
+    }
+}

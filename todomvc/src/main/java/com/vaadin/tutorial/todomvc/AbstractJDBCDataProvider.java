@@ -15,9 +15,6 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import com.vaadin.server.data.AbstractDataProvider;
-import com.vaadin.server.data.Query;
-
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +26,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.Query;
 
 /**
  * Vaadin DataProvider over pure JDBC, base class.
