@@ -66,16 +66,18 @@ public class LeftPanel extends VerticalLayout {
 
     public LeftPanel() {
         Design.read(this);
-        contactList.addColumn("First Name", Contact::getFirstName);
-        contactList.addColumn("Last Name", Contact::getLastName);
-        contactList.addColumn("Email", Contact::getEmail);
-        contactList.addColumn("Birth Date",
-                c -> Date.from(c.getBirthDate().atStartOfDay()
-                        .atZone(ZoneId.systemDefault()).toInstant()),
-                new DateRenderer(new SimpleDateFormat("M/d/yy")));
+        contactList.addColumn(Contact::getFirstName).setCaption("First Name");
+        contactList.addColumn(Contact::getLastName).setCaption("Last Name");
+        contactList.addColumn(Contact::getEmail).setCaption("Email");
+        contactList
+                .addColumn(
+                        c -> Date.from(c.getBirthDate().atStartOfDay()
+                                .atZone(ZoneId.systemDefault()).toInstant()),
+                        new DateRenderer(new SimpleDateFormat("M/d/yy")))
+                .setCaption("Birth Date");
 
-        contactList.addColumn("Do Not Call",
-                c -> c.isDoNotCall() ? "DO NOT CALL" : "");
+        contactList.addColumn(c -> c.isDoNotCall() ? "DO NOT CALL" : "")
+                .setCaption("Do Not Call");
     }
 
     void refresh(String filter) {

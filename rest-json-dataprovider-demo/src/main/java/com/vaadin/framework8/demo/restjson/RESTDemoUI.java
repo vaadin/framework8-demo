@@ -19,19 +19,21 @@ public class RESTDemoUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Grid<JsonObject> personGrid = new Grid<>();
-        personGrid.addColumn("First name",
-                json -> safeGetString(json, "name", "first"));
-        personGrid.addColumn("Last name",
-                json -> safeGetString(json, "name", "last"));
-        personGrid.addColumn("Email", json -> safeGetString(json, "email"));
-        personGrid.addColumn("City",
-                json -> safeGetString(json, "location", "city"));
-        personGrid.addColumn("Street",
-                json -> safeGetString(json, "location", "street"));
-        personGrid.addColumn("Postal code",
-                json -> safeGetString(json, "location", "postcode"));
-        personGrid.addColumn("State",
-                json -> safeGetString(json, "location", "state"));
+        personGrid.addColumn(json -> safeGetString(json, "name", "first"))
+                .setCaption("First name");
+        personGrid.addColumn(json -> safeGetString(json, "name", "last"))
+                .setCaption("Last name");
+        personGrid.addColumn(json -> safeGetString(json, "email"))
+                .setCaption("Email");
+        personGrid.addColumn(json -> safeGetString(json, "location", "city"))
+                .setCaption("City");
+        personGrid.addColumn(json -> safeGetString(json, "location", "street"))
+                .setCaption("Street");
+        personGrid
+                .addColumn(json -> safeGetString(json, "location", "postcode"))
+                .setCaption("Postal code");
+        personGrid.addColumn(json -> safeGetString(json, "location", "state"))
+                .setCaption("State");
 
         personGrid.setDataProvider(new RestDataProvider(
                 "https://api.randomuser.me/?seed=0&results=50&page=1"));

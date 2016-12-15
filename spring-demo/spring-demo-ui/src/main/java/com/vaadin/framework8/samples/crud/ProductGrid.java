@@ -13,31 +13,33 @@ import com.vaadin.ui.renderers.NumberRenderer;
 
 /**
  * Grid of products, handling the visual presentation and filtering of a set of
- * items. This version uses an in-memory data provider that is suitable for small
- * data sets.
+ * items. This version uses an in-memory data provider that is suitable for
+ * small data sets.
  */
 public class ProductGrid extends Grid<Product> {
 
     public ProductGrid() {
         setSizeFull();
 
-        addColumn("Id", p -> String.valueOf(p.getId())).setSortProperty("id");
-        addColumn("Product Name", Product::getProductName)
+        addColumn(p -> String.valueOf(p.getId())).setCaption("Id")
+                .setSortProperty("id");
+        addColumn(Product::getProductName).setCaption("Product Name")
                 .setSortProperty("productName");
-        addColumn("Price", Product::getPrice, new NumberRenderer())
+        addColumn(Product::getPrice, new NumberRenderer()).setCaption("Price")
                 .setStyleGenerator(c -> "align-right").setSortProperty("price");
-        addColumn("Availability", p -> {
+        addColumn(p -> {
             Availability availability = p.getAvailability();
             return getTrafficLightIconHtml(availability) + " "
                     + availability.name();
-        }, new HtmlRenderer()).setSortProperty("availability");
-        addColumn("Stock Count", Product::getStockCount, new NumberRenderer())
-                .setStyleGenerator(c -> "align-right")
+        }, new HtmlRenderer()).setCaption("Availability")
+                .setSortProperty("availability");
+        addColumn(Product::getStockCount, new NumberRenderer())
+                .setCaption("Stock Count").setStyleGenerator(c -> "align-right")
                 .setSortProperty("stockCount");
-        addColumn("Category", p -> p.getCategory().stream()
+        addColumn(p -> p.getCategory().stream()
                 .sorted(Comparator.comparing(Category::getId))
                 .map(Category::getName).collect(Collectors.joining(", ")))
-                        .setSortable(false);
+                        .setCaption("Category").setSortable(false);
     }
 
     private String getTrafficLightIconHtml(Availability availability) {

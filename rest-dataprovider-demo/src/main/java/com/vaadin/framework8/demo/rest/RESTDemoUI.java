@@ -4,11 +4,11 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.data.provider.BackEndDataProvider;
 import com.vaadin.framework8.demo.rest.backend.PersonService;
 import com.vaadin.framework8.demo.rest.model.Person;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.data.BackEndDataProvider;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
@@ -19,13 +19,13 @@ public class RESTDemoUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         Grid<Person> personGrid = new Grid<>();
-        personGrid.addColumn("First name", Person::getFirstName);
-        personGrid.addColumn("Last name", Person::getLastName);
-        personGrid.addColumn("Email", Person::getEmail);
-        personGrid.addColumn("City", Person::getCity);
-        personGrid.addColumn("Street", Person::getStreet);
-        personGrid.addColumn("Postal code", Person::getPostCode);
-        personGrid.addColumn("State", Person::getState);
+        personGrid.addColumn(Person::getFirstName).setCaption("First name");
+        personGrid.addColumn(Person::getLastName).setCaption("Last Name");
+        personGrid.addColumn(Person::getEmail).setCaption("Email");
+        personGrid.addColumn(Person::getCity).setCaption("City");
+        personGrid.addColumn(Person::getStreet).setCaption("Street");
+        personGrid.addColumn(Person::getPostCode).setCaption("Postal code");
+        personGrid.addColumn(Person::getState).setCaption("State");
 
         personGrid.setDataProvider(new BackEndDataProvider<Person, Void>(
                 query -> PersonService.getInstance()
