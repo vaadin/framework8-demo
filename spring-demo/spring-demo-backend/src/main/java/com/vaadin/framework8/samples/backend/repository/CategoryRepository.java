@@ -24,9 +24,9 @@ import com.vaadin.framework8.samples.backend.data.Category;
 /**
  * Category domain specific repository. Provides an interface to access to
  * Category entities via JPA.
- * 
+ *
  * @see JpaRepository
- * 
+ *
  * @author Vaadin Ltd
  *
  */

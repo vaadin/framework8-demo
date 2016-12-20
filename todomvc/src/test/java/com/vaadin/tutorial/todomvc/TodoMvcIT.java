@@ -17,8 +17,8 @@ package com.vaadin.tutorial.todomvc;
 
 import java.util.Optional;
 
-import org.junit.Assert;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.Keys;
@@ -377,7 +377,8 @@ public class TodoMvcIT extends AbstractDemoTest {
         return $(TextFieldElement.class).id("todo-editor");
     }
 
-    /** Clean up item list if anything was left there after the test.
+    /**
+     * Clean up item list if anything was left there after the test.
      *
      */
     @After

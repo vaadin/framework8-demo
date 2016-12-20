@@ -97,7 +97,7 @@ public class Menu extends CssLayout {
     /**
      * Creates a navigation button to the view identified by {@code name} using
      * {@code caption} and {@code icon}.
-     * 
+     *
      * @param name
      *            view name
      * @param caption

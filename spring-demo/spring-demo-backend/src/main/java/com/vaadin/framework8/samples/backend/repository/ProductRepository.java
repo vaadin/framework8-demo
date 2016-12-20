@@ -28,9 +28,9 @@ import com.vaadin.framework8.samples.backend.data.Product;
 /**
  * Product domain specific repository. Provides an interface to access to
  * Product entities via JPA.
- * 
+ *
  * @see JpaRepository
- * 
+ *
  * @author Vaadin Ltd
  *
  */

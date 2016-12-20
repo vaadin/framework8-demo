@@ -6,8 +6,8 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 import com.vaadin.data.Result;
-import com.vaadin.data.converter.StringToBigDecimalConverter;
 import com.vaadin.data.ValueContext;
+import com.vaadin.data.converter.StringToBigDecimalConverter;
 
 /**
  * A converter that adds/removes the euro sign and formats currencies with two

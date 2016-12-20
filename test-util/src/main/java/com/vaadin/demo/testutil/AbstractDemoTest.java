@@ -294,7 +294,7 @@ public abstract class AbstractDemoTest extends TestBenchTestCase {
     /**
      * Checks that the {@code element} has the {@code text} as a part of its
      * inner HTML.
-     * 
+     *
      * @param element
      *            a DOM element
      * @param text

@@ -250,7 +250,7 @@ public class SpringCrudIT extends AbstractDemoTest {
     /*
      * XXX: doesn't work in PhantomJS. Works in Chrome. It looks like there is
      * some issue with screen size/responsiveness and PhantomJS.
-     * 
+     *
      * No screen size issues in Chrome.
      */
     public void closeEditor() {
@@ -276,7 +276,7 @@ public class SpringCrudIT extends AbstractDemoTest {
     /*
      * XXX: doesn't work in PhantomJS. Works in Chrome. It looks like there is
      * some issue with screen size/responsiveness and PhantomJS.
-     * 
+     *
      * No screen size issues in Chrome.
      */
     public void deselectRow() {

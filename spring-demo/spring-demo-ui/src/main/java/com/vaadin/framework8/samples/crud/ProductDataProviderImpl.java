@@ -112,7 +112,7 @@ public class ProductDataProviderImpl
 
     /**
      * Return a PageQuery object containing page request and offset in page.
-     * 
+     *
      * @param q
      *            the original query
      * @return paged query
@@ -139,8 +139,8 @@ public class ProductDataProviderImpl
         return p;
     }
 
-    private PageRequest getPageRequest(Query<Product, Supplier<String>> q, int pageIndex,
-            int pageLength) {
+    private PageRequest getPageRequest(Query<Product, Supplier<String>> q,
+            int pageIndex, int pageLength) {
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
         } else {

@@ -5,7 +5,6 @@ import javax.servlet.annotation.WebServlet;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
@@ -45,7 +44,7 @@ public class AddressbookUI extends UI {
      * contains TextField and Button. It is wrapped with a Grid into
      * VerticalLayout for the left side of the screen. Allow user to resize the
      * components with a SplitPanel.
-     * 
+     *
      * MainLayout is set up declaratively here. See its internals and
      * declarative HTML files in resources folder.
      */
