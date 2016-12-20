@@ -24,7 +24,7 @@ import com.vaadin.framework8.samples.backend.repository.ProductRepository;
  * Mock data initializer.
  * <p>
  * Fills in-memory data base each time when application is started.
- * 
+ *
  * @author Vaadin Ltd
  *
  */

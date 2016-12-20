@@ -15,8 +15,8 @@ import org.springframework.context.annotation.Scope;
 import com.vaadin.data.BeanBinder;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
-import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.data.ValueContext;
+import com.vaadin.data.converter.StringToIntegerConverter;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
@@ -140,7 +140,7 @@ public class ProductForm extends ProductFormDesign {
     }
 
     private void init(SampleCrudLogic logic) {
-        this.viewLogic = logic;
+        viewLogic = logic;
     }
 
     private void updateButtons(StatusChangeEvent event) {

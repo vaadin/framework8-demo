@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Viewport;
-import com.vaadin.annotations.Widgetset;
 import com.vaadin.framework8.samples.about.AboutView;
 import com.vaadin.framework8.samples.authentication.AccessControl;
 import com.vaadin.framework8.samples.authentication.LoginScreen;

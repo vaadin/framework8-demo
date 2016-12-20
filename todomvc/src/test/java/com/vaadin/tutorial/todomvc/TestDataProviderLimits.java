@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2016 Vaadin Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,11 +15,7 @@
  */
 package com.vaadin.tutorial.todomvc;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.vaadin.data.provider.Query;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,7 +26,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.vaadin.data.provider.Query;
 
 /**
  * Test JDBC
@@ -44,32 +44,37 @@ public class TestDataProviderLimits {
     @BeforeClass
     public static void setUpAll() throws SQLException {
         DriverManager.registerDriver(org.hsqldb.jdbc.JDBCDriver.driverInstance);
-        conn = DriverManager.getConnection("jdbc:hsqldb:mem:dataproviderdb", "SA", "");
-        //For safety sake
+        conn = DriverManager.getConnection("jdbc:hsqldb:mem:dataproviderdb",
+                "SA", "");
+        // For safety sake
         try (Statement statement = conn.createStatement()) {
             statement.executeUpdate("DROP TABLE long_table");
         } catch (SQLException ignored) {
         }
         try (Statement statement = conn.createStatement()) {
-            statement.executeUpdate("CREATE TABLE long_table (i INTEGER PRIMARY KEY)");
+            statement.executeUpdate(
+                    "CREATE TABLE long_table (i INTEGER PRIMARY KEY)");
         }
-        try (PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO long_table VALUES (?)")) {
+        try (PreparedStatement preparedStatement = conn
+                .prepareStatement("INSERT INTO long_table VALUES (?)")) {
             for (int i = 0; i < 100; i++) {
                 preparedStatement.setInt(1, i);
                 preparedStatement.executeUpdate();
             }
         }
-        dataProvider = new SimpleJDBCDataProvider<>(conn, "SELECT i FROM long_table ORDER BY i",
+        dataProvider = new SimpleJDBCDataProvider<>(conn,
+                "SELECT i FROM long_table ORDER BY i",
                 resultSet -> resultSet.getInt(1));
     }
 
-
     private void doRetrieveTest(int offset, int limit, int expectedFirst,
             int expectedLast) {
-        Query<Integer,Void> query = new Query<>(offset, limit,Collections.emptyList(), null, null);
+        Query<Integer, Void> query = new Query<>(offset, limit,
+                Collections.emptyList(), null, null);
         int size = dataProvider.size(query);
         assertEquals("Response size", expectedLast - expectedFirst + 1, size);
-        List<Integer> values = dataProvider.fetch(query).collect(Collectors.toList());
+        List<Integer> values = dataProvider.fetch(query)
+                .collect(Collectors.toList());
         assertEquals(size, values.size());
         for (int i = 0; i < values.size(); i++) {
             assertEquals(i + expectedFirst, values.get(i).intValue());

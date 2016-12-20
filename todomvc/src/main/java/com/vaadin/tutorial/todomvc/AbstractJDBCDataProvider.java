@@ -1,12 +1,12 @@
 /*
  * Copyright 2000-2016 Vaadin Ltd.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,13 +34,13 @@ import com.vaadin.data.provider.Query;
  * Vaadin DataProvider over pure JDBC, base class.
  *
  * @param <T>
- *         data transfer object. Might be POJO or Map.
+ *            data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
-public abstract class AbstractJDBCDataProvider<T,F> extends
-        AbstractDataProvider<T, F> implements AutoCloseable {
-    private static final Logger LOGGER =
-            Logger.getLogger(AbstractJDBCDataProvider.class.getName());
+public abstract class AbstractJDBCDataProvider<T, F>
+        extends AbstractDataProvider<T, F> implements AutoCloseable {
+    private static final Logger LOGGER = Logger
+            .getLogger(AbstractJDBCDataProvider.class.getName());
     protected final java.sql.Connection connection;
     protected final DataRetriever<T> jdbcReader;
 
@@ -74,14 +74,14 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
         return Math.min(size, query.getLimit());
     }
 
-    protected abstract ResultSet rowCountStatement(
-            Connection connection, Query<T,F> query) throws SQLException;
+    protected abstract ResultSet rowCountStatement(Connection connection,
+            Query<T, F> query) throws SQLException;
 
-    protected abstract ResultSet resultSetStatement(
-            Query<T,F> query) throws SQLException;
+    protected abstract ResultSet resultSetStatement(Query<T, F> query)
+            throws SQLException;
 
     @Override
-    public Stream<T> fetch(Query<T,F> query) {
+    public Stream<T> fetch(Query<T, F> query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {
@@ -92,7 +92,8 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
                 }
             }
             return StreamSupport.stream(
-                    new ResultSetToSpliterator(resultSet, query.getLimit()), false);
+                    new ResultSetToSpliterator(resultSet, query.getLimit()),
+                    false);
         } catch (SQLException e) {
             throw new RuntimeException("Data SQL query failed", e);
         }
@@ -104,14 +105,13 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
         super.refreshAll();
     }
 
-    private class ResultSetToSpliterator extends Spliterators.AbstractSpliterator<T>
-            implements
-            AutoCloseable {
+    private class ResultSetToSpliterator extends
+            Spliterators.AbstractSpliterator<T> implements AutoCloseable {
         private final ResultSet resultSet;
         private int limit;
 
-        public ResultSetToSpliterator(
-                ResultSet resultSet, int limit) throws SQLException {
+        public ResultSetToSpliterator(ResultSet resultSet, int limit)
+                throws SQLException {
             super(Long.MAX_VALUE, IMMUTABLE | NONNULL);
             this.resultSet = resultSet;
             if (resultSet.next()) {
@@ -152,7 +152,8 @@ public abstract class AbstractJDBCDataProvider<T,F> extends
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                LOGGER.log(Level.WARNING, "Result set was closed with exception", e);
+                LOGGER.log(Level.WARNING,
+                        "Result set was closed with exception", e);
             }
         }
     }

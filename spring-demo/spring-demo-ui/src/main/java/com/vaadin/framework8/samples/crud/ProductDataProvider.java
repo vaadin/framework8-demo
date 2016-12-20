@@ -8,11 +8,12 @@ import com.vaadin.framework8.samples.backend.data.Product;
 /**
  * Interface for ProductDataProvider.
  */
-public interface ProductDataProvider extends DataProvider<Product, Supplier<String>> {
+public interface ProductDataProvider
+        extends DataProvider<Product, Supplier<String>> {
 
     /**
      * Store given product to the repository.
-     * 
+     *
      * @param product
      *            the updated or new product
      */
@@ -20,7 +21,7 @@ public interface ProductDataProvider extends DataProvider<Product, Supplier<Stri
 
     /**
      * Delete given product from the repository.
-     * 
+     *
      * @param product
      *            the product to be deleted
      */
