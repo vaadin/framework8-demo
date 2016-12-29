@@ -12,7 +12,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 
-import com.vaadin.data.BeanBinder;
+import com.vaadin.data.Binder;
 import com.vaadin.data.Result;
 import com.vaadin.data.StatusChangeEvent;
 import com.vaadin.data.ValueContext;
@@ -35,7 +35,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 public class ProductForm extends ProductFormDesign {
 
     private SampleCrudLogic viewLogic;
-    private final BeanBinder<Product> binder = new BeanBinder<>(Product.class);
+    private final Binder<Product> binder = new Binder<>(Product.class);
 
     @SpringComponent
     @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
