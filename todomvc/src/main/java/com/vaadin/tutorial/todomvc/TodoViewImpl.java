@@ -2,6 +2,7 @@ package com.vaadin.tutorial.todomvc;
 
 import java.util.EnumSet;
 
+import com.vaadin.data.provider.SingleFilterSearcher;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -24,6 +25,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private final TodoPresenter presenter;
 
     private Grid<Todo> grid;
+    private SingleFilterSearcher<Todo, TaskFilter> searcher;
+
     private HorizontalLayout bottomBar;
     private Label itemCountLabel;
     private TextField newTodoField;
@@ -36,7 +39,6 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private Todo currentlyEditedTodo;
 
     private EnterPressHandler newTodoFieldEnterPressHandler;
-    private TaskFilter taskFilter;
 
     public TodoViewImpl() {
 
@@ -131,8 +133,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         filters.setValue(TaskFilter.ALL);
         filters.addValueChangeListener(event -> {
-            taskFilter = event.getValue();
-            presenter.refreshView();
+            assert searcher != null;
+            searcher.searchBy(event.getValue());
         });
 
         clearCompleted = new Button("Clear completed");
@@ -176,7 +178,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     @Override
     public void setDataProvider(TodoJDBCDataProvider dataProvider) {
-        grid.setDataProvider(dataProvider.withFilter(() -> taskFilter));
+        searcher = new SingleFilterSearcher<>(dataProvider);
+        grid.setDataProvider(searcher);
     }
 
     private void onNewTodoFieldEnter() {

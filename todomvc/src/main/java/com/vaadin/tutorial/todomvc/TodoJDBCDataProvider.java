@@ -19,14 +19,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.function.Supplier;
 
 import com.vaadin.data.provider.Query;
 
 /**
  * JDBC DataProvider implementation with filtering supported.
  */
-class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskFilter>> {
+class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, TaskFilter> {
 
     protected final PreparedStatement resultSetStatement;
     protected final PreparedStatement sizeStatement;
@@ -57,7 +56,7 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
 
     @Override
     protected synchronized ResultSet rowCountStatement(Connection connection,
-            Query<Todo, Supplier<TaskFilter>> query) throws SQLException {
+            Query<Todo, TaskFilter> query) throws SQLException {
         TaskFilter taskFilter = obtainFilterValue(query);
         if (taskFilter == TaskFilter.ALL) {
             return sizeStatement.executeQuery();
@@ -69,8 +68,8 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
     }
 
     @Override
-    protected ResultSet resultSetStatement(
-            Query<Todo, Supplier<TaskFilter>> query) throws SQLException {
+    protected ResultSet resultSetStatement(Query<Todo, TaskFilter> query)
+            throws SQLException {
         TaskFilter taskFilter = obtainFilterValue(query);
         if (taskFilter == TaskFilter.ALL) {
             return resultSetStatement.executeQuery();
@@ -81,9 +80,9 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, Supplier<TaskF
         }
     }
 
-    private TaskFilter obtainFilterValue(Query<Todo, Supplier<TaskFilter>> query) {
+    private TaskFilter obtainFilterValue(Query<Todo, TaskFilter> query) {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
-        return query.getFilter().map(Supplier::get).orElse(TaskFilter.ALL);
+        return query.getFilter().orElse(TaskFilter.ALL);
     }
 
 }
