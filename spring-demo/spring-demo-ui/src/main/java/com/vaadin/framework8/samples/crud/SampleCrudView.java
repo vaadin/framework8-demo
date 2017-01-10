@@ -9,9 +9,9 @@ import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.crud.ProductForm.ProductFormFactory;
 import com.vaadin.framework8.samples.crud.SampleCrudLogic.SampleCrudLogicFactory;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -64,7 +64,7 @@ public class SampleCrudView extends CssLayout implements View {
 
         newProduct = new Button("New product");
         newProduct.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        newProduct.setIcon(FontAwesome.PLUS_CIRCLE);
+        newProduct.setIcon(VaadinIcons.PLUS_CIRCLE);
         newProduct.addClickListener(event -> viewLogic.newProduct());
 
         HorizontalLayout topLayout = new HorizontalLayout();

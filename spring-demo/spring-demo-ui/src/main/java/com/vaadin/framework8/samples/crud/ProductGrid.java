@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
 import com.vaadin.framework8.samples.backend.data.Product;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.renderers.HtmlRenderer;
 import com.vaadin.ui.renderers.NumberRenderer;
@@ -53,9 +53,9 @@ public class ProductGrid extends Grid<Product> {
         }
 
         String iconCode = "<span class=\"v-icon\" style=\"font-family: "
-                + FontAwesome.CIRCLE.getFontFamily() + ";color:" + color
+                + VaadinIcons.CIRCLE.getFontFamily() + ";color:" + color
                 + "\">&#x"
-                + Integer.toHexString(FontAwesome.CIRCLE.getCodepoint())
+                + Integer.toHexString(VaadinIcons.CIRCLE.getCodepoint())
                 + ";</span>";
         return iconCode;
     }

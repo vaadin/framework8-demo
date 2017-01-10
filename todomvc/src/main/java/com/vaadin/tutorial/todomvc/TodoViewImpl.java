@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.event.ShortcutListener;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.shared.ui.ValueChangeMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -61,7 +61,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         HorizontalLayout topBar = new HorizontalLayout();
         topBar.setWidth(WIDTH);
 
-        markAllDoneButton = new Button(FontAwesome.CHEVRON_DOWN);
+        markAllDoneButton = new Button(VaadinIcons.CHEVRON_DOWN);
         markAllDoneButton.setId("mark-all-done");
         markAllDoneButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
         markAllDoneButton.addClickListener(event -> {

@@ -9,9 +9,9 @@ import com.vaadin.framework8.samples.about.AboutView;
 import com.vaadin.framework8.samples.authentication.AccessControl;
 import com.vaadin.framework8.samples.authentication.LoginScreen;
 import com.vaadin.framework8.samples.crud.SampleCrudView;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -74,9 +74,9 @@ public class SampleUI extends UI {
         menu = new Menu(navigator);
         // View are registered automatically by Vaadin Spring support
         menu.addViewButton(SampleCrudView.VIEW_NAME, SampleCrudView.VIEW_NAME,
-                FontAwesome.EDIT);
+                VaadinIcons.EDIT);
         menu.addViewButton(AboutView.VIEW_NAME, AboutView.VIEW_NAME,
-                FontAwesome.INFO_CIRCLE);
+                VaadinIcons.INFO_CIRCLE);
 
         navigator.addViewChangeListener(new ViewChangeHandler());
 
