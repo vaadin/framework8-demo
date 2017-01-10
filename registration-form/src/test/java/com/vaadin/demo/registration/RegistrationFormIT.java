@@ -24,7 +24,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import com.vaadin.demo.testutil.AbstractDemoTest;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.testbench.By;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.PasswordFieldElement;
@@ -38,8 +38,8 @@ import com.vaadin.testbench.elements.TextFieldElement;
  */
 public class RegistrationFormIT extends AbstractDemoTest {
 
-    private static final int VALID_ICON_CHAR = FontAwesome.CHECK.getCodepoint();
-    private static final int INVALID_ICON_CHAR = FontAwesome.TIMES
+    private static final int VALID_ICON_CHAR = VaadinIcons.CHECK.getCodepoint();
+    private static final int INVALID_ICON_CHAR = VaadinIcons.CLOSE
             .getCodepoint();
 
     @Before

@@ -3,8 +3,8 @@ package com.vaadin.framework8.samples;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
@@ -57,7 +57,7 @@ public class Menu extends CssLayout {
 
         // logout menu item
         MenuBar logoutMenu = new MenuBar();
-        logoutMenu.addItem("Logout", FontAwesome.SIGN_OUT, new Command() {
+        logoutMenu.addItem("Logout", VaadinIcons.SIGN_OUT, new Command() {
 
             @Override
             public void menuSelected(MenuItem selectedItem) {
@@ -83,7 +83,7 @@ public class Menu extends CssLayout {
         showMenu.addStyleName(ValoTheme.BUTTON_PRIMARY);
         showMenu.addStyleName(ValoTheme.BUTTON_SMALL);
         showMenu.addStyleName(VALO_MENU_TOGGLE);
-        showMenu.setIcon(FontAwesome.NAVICON);
+        showMenu.setIcon(VaadinIcons.MENU);
         menuPart.addComponent(showMenu);
 
         // container for the navigation buttons, which are added by addView()

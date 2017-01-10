@@ -1,8 +1,8 @@
 package com.vaadin.framework8.samples.about;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.Version;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringView;
@@ -23,7 +23,7 @@ public class AboutView extends VerticalLayout implements View {
         // you can add Vaadin components in predefined slots in the custom
         // layout
         aboutContent.addComponent(
-                new Label(FontAwesome.INFO_CIRCLE.getHtml()
+                new Label(VaadinIcons.INFO_CIRCLE.getHtml()
                         + " This application is using Vaadin "
                         + Version.getFullVersion(), ContentMode.HTML),
                 "info");

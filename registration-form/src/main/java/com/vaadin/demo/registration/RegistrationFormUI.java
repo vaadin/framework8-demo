@@ -13,7 +13,7 @@ import com.vaadin.data.BindingValidationStatus;
 import com.vaadin.data.BindingValidationStatus.Status;
 import com.vaadin.data.HasValue;
 import com.vaadin.data.Validator;
-import com.vaadin.server.FontAwesome;
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.AbstractTextField;
@@ -127,11 +127,11 @@ public class RegistrationFormUI extends UI {
         switch (event.getStatus()) {
         case OK:
             statusLabel.setValue("");
-            statusLabel.setIcon(FontAwesome.CHECK);
+            statusLabel.setIcon(VaadinIcons.CHECK);
             statusLabel.getParent().addStyleName(VALID);
             break;
         case ERROR:
-            statusLabel.setIcon(FontAwesome.TIMES);
+            statusLabel.setIcon(VaadinIcons.CLOSE);
             statusLabel.setValue(event.getMessage().orElse("Unknown error"));
             statusLabel.getParent().removeStyleName(VALID);
         default:
