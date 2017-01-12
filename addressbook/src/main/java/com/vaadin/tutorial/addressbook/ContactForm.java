@@ -39,6 +39,7 @@ public class ContactForm extends FormLayout {
     protected Button cancel;
 
     private final Binder<Contact> binder = new Binder<>();
+    private Contact contactBeingEdited;
 
     public ContactForm() {
         Design.read(this);
@@ -91,21 +92,23 @@ public class ContactForm extends FormLayout {
 
     void edit(Contact contact) {
         if (contact != null) {
-            binder.setBean(contact);
+            contactBeingEdited = contact;
+            binder.readBean(contact);
             firstName.focus();
         } else {
+            contactBeingEdited = null;
             binder.removeBean();
         }
         setVisible(contact != null);
     }
 
     public void save(Button.ClickEvent event) {
-        Contact bean = binder.getBean();
-        if (binder.writeBeanIfValid(bean)) {
-            ContactService.getDemoService().save(bean);
+        if (binder.writeBeanIfValid(contactBeingEdited)) {
+            ContactService.getDemoService().save(contactBeingEdited);
 
-            String msg = String.format("Saved '%s %s'.", bean.getFirstName(),
-                    bean.getLastName());
+            String msg = String.format("Saved '%s %s'.",
+                    contactBeingEdited.getFirstName(),
+                    contactBeingEdited.getLastName());
             Notification.show(msg, Type.TRAY_NOTIFICATION);
             getUI().getContent().refreshContacts();
         }
