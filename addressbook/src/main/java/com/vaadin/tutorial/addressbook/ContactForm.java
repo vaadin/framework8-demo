@@ -91,13 +91,10 @@ public class ContactForm extends FormLayout {
     }
 
     void edit(Contact contact) {
+        contactBeingEdited = contact;
         if (contact != null) {
-            contactBeingEdited = contact;
             binder.readBean(contact);
             firstName.focus();
-        } else {
-            contactBeingEdited = null;
-            binder.removeBean();
         }
         setVisible(contact != null);
     }
