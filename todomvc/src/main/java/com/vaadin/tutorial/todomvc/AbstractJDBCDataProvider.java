@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.data.provider.Query;
 
 /**
@@ -38,7 +38,7 @@ import com.vaadin.data.provider.Query;
  * @author Vaadin Ltd
  */
 public abstract class AbstractJDBCDataProvider<T, F>
-        extends AbstractDataProvider<T, F> implements AutoCloseable {
+        extends AbstractBackEndDataProvider<T, F> implements AutoCloseable {
     private static final Logger LOGGER = Logger
             .getLogger(AbstractJDBCDataProvider.class.getName());
     protected final java.sql.Connection connection;
@@ -53,12 +53,7 @@ public abstract class AbstractJDBCDataProvider<T, F>
     }
 
     @Override
-    public boolean isInMemory() {
-        return false;
-    }
-
-    @Override
-    public int size(Query<T, F> query) {
+    protected int sizeInBackEnd(Query<T, F> query) {
         if (cachedSize < 0) {
             try (ResultSet resultSet = rowCountStatement(connection, query)) {
                 resultSet.next();
@@ -81,7 +76,7 @@ public abstract class AbstractJDBCDataProvider<T, F>
             throws SQLException;
 
     @Override
-    public Stream<T> fetch(Query<T, F> query) {
+    protected Stream<T> fetchFromBackEnd(Query<T, F> query) {
         try {
             ResultSet resultSet = resultSetStatement(query);
             try {

@@ -4,7 +4,7 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.data.provider.BackEndDataProvider;
+import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.framework8.demo.rest.backend.PersonService;
 import com.vaadin.framework8.demo.rest.model.Person;
 import com.vaadin.server.VaadinRequest;
@@ -27,10 +27,11 @@ public class RESTDemoUI extends UI {
         personGrid.addColumn(Person::getPostCode).setCaption("Postal code");
         personGrid.addColumn(Person::getState).setCaption("State");
 
-        personGrid.setDataProvider(new BackEndDataProvider<Person, Void>(
-                query -> PersonService.getInstance()
-                        .fetchPeople(query.getOffset(), query.getLimit()),
-                query -> PersonService.getPersonCount()));
+        personGrid
+                .setDataProvider(new CallbackDataProvider<Person, Void>(
+                        query -> PersonService.getInstance().fetchPeople(
+                                query.getOffset(), query.getLimit()),
+                        query -> PersonService.getPersonCount()));
 
         personGrid.setSizeFull();
         setContent(personGrid);

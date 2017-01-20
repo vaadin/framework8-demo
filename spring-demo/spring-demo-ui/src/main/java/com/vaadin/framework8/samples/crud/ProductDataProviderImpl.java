@@ -19,7 +19,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
-import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.data.provider.Query;
 import com.vaadin.framework8.samples.backend.data.Availability;
 import com.vaadin.framework8.samples.backend.data.Category;
@@ -35,7 +35,7 @@ import com.vaadin.ui.UI;
  */
 @Service
 public class ProductDataProviderImpl
-        extends AbstractDataProvider<Product, Supplier<String>>
+        extends AbstractBackEndDataProvider<Product, Supplier<String>>
         implements ProductDataProvider {
 
     private static class PageQuery {
@@ -50,13 +50,8 @@ public class ProductDataProviderImpl
     private CategoryRepository categoryRepo;
 
     @Override
-    public boolean isInMemory() {
-        return false;
-    }
-
-    @Override
     @Transactional
-    public int size(Query<Product, Supplier<String>> t) {
+    public int sizeInBackEnd(Query<Product, Supplier<String>> t) {
         return (int) getItems(getPaging(t).pageable, getFilter(t)).count();
     }
 
@@ -66,7 +61,8 @@ public class ProductDataProviderImpl
 
     @Override
     @Transactional
-    public Stream<Product> fetch(Query<Product, Supplier<String>> t) {
+    public Stream<Product> fetchFromBackEnd(
+            Query<Product, Supplier<String>> t) {
         PageQuery pageQuery = getPaging(t);
         return getItems(pageQuery.pageable, getFilter(t))
                 .skip(pageQuery.pageOffset).limit(t.getLimit());

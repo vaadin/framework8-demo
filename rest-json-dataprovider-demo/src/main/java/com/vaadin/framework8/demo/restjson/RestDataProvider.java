@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.IOUtils;
 
-import com.vaadin.data.provider.AbstractDataProvider;
+import com.vaadin.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.data.provider.Query;
 
 import elemental.json.Json;
@@ -34,7 +34,8 @@ import elemental.json.JsonArray;
 import elemental.json.JsonObject;
 import elemental.json.JsonValue;
 
-public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
+public class RestDataProvider
+        extends AbstractBackEndDataProvider<JsonObject, Void> {
 
     private String restApiUrl;
 
@@ -43,7 +44,7 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
     }
 
     @Override
-    public Stream<JsonObject> fetch(Query<JsonObject, Void> t) {
+    public Stream<JsonObject> fetchFromBackEnd(Query<JsonObject, Void> query) {
         URL url;
         try {
             url = new URL(restApiUrl);
@@ -59,15 +60,10 @@ public class RestDataProvider extends AbstractDataProvider<JsonObject, Void> {
             // asking and asking...
             return IntStream.range(0, 200).mapToObj(i -> Json.createObject());
         }
-    };
-
-    @Override
-    public boolean isInMemory() {
-        return false;
     }
 
     @Override
-    public int size(Query<JsonObject, Void> t) {
+    public int sizeInBackEnd(Query<JsonObject, Void> query) {
         return 200;
     }
 
