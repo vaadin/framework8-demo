@@ -1,15 +1,12 @@
 package com.vaadin.framework8.samples.crud;
 
-import java.util.function.Supplier;
-
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.framework8.samples.backend.data.Product;
 
 /**
  * Interface for ProductDataProvider.
  */
-public interface ProductDataProvider
-        extends DataProvider<Product, Supplier<String>> {
+public interface ProductDataProvider extends DataProvider<Product, String> {
 
     /**
      * Store given product to the repository.

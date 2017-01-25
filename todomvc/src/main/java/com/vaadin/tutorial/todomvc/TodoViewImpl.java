@@ -2,6 +2,7 @@ package com.vaadin.tutorial.todomvc;
 
 import java.util.EnumSet;
 
+import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.ValueChangeMode;
@@ -36,7 +37,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
     private Todo currentlyEditedTodo;
 
     private EnterPressHandler newTodoFieldEnterPressHandler;
-    private TaskFilter taskFilter;
+
+    private ConfigurableFilterDataProvider<Todo, Void, TaskFilter> filterDataProvider;
 
     public TodoViewImpl() {
 
@@ -131,7 +133,7 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
         filters.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         filters.setValue(TaskFilter.ALL);
         filters.addValueChangeListener(event -> {
-            taskFilter = event.getValue();
+            filterDataProvider.setFilter(event.getValue());
             presenter.refreshView();
         });
 
@@ -176,7 +178,8 @@ public class TodoViewImpl extends VerticalLayout implements TodoView {
 
     @Override
     public void setDataProvider(TodoJDBCDataProvider dataProvider) {
-        grid.setDataProvider(dataProvider.withFilter(() -> taskFilter));
+        filterDataProvider = dataProvider.withConfigurableFilter();
+        grid.setDataProvider(filterDataProvider);
     }
 
     private void onNewTodoFieldEnter() {

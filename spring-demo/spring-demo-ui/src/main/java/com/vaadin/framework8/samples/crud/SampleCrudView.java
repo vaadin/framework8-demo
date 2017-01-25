@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.framework8.samples.backend.DataService;
 import com.vaadin.framework8.samples.backend.data.Product;
 import com.vaadin.framework8.samples.crud.ProductForm.ProductFormFactory;
@@ -51,13 +52,15 @@ public class SampleCrudView extends CssLayout implements View {
     @Autowired
     private SampleCrudLogicFactory logicFactory;
     private TextField filter;
+    private ConfigurableFilterDataProvider<Product, Void, String> filterDataProvider;
 
     public HorizontalLayout createTopBar() {
         filter = new TextField();
         filter.setStyleName("filter-textfield");
         filter.setPlaceholder("Filter");
         // Trigger a refresh of data when the filter is updated
-        filter.addValueChangeListener(event -> dataProvider.refreshAll());
+        filter.addValueChangeListener(
+                event -> filterDataProvider.setFilter(event.getValue()));
 
         newProduct = new Button("New product");
         newProduct.addStyleName(ValoTheme.BUTTON_PRIMARY);
@@ -135,7 +138,9 @@ public class SampleCrudView extends CssLayout implements View {
         grid = new ProductGrid();
         grid.asSingleSelect().addValueChangeListener(
                 event -> viewLogic.rowSelected(grid.getSelectedRow()));
-        grid.setDataProvider(dataProvider.withFilter(() -> filter.getValue()));
+
+        filterDataProvider = dataProvider.withConfigurableFilter();
+        grid.setDataProvider(filterDataProvider);
 
         VerticalLayout barAndGridLayout = new VerticalLayout();
         barAndGridLayout.addComponent(topLayout);
