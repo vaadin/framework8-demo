@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -35,7 +34,7 @@ import com.vaadin.ui.UI;
  */
 @Service
 public class ProductDataProviderImpl
-        extends AbstractBackEndDataProvider<Product, Supplier<String>>
+        extends AbstractBackEndDataProvider<Product, String>
         implements ProductDataProvider {
 
     private static class PageQuery {
@@ -51,18 +50,17 @@ public class ProductDataProviderImpl
 
     @Override
     @Transactional
-    public int sizeInBackEnd(Query<Product, Supplier<String>> t) {
+    public int sizeInBackEnd(Query<Product, String> t) {
         return (int) getItems(getPaging(t).pageable, getFilter(t)).count();
     }
 
-    private String getFilter(Query<Product, Supplier<String>> t) {
-        return t.getFilter().map(Supplier::get).orElse(null);
+    private String getFilter(Query<Product, String> t) {
+        return t.getFilter().orElse(null);
     }
 
     @Override
     @Transactional
-    public Stream<Product> fetchFromBackEnd(
-            Query<Product, Supplier<String>> t) {
+    public Stream<Product> fetchFromBackEnd(Query<Product, String> t) {
         PageQuery pageQuery = getPaging(t);
         return getItems(pageQuery.pageable, getFilter(t))
                 .skip(pageQuery.pageOffset).limit(t.getLimit());
@@ -113,7 +111,7 @@ public class ProductDataProviderImpl
      *            the original query
      * @return paged query
      */
-    private PageQuery getPaging(Query<Product, Supplier<String>> q) {
+    private PageQuery getPaging(Query<Product, String> q) {
         final PageQuery p = new PageQuery();
         int start = q.getOffset();
         int end = q.getOffset() + q.getLimit();
@@ -135,8 +133,8 @@ public class ProductDataProviderImpl
         return p;
     }
 
-    private PageRequest getPageRequest(Query<Product, Supplier<String>> q,
-            int pageIndex, int pageLength) {
+    private PageRequest getPageRequest(Query<Product, String> q, int pageIndex,
+            int pageLength) {
         if (!q.getSortOrders().isEmpty()) {
             return new PageRequest(pageIndex, pageLength, getSorting(q));
         } else {
@@ -144,7 +142,7 @@ public class ProductDataProviderImpl
         }
     }
 
-    private Sort getSorting(Query<Product, Supplier<String>> q) {
+    private Sort getSorting(Query<Product, String> q) {
         return new Sort(q.getSortOrders().stream()
                 .map(so -> new Order(
                         so.getDirection() == SortDirection.ASCENDING
