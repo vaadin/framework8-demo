@@ -18,13 +18,16 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
-/* Create custom UI Components.
+/**
+ * Create custom UI Components.
  *
- * Create your own Vaadin components by inheritance and composition.
- * This is a form component inherited from FormLayout. Use
- * Use BeanFieldGroup to bind data fields from DTO to UI fields.
- * Similarly named field by naming convention or customized
- * with @PropertyId annotation.
+ * Create your own Vaadin components by inheritance and composition. This is a
+ * form component inherited from FormLayout. Use new Binder(Bean.class) and
+ * binder.bindInstanceFields(form), to bind data fields from DTO to UI fields.
+ * Similarly named field by naming convention or customized with @PropertyId
+ * annotation.
+ *
+ * @author Vaadin Ltd
  */
 @DesignRoot
 public class ContactForm extends FormLayout {
