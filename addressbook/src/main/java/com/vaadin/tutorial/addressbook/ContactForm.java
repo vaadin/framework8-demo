@@ -18,13 +18,16 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.themes.ValoTheme;
 
-/* Create custom UI Components.
+/**
+ * Create custom UI Components.
  *
- * Create your own Vaadin components by inheritance and composition.
- * This is a form component inherited from FormLayout. Use
- * Use BeanFieldGroup to bind data fields from DTO to UI fields.
- * Similarly named field by naming convention or customized
- * with @PropertyId annotation.
+ * Create your own Vaadin components by inheritance and composition. This is a
+ * form component inherited from FormLayout. Use new Binder(Bean.class) and
+ * binder.bindInstanceFields(form), to bind data fields from DTO to UI fields.
+ * Similarly named field by naming convention or customized with @PropertyId
+ * annotation.
+ *
+ * @author Vaadin Ltd
  */
 @DesignRoot
 public class ContactForm extends FormLayout {
@@ -39,6 +42,7 @@ public class ContactForm extends FormLayout {
     protected Button cancel;
 
     private final Binder<Contact> binder = new Binder<>();
+    private Contact contactBeingEdited;
 
     public ContactForm() {
         Design.read(this);
@@ -90,22 +94,21 @@ public class ContactForm extends FormLayout {
     }
 
     void edit(Contact contact) {
+        contactBeingEdited = contact;
         if (contact != null) {
-            binder.setBean(contact);
+            binder.readBean(contact);
             firstName.focus();
-        } else {
-            binder.removeBean();
         }
         setVisible(contact != null);
     }
 
     public void save(Button.ClickEvent event) {
-        Contact bean = binder.getBean();
-        if (binder.writeBeanIfValid(bean)) {
-            ContactService.getDemoService().save(bean);
+        if (binder.writeBeanIfValid(contactBeingEdited)) {
+            ContactService.getDemoService().save(contactBeingEdited);
 
-            String msg = String.format("Saved '%s %s'.", bean.getFirstName(),
-                    bean.getLastName());
+            String msg = String.format("Saved '%s %s'.",
+                    contactBeingEdited.getFirstName(),
+                    contactBeingEdited.getLastName());
             Notification.show(msg, Type.TRAY_NOTIFICATION);
             getUI().getContent().refreshContacts();
         }

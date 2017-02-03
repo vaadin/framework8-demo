@@ -206,6 +206,26 @@ public class AddressbookIT extends AbstractDemoTest {
         Assert.assertFalse(isElementPresent(By.className("v-formlayout")));
     }
 
+    @Test
+    public void cancelButtonDiscardsChanges() {
+        String firstCellText = $(GridElement.class).first().getCell(0, 0)
+                .getText();
+
+        getRows().get(0).findElement(By.tagName("td")).click();
+
+        WebElement form = findElement(By.id("contactform"));
+        WebElement firstName = form.findElement(By.className("firstName"));
+        firstName.clear();
+        firstName.sendKeys("Updated Name");
+
+        ButtonElement cancelButton = $(ButtonElement.class).get(2);
+        cancelButton.click();
+
+        Assert.assertEquals(
+                $(GridElement.class).first().getCell(0, 0).getText(),
+                firstCellText);
+    }
+
     private List<WebElement> getRows() {
         WebElement table = findElement(By.id("contactstable"));
 
