@@ -405,11 +405,9 @@ public class SpringCrudIT extends AbstractDemoTest {
                 .findElement(By.xpath(".."))
                 .findElement(By.className("v-caption"));
         String actualCaptionText = captionElement.getText();
-        if(required)
-        {
+        if(required) {
             Assert.assertEquals(caption + "*", actualCaptionText);
-        } else
-        {
+        } else {
             Assert.assertEquals(caption, actualCaptionText);
         }
         if (exact) {
