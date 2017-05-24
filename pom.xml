@@ -41,6 +41,7 @@
         <module>registration-form</module>
         <module>spring-demo</module>
         <module>todomvc</module>
+	<module>tree-database-example</module>
   </modules>
     
     <build>
