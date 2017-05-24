@@ -21,8 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Vaadin DataProvider over pure JDBC. Filtering and sorting to be implemented
@@ -30,11 +28,9 @@ import java.util.logging.Logger;
  *
  * @author Vaadin Ltd
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class PreparedJDBCDataProvider<T, F>
         extends AbstractJDBCDataProvider<T, F> {
-
-    private static final Logger LOGGER = Logger
-            .getLogger(PreparedJDBCDataProvider.class.getName());
 
     protected List<PreparedStatement> statements = new ArrayList<>();
 
@@ -45,14 +41,7 @@ public abstract class PreparedJDBCDataProvider<T, F>
 
     @Override
     public void close() throws Exception {
-        for (PreparedStatement statement : statements) {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING,
-                        "Prepared statement was closed with error", e);
-            }
-        }
+        closeResources(statements);
     }
 
     protected PreparedStatement openStatement(String sqlQuery) {

@@ -15,12 +15,12 @@
  */
 package com.vaadin.tutorial.todomvc;
 
+import com.vaadin.data.provider.Query;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.vaadin.data.provider.Query;
 
 /**
  * Vaadin DataProvider over pure JDBC. Only fixed SQL statements are supported,
@@ -28,6 +28,7 @@ import com.vaadin.data.provider.Query;
  *
  * @author Vaadin Ltd
  */
+@SuppressWarnings("WeakerAccess")
 public class SimpleJDBCDataProvider<T>
         extends PreparedJDBCDataProvider<T, Void> {
 
@@ -35,7 +36,7 @@ public class SimpleJDBCDataProvider<T>
     protected final PreparedStatement sizeStatement;
 
     public SimpleJDBCDataProvider(Connection connection, String sqlQuery,
-            DataRetriever<T> jdbcReader) {
+                                  DataRetriever<T> jdbcReader) {
         super(connection, jdbcReader);
         resultSetStatement = openStatement(sqlQuery);
 
@@ -44,8 +45,7 @@ public class SimpleJDBCDataProvider<T>
     }
 
     @Override
-    protected ResultSet rowCountStatement(Connection connection,
-            Query<T, Void> query) throws SQLException {
+    protected ResultSet rowCountStatement(Query<T, Void> query) throws SQLException {
         assert query.getSortOrders() == null || query.getSortOrders().isEmpty();
         return sizeStatement.executeQuery();
     }
