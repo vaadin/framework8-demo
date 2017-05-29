@@ -11,12 +11,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.stream.Stream;
 
 /**
  * Example of AbstractHierarchicalDataProvider, based on top of pure JDBC.
  */
-public class PeopleDataDataProvider extends AbstractBackEndHierarchicalDataProvider<NamedItem, Void> {
+public class PeopleDataProvider extends AbstractBackEndHierarchicalDataProvider<NamedItem, Void> {
 
     @Override
     public int getChildCount(HierarchicalQuery<NamedItem, Void> query) {
@@ -70,9 +71,12 @@ public class PeopleDataDataProvider extends AbstractBackEndHierarchicalDataProvi
             }
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                for(int i = 0; i < query.getOffset();i++)
-                {
-                    if(!resultSet.next()) return Stream.empty();
+                try {
+                    resultSet.relative(query.getOffset());
+                } catch (SQLFeatureNotSupportedException e) {
+                    for (int i = 0; i < query.getOffset(); i++) {
+                        if (!resultSet.next()) return Stream.empty();
+                    }
                 }
                 Stream.Builder<NamedItem> builder = Stream.builder();
                 int limit = query.getLimit();

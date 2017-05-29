@@ -59,13 +59,13 @@ public class TreeUI extends UI {
         treeGrid.addColumn(ofPerson(Person::getLastName)).setCaption("Last Name");
         treeGrid.addColumn(new EmailGenerator()).setCaption("e-mail");
         treeGrid.addColumn(ofPerson(Person::getGender)).setCaption("Gender");
-        treeGrid.setDataProvider(new PeopleDataDataProvider());
+        treeGrid.setDataProvider(new PeopleDataProvider());
         return treeGrid;
     }
 
     private Tree<NamedItem> setupTree() {
         Tree<NamedItem> tree = new Tree<>();
-        tree.setDataProvider(new PeopleDataDataProvider());
+        tree.setDataProvider(new PeopleDataProvider());
         tree.setItemCaptionGenerator(NamedItem::getName);
         tree.setItemIconGenerator(new PeopleIconGenerator());
         return tree;
