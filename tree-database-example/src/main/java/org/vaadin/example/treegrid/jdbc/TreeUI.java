@@ -59,13 +59,13 @@ public class TreeUI extends UI {
         treeGrid.addColumn(ofPerson(Person::getLastName)).setCaption("Last Name");
         treeGrid.addColumn(new EmailGenerator()).setCaption("e-mail");
         treeGrid.addColumn(ofPerson(Person::getGender)).setCaption("Gender");
-        treeGrid.setDataProvider(new PeopleData());
+        treeGrid.setDataProvider(new PeopleDataDataProvider());
         return treeGrid;
     }
 
     private Tree<NamedItem> setupTree() {
         Tree<NamedItem> tree = new Tree<>();
-        tree.setDataProvider(new PeopleData());
+        tree.setDataProvider(new PeopleDataDataProvider());
         tree.setItemCaptionGenerator(NamedItem::getName);
         tree.setItemIconGenerator(new PeopleIconGenerator());
         return tree;
@@ -111,10 +111,7 @@ public class TreeUI extends UI {
 
         @Override
         public String apply(NamedItem namedItem) {
-            if (namedItem instanceof Company) {
-                String domainName = namedItem.getName().replaceAll("^[A-Za-z0-9.-]", "").toLowerCase();
-                return "inbox@" + domainName + ".com";
-            };
+            if (namedItem instanceof Company) return ((Company) namedItem).getEmail();
             if (namedItem instanceof Person) return ((Person) namedItem).getEmail();
             return "--";
         }

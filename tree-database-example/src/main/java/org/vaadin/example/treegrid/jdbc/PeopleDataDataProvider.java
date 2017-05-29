@@ -1,6 +1,6 @@
 package org.vaadin.example.treegrid.jdbc;
 
-import com.vaadin.data.provider.AbstractHierarchicalDataProvider;
+import com.vaadin.data.provider.AbstractBackEndHierarchicalDataProvider;
 import com.vaadin.data.provider.HierarchicalQuery;
 import org.vaadin.example.treegrid.jdbc.pojo.Company;
 import org.vaadin.example.treegrid.jdbc.pojo.Department;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * Example of AbstractHierarchicalDataProvider, based on top of pure JDBC.
  */
-public class PeopleData extends AbstractHierarchicalDataProvider<NamedItem, Void> {
+public class PeopleDataDataProvider extends AbstractBackEndHierarchicalDataProvider<NamedItem, Void> {
 
     @Override
     public int getChildCount(HierarchicalQuery<NamedItem, Void> query) {
@@ -25,17 +25,17 @@ public class PeopleData extends AbstractHierarchicalDataProvider<NamedItem, Void
         if (parent instanceof Person) {
             return 0;
         } else if (parent instanceof Department) {
-            count = readInt("select count(*) from people where department_id=?", parent);
+            count = readInt("SELECT COUNT(*) FROM people WHERE department_id=?", parent);
         } else if (parent instanceof Company) {
-            count = readInt("select count(*) from department where company_id=?", parent);
+            count = readInt("SELECT COUNT(*) FROM department WHERE company_id=?", parent);
         } else {
-            count = readInt("select count(*) from company", null);
+            count = readInt("SELECT COUNT(*) FROM company", null);
         }
         return count - query.getOffset();
     }
 
     @Override
-    public Stream<NamedItem> fetchChildren(HierarchicalQuery<NamedItem, Void> query) {
+    protected Stream<NamedItem> fetchChildrenFromBackEnd(HierarchicalQuery<NamedItem, Void> query) {
         NamedItem parent = query.getParent();
         if (parent instanceof Person) {
             return Stream.empty();
@@ -60,7 +60,8 @@ public class PeopleData extends AbstractHierarchicalDataProvider<NamedItem, Void
         } else {
             sql = "SELECT * FROM company";
             retriever = resultSet -> new Company(resultSet.getLong("company_id"),
-                    resultSet.getString("company_name"));
+                    resultSet.getString("company_name"),
+                    resultSet.getString("company_email"));
         }
         try (Connection connection = DBEngine.getDataSource().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -88,11 +89,6 @@ public class PeopleData extends AbstractHierarchicalDataProvider<NamedItem, Void
     @Override
     public boolean hasChildren(NamedItem item) {
         return getChildCount(new HierarchicalQuery<>(null, item)) > 0;
-    }
-
-    @Override
-    public boolean isInMemory() {
-        return false;
     }
 
     @Override
