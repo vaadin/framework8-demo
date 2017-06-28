@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.function.Supplier;
 
 import com.vaadin.data.provider.Query;
 
@@ -28,11 +27,11 @@ import com.vaadin.data.provider.Query;
  */
 class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, TaskFilter> {
 
-    protected final PreparedStatement resultSetStatement;
-    protected final PreparedStatement sizeStatement;
+    private final PreparedStatement resultSetStatement;
+    private final PreparedStatement sizeStatement;
 
-    protected final PreparedStatement resultSetStatementFiltered;
-    protected final PreparedStatement sizeStatementFiltered;
+    private final PreparedStatement resultSetStatementFiltered;
+    private final PreparedStatement sizeStatementFiltered;
 
     public TodoJDBCDataProvider(Connection connection) throws SQLException {
         super(connection, resultSet -> {
@@ -54,8 +53,7 @@ class TodoJDBCDataProvider extends PreparedJDBCDataProvider<Todo, TaskFilter> {
     }
 
     @Override
-    protected synchronized ResultSet rowCountStatement(Connection connection,
-            Query<Todo, TaskFilter> query) throws SQLException {
+    protected synchronized ResultSet rowCountStatement(Query<Todo, TaskFilter> query) throws SQLException {
         TaskFilter taskFilter = obtainFilterValue(query);
         if (taskFilter == TaskFilter.ALL) {
             return sizeStatement.executeQuery();

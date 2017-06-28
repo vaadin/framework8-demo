@@ -15,28 +15,26 @@
  */
 package com.vaadin.tutorial.todomvc;
 
+import com.vaadin.data.provider.AbstractBackEndDataProvider;
+import com.vaadin.data.provider.Query;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.List;
 import java.util.Objects;
-import java.util.Spliterators;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import com.vaadin.data.provider.AbstractBackEndDataProvider;
-import com.vaadin.data.provider.Query;
 
 /**
  * Vaadin DataProvider over pure JDBC, base class.
  *
- * @param <T>
- *            data transfer object. Might be POJO or Map.
+ * @param <T> data transfer object. Might be POJO or Map.
  * @author Vaadin Ltd
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class AbstractJDBCDataProvider<T, F>
         extends AbstractBackEndDataProvider<T, F> implements AutoCloseable {
     private static final Logger LOGGER = Logger
@@ -47,15 +45,26 @@ public abstract class AbstractJDBCDataProvider<T, F>
     private int cachedSize = -1;
 
     public AbstractJDBCDataProvider(Connection connection,
-            DataRetriever<T> jdbcReader) {
+                                    DataRetriever<T> jdbcReader) {
         this.connection = Objects.requireNonNull(connection);
         this.jdbcReader = Objects.requireNonNull(jdbcReader);
+    }
+
+    protected static void closeResources(List<? extends AutoCloseable> statements) {
+        for (AutoCloseable closeable : statements) {
+            try {
+                closeable.close();
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING,
+                        "Prepared closeable was closed with error", e);
+            }
+        }
     }
 
     @Override
     protected int sizeInBackEnd(Query<T, F> query) {
         if (cachedSize < 0) {
-            try (ResultSet resultSet = rowCountStatement(connection, query)) {
+            try (ResultSet resultSet = rowCountStatement(query)) {
                 resultSet.next();
                 cachedSize = resultSet.getInt(1);
             } catch (SQLException e) {
@@ -69,16 +78,13 @@ public abstract class AbstractJDBCDataProvider<T, F>
         return Math.min(size, query.getLimit());
     }
 
-    protected abstract ResultSet rowCountStatement(Connection connection,
-            Query<T, F> query) throws SQLException;
+    protected abstract ResultSet rowCountStatement(Query<T, F> query) throws SQLException;
 
-    protected abstract ResultSet resultSetStatement(Query<T, F> query)
-            throws SQLException;
+    protected abstract ResultSet resultSetStatement(Query<T, F> query) throws SQLException;
 
     @Override
     protected Stream<T> fetchFromBackEnd(Query<T, F> query) {
-        try {
-            ResultSet resultSet = resultSetStatement(query);
+        try (ResultSet resultSet = resultSetStatement(query)){
             try {
                 resultSet.absolute(query.getOffset());
             } catch (SQLFeatureNotSupportedException e) {
@@ -86,9 +92,11 @@ public abstract class AbstractJDBCDataProvider<T, F>
                     resultSet.next();
                 }
             }
-            return StreamSupport.stream(
-                    new ResultSetToSpliterator(resultSet, query.getLimit()),
-                    false);
+            Stream.Builder<T> builder = Stream.builder();
+            for(int i =0; i < query.getLimit() && resultSet.next();i++) {
+                builder.add(jdbcReader.readRow(resultSet));
+            }
+            return builder.build();
         } catch (SQLException e) {
             throw new RuntimeException("Data SQL query failed", e);
         }
@@ -98,59 +106,6 @@ public abstract class AbstractJDBCDataProvider<T, F>
     public void refreshAll() {
         cachedSize = -1;
         super.refreshAll();
-    }
-
-    private class ResultSetToSpliterator extends
-            Spliterators.AbstractSpliterator<T> implements AutoCloseable {
-        private final ResultSet resultSet;
-        private int limit;
-
-        public ResultSetToSpliterator(ResultSet resultSet, int limit)
-                throws SQLException {
-            super(Long.MAX_VALUE, IMMUTABLE | NONNULL);
-            this.resultSet = resultSet;
-            if (resultSet.next()) {
-                this.limit = limit;
-            } else {
-                this.limit = 0;
-            }
-            if (this.limit <= 0) {
-                close();
-            }
-        }
-
-        @Override
-        public boolean tryAdvance(Consumer<? super T> action) {
-            try {
-                if (resultSet.isClosed()) {
-                    return false;
-                }
-                T dto = jdbcReader.readRow(resultSet);
-                action.accept(dto);
-                if (resultSet.next()) {
-                    limit--;
-                } else {
-                    limit = 0;
-                }
-                if (limit <= 0) {
-                    close();
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException("ResultSet row retrieve error", e);
-            }
-
-            return true;
-        }
-
-        @Override
-        public void close() {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING,
-                        "Result set was closed with exception", e);
-            }
-        }
     }
 
     @FunctionalInterface
