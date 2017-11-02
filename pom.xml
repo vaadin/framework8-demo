@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.vaadin.framework8</groupId>
     <artifactId>framework8-demo</artifactId>
     <packaging>pom</packaging>
-    <version>8.0-SNAPSHOT</version>
+    <version>8.1.6</version>
     <name>Vaadin Demo</name>
 
     <properties>
@@ -19,11 +20,11 @@
         <phantomjs.version>2.1.1</phantomjs.version>
         <phantomjs.outputDir>${project.build.directory}/phantomjs-maven-plugin</phantomjs.outputDir>
     </properties>
-    
+
     <repositories>
         <repository>
-          <id>snapshot</id>
-          <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+            <id>snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </repository>
         <!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com 
             contains a huge set of additional libraries. See vaadin.com/directory -->
@@ -41,8 +42,9 @@
         <module>registration-form</module>
         <module>spring-demo</module>
         <module>todomvc</module>
-  </modules>
-    
+        <module>tree-database-example</module>
+    </modules>
+
     <build>
         <plugins>
             <plugin>
@@ -156,7 +158,7 @@
             </plugins>
         </pluginManagement>
     </build>
-    
+
     <dependencyManagement>
         <dependencies>
             <!-- Servlet 3.0 API -->
@@ -177,7 +179,7 @@
                 <artifactId>vaadin-testbench</artifactId>
                 <version>4.1.0.alpha1</version>
             </dependency>
-			<dependency>
+            <dependency>
                 <groupId>com.vaadin.framework8</groupId>
                 <artifactId>test-util</artifactId>
                 <scope>test</scope>
@@ -193,8 +195,8 @@
 
     <dependencies>
         <dependency>
-	        <groupId>javax.servlet</groupId>
-	        <artifactId>javax.servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
@@ -234,5 +236,5 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    
+
 </project>

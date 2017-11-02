@@ -6,7 +6,7 @@
 	<parent>
         <groupId>com.vaadin.framework8</groupId>
         <artifactId>framework8-demo</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>8.1.6</version>
     </parent>
 	<artifactId>addressbook</artifactId>
 	<packaging>war</packaging>
