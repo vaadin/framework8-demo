@@ -19,28 +19,31 @@ import java.util.stream.Stream;
  */
 @SuppressWarnings("WeakerAccess")
 public class DBEngine {
-    private static BasicDataSource dataSource;
 
     private DBEngine() {
     }
 
+    /**
+     * Initialization-on-demand
+     * @see <a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">More details at Wikipedia</a>
+     */
+    private static class LazyHolder {
+        static final DataSource INSTANCE = createDataSource();
+    }
+
     public static DataSource getDataSource() {
-        if (dataSource == null) {
-            synchronized (DBEngine.class) {
-                // Standard double check trick to avoid double initialization
-                // in case of race conditions
-                if (dataSource == null) {
-                    dataSource = new BasicDataSource();
-                    dataSource.setUrl("jdbc:hsqldb:mem:peopledb");
-                    dataSource.setUsername("SA");
-                    dataSource.setPassword("");
-                    try (Connection connection = dataSource.getConnection()) {
-                        uploadData(connection);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
+        return LazyHolder.INSTANCE;
+    }
+
+    private static DataSource createDataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setUrl("jdbc:hsqldb:mem:peopledb");
+        dataSource.setUsername("SA");
+        dataSource.setPassword("");
+        try (Connection connection = dataSource.getConnection()) {
+            uploadData(connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return dataSource;
     }

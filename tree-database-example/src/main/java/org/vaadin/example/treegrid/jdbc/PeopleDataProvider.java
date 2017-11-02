@@ -70,23 +70,34 @@ public class PeopleDataProvider extends AbstractBackEndHierarchicalDataProvider<
                 statement.setLong(1, parent.getId());
             }
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-                try {
-                    resultSet.relative(query.getOffset());
-                } catch (SQLFeatureNotSupportedException e) {
-                    for (int i = 0; i < query.getOffset(); i++) {
-                        if (!resultSet.next()) return Stream.empty();
-                    }
-                }
-                Stream.Builder<NamedItem> builder = Stream.builder();
-                int limit = query.getLimit();
-                for (int i = 0; i < limit && resultSet.next(); i++) {
-                    builder.add(retriever.readRow(resultSet));
-                }
-                return builder.build();
-            }
+            return readResultSet(query, retriever, statement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private Stream<NamedItem> readResultSet(HierarchicalQuery<NamedItem, Void> query, DataRetriever<NamedItem> retriever, PreparedStatement statement) throws SQLException {
+        try (ResultSet resultSet = statement.executeQuery()) {
+            safeSkipRows(resultSet, query.getOffset());
+            if (resultSet.isAfterLast()) {
+                return Stream.empty();
+            }
+            Stream.Builder<NamedItem> builder = Stream.builder();
+            int limit = query.getLimit();
+            for (int i = 0; i < limit && resultSet.next(); i++) {
+                builder.add(retriever.readRow(resultSet));
+            }
+            return builder.build();
+        }
+    }
+
+    private void safeSkipRows(ResultSet resultSet, int skipRowCount) throws SQLException {
+        try {
+            resultSet.relative(skipRowCount);
+        } catch (SQLFeatureNotSupportedException e) {
+            for (int i = 0; i < skipRowCount; i++) {
+                if (!resultSet.next()) return;
+            }
         }
     }
 

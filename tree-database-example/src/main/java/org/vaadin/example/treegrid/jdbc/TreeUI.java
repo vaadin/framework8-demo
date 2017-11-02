@@ -40,6 +40,8 @@ public class TreeUI extends UI {
 
         layout.addComponentsAndExpand(treeGrid, treePanel);
 
+        /* Next four listeners keep Tree and TreeGrid in sync - folders are open
+        and closed synchronously in both components*/
         treeGrid.addExpandListener(expandEvent -> tree.expand(expandEvent.getExpandedItem()));
         treeGrid.addCollapseListener(expandEvent -> tree.collapse(expandEvent.getCollapsedItem()));
 
