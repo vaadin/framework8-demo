@@ -36,7 +36,7 @@ public class RESTDemoUI extends UI {
                 .setCaption("State");
 
         personGrid.setDataProvider(new RestDataProvider(
-                "https://api.randomuser.me/?seed=0&results=50&page=1"));
+                "https://randomuser.me/api/1.1/?seed=0&results=50&page=1"));
 
         personGrid.setSizeFull();
         setContent(personGrid);

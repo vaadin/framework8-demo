@@ -1,4 +1,4 @@
-package com.vaadin.framework8.demo.rest;
+package com.vaadin.framework8.demo.restjson;
 
 import java.util.List;
 import java.util.stream.IntStream;
