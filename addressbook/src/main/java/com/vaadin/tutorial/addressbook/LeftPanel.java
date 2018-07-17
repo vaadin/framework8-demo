@@ -15,11 +15,6 @@
  */
 package com.vaadin.tutorial.addressbook;
 
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.function.Consumer;
-
 import com.vaadin.annotations.DesignRoot;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
@@ -30,9 +25,13 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.declarative.Design;
 import com.vaadin.ui.renderers.DateRenderer;
 
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.function.Consumer;
+
 /**
  * @author Vaadin Ltd
- *
  */
 @DesignRoot
 public class LeftPanel extends VerticalLayout {
@@ -71,8 +70,8 @@ public class LeftPanel extends VerticalLayout {
         contactList.addColumn(Contact::getEmail).setCaption("Email");
         contactList
                 .addColumn(
-                        c -> Date.from(c.getBirthDate().atStartOfDay()
-                                .atZone(ZoneId.systemDefault()).toInstant()),
+                        c -> c.getBirthDate() == null ? null : Date.from(c.getBirthDate()
+                                .atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
                         new DateRenderer(new SimpleDateFormat("M/d/yy")))
                 .setCaption("Birth Date");
 
