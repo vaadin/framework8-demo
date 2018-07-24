@@ -64,8 +64,7 @@ public class ContactService {
             try {
                 boolean passesFilter = stringFilter == null
                         || stringFilter.isEmpty()
-                        || contact.toString().toLowerCase()
-                                .contains(stringFilter.toLowerCase());
+                        || contact.containsText(stringFilter);
                 if (passesFilter) {
                     arrayList.add(contact.clone());
                 }

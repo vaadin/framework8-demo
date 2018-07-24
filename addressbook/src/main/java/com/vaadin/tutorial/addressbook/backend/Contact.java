@@ -1,14 +1,15 @@
 package com.vaadin.tutorial.addressbook.backend;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-
-import org.apache.commons.beanutils.BeanUtils;
+import java.util.Objects;
 
 /**
  * A simple DTO for the address book example.
- *
+ * <p>
  * Serializable and cloneable Java Object that are typically persisted in the
  * database and can also be easily converted to different formats like JSON.
  */
@@ -99,6 +100,17 @@ public class Contact implements Serializable, Cloneable {
         } catch (Exception ex) {
             throw new CloneNotSupportedException();
         }
+    }
+
+    public boolean containsText(String text) {
+        text = text.toLowerCase();
+
+        return Objects.toString(id, "").toLowerCase().contains(text)
+                || Objects.toString(firstName, "").toLowerCase().contains(text)
+                || Objects.toString(lastName, "").toLowerCase().contains(text)
+                || Objects.toString(phone, "").toLowerCase().contains(text)
+                || Objects.toString(email, "").toLowerCase().contains(text)
+                || Objects.toString(birthDate, "").toLowerCase().contains(text);
     }
 
     @Override
