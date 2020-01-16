@@ -23,6 +23,13 @@
 
     <repositories>
         <repository>
+	   <id>central</id>
+		<url>https://repo.maven.apache.org/maven2/</url>
+		<snapshots>
+	        <enabled>true</enabled>
+            </snapshots>
+        </repository>     
+        <repository>
             <id>snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
         </repository>
