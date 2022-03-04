@@ -3,16 +3,69 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-        <groupId>com.vaadin.framework8</groupId>
-        <artifactId>framework8-demo</artifactId>
-        <version>8.1.6</version>
-    </parent>
+	<groupId>com.vaadin.framework8</groupId>
 	<artifactId>addressbook</artifactId>
 	<packaging>war</packaging>
 	<name>Vaadin Addressbook example</name>
+    <version>8.1.6</version>
+		
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<encoding>UTF-8</encoding>
+		<jetty.version>9.3.7.v20160115</jetty.version>
+		<vaadin.version>${project.version}</vaadin.version>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<phantomjs.plugin.version>0.7</phantomjs.plugin.version>
+		<phantomjs.version>2.1.1</phantomjs.version>
+		<phantomjs.outputDir>${project.build.directory}/phantomjs-maven-plugin</phantomjs.outputDir>
+</properties>
+
 
 	<dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-server</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-themes</artifactId>
+            <version>${vaadin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-push</artifactId>
+            <version>${vaadin.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.validation</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-util</artifactId>
+            <version>${jetty.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
 		<!-- The huge set of awesome Java libraries are available as such for Vaadin 
 			developers, you should take the advantage of those. In this app we just use 
 			the commons-beanutils to help implementing the fake backend. -->
@@ -22,12 +75,113 @@
 			<version>1.9.2</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
-            <groupId>com.vaadin.framework8</groupId>
-            <artifactId>test-util</artifactId>
-            <scope>test</scope>
-        </dependency>
-
 	</dependencies>
+
+
+    <repositories>
+        <repository>
+	   <id>central</id>
+		<url>https://repo.maven.apache.org/maven2/</url>
+		<snapshots>
+	        <enabled>true</enabled>
+            </snapshots>
+        </repository>     
+        <repository>
+            <id>snapshot</id>
+            <url>https://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+        </repository>
+        <!-- Essential Vaadin artifacts are in maven central, but maven.vaadin.com 
+            contains a huge set of additional libraries. See vaadin.com/directory -->
+        <repository>
+            <id>vaadin-addons</id>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty.version}</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8888</port>
+                    </httpConnector>
+                    <scanIntervalSeconds>-1</scanIntervalSeconds>
+                    <stopPort>8081</stopPort>
+                    <stopWait>5</stopWait>
+                    <stopKey>foo</stopKey>
+                </configuration>
+                <executions>
+                    <!-- start and stop jetty (running our app) when running integration 
+                        tests -->
+                    <execution>
+                        <id>start-jetty</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-jetty</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.3</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-maven-plugin</artifactId>
+                    <version>7.7.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Servlet 3.0 API -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.1.0</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-testbench</artifactId>
+                <version>4.1.0.alpha1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin.framework8</groupId>
+                <artifactId>test-util</artifactId>
+                <scope>test</scope>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-server</artifactId>
+                <version>${vaadin.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 </project>
