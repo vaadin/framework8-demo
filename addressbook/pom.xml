@@ -7,56 +7,34 @@
   <artifactId>addressbook</artifactId>
   <packaging>war</packaging>
   <name>Vaadin Addressbook example</name>
-  <version>8.1.6</version>
+  <version>23.0</version>
 
-  <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <encoding>UTF-8</encoding>
-    <jetty.version>9.3.7.v20160115</jetty.version>
-    <vaadin.version>${project.version}</vaadin.version>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-    <phantomjs.plugin.version>0.7</phantomjs.plugin.version>
-    <phantomjs.version>2.1.1</phantomjs.version>
-    <phantomjs.outputDir>${project.build.directory}/phantomjs-maven-plugin</phantomjs.outputDir>
-  </properties>
 
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <failOnMissingWebXml>false</failOnMissingWebXml>
+
+        <vaadin.version>23.0.0</vaadin.version>
+        <drivers.downloader.phase>pre-integration-test</drivers.downloader.phase>
+        <jetty.version>9.4.43.v20210629</jetty.version>
+    </properties>
 
   <dependencies>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-classic-components-flow</artifactId>
+      </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-server</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>javax.servlet-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-client-compiled</artifactId>
-      <version>${vaadin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-themes</artifactId>
-      <version>${vaadin.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.vaadin</groupId>
-      <artifactId>vaadin-push</artifactId>
-      <version>${vaadin.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.validation</groupId>
-          <artifactId>javax.servlet-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -92,16 +70,30 @@
   </repositories>
 
   <build>
+    <defaultGoal>jetty:run</defaultGoal>
+
     <plugins>
+      <plugin>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-frontend</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
+                        <scanIntervalSeconds>2</scanIntervalSeconds>
+
           <httpConnector>
             <port>8888</port>
           </httpConnector>
-          <scanIntervalSeconds>-1</scanIntervalSeconds>
           <stopPort>8081</stopPort>
           <stopWait>5</stopWait>
           <stopKey>foo</stopKey>
@@ -169,8 +161,10 @@
       </dependency>
       <dependency>
         <groupId>com.vaadin</groupId>
-        <artifactId>vaadin-server</artifactId>
+        <artifactId>vaadin-bom</artifactId>
         <version>${vaadin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
