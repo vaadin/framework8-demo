@@ -15,32 +15,18 @@
  */
 package com.vaadin.tutorial.addressbook;
 
-import com.vaadin.annotations.DesignRoot;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.tutorial.addressbook.backend.Contact;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.declarative.Design;
 
 /**
  * @author Vaadin Ltd
  *
  */
-@DesignRoot
-public class MainLayout extends HorizontalSplitPanel {
+public class MainLayout extends SplitLayout {
 
     // ContactForm is an example of a custom component class
-    private ContactForm contactForm;
-
-    private LeftPanel left;
-
-    @Override
-    public void attach() {
-        super.attach();
-
-        if (contactForm == null) {
-            Design.read(this);
-            configureComponents();
-        }
-    }
+    private ContactForm contactForm = new ContactForm();
+    private LeftPanel left = new LeftPanel();
 
     /*
      * Choose the design patterns you like.
@@ -58,12 +44,13 @@ public class MainLayout extends HorizontalSplitPanel {
         left.deselect();
     }
 
-    private void configureComponents() {
+    public MainLayout() {
         left.addEditListener(() -> contactForm.edit(new Contact()));
         left.addFilterListener(this::refreshContacts);
         left.addSelectionListener(contactForm::edit);
-
         refreshContacts();
+        addToPrimary(left);
+        addToSecondary(contactForm);
     }
 
     private void refreshContacts(String stringFilter) {
