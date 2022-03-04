@@ -1,22 +1,20 @@
 package com.vaadin.tutorial.addressbook;
 
-import com.vaadin.annotations.DesignRoot;
-import com.vaadin.data.Binder;
-import com.vaadin.data.Binder.Binding;
-import com.vaadin.data.validator.EmailValidator;
-import com.vaadin.event.ShortcutAction;
-import com.vaadin.server.SerializablePredicate;
+import com.vaadin.classic.v8.ui.FormLayout;
+import com.vaadin.classic.v8.ui.HorizontalLayout;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.Binder.Binding;
+import com.vaadin.flow.data.validator.EmailValidator;
+import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.declarative.Design;
-import com.vaadin.ui.themes.ValoTheme;
 
 /**
  * Create custom UI Components.
@@ -29,27 +27,23 @@ import com.vaadin.ui.themes.ValoTheme;
  *
  * @author Vaadin Ltd
  */
-@DesignRoot
 public class ContactForm extends FormLayout {
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField phone;
-    private TextField email;
-    private DateField birthDate;
-    private CheckBox doNotCall;
-    protected Button save;
-    protected Button cancel;
+    private TextField firstName = new TextField("First");
+    private TextField lastName = new TextField("Last");
+    private TextField phone = new TextField("Phone");
+    private TextField email = new TextField("Email");
+    private DatePicker birthDate = new DatePicker("Birthdate");
+    private Checkbox doNotCall = new Checkbox("Do not call");
+    protected Button save = new Button("save");
+    protected Button cancel  = new Button("cancel");
+
 
     private final Binder<Contact> binder = new Binder<>();
     private Contact contactBeingEdited;
 
     public ContactForm() {
-        Design.read(this);
-        configureComponents();
-    }
-
-    private void configureComponents() {
+        add(firstName, lastName, phone, email, birthDate, doNotCall, new HorizontalLayout(save, cancel));
 
         final SerializablePredicate<String> phoneOrEmailPredicate = v -> !phone
                 .getValue().trim().isEmpty()
@@ -84,8 +78,7 @@ public class ContactForm extends FormLayout {
          * With Vaadin built-in styles you can highlight the primary save button
          * and give it a keyboard shortcut for a better UX.
          */
-        save.setStyleName(ValoTheme.BUTTON_PRIMARY);
-        save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
+        save.setThemeName("primary");
 
         save.addClickListener(this::save);
         cancel.addClickListener(this::cancel);
@@ -102,26 +95,26 @@ public class ContactForm extends FormLayout {
         setVisible(contact != null);
     }
 
-    public void save(Button.ClickEvent event) {
+    public void save(ClickEvent event) {
         if (binder.writeBeanIfValid(contactBeingEdited)) {
             ContactService.getDemoService().save(contactBeingEdited);
 
             String msg = String.format("Saved '%s %s'.",
                     contactBeingEdited.getFirstName(),
                     contactBeingEdited.getLastName());
-            Notification.show(msg, Type.TRAY_NOTIFICATION);
-            getUI().getContent().refreshContacts();
+            Notification.show(msg);
+            getAddressBook().refreshContacts();
         }
 
     }
 
-    public void cancel(Button.ClickEvent event) {
-        Notification.show("Cancelled", Type.TRAY_NOTIFICATION);
-        getUI().getContent().deselect();
+    public void cancel(ClickEvent event) {
+        Notification.show("Cancelled");
+        getAddressBook().deselect();
     }
 
-    @Override
-    public AddressbookUI getUI() {
-        return (AddressbookUI) super.getUI();
+    public AddressbookUI getAddressBook() {
+        return (AddressbookUI) UI.getCurrent().getInternals().getActiveRouterTargetsChain().get(0);
+
     }
 }
