@@ -15,25 +15,18 @@
  */
 package com.vaadin.tutorial.addressbook;
 
-import com.vaadin.annotations.DesignRoot;
+import java.util.function.Consumer;
+
+import com.vaadin.classic.v8.ui.VerticalLayout;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.tutorial.addressbook.backend.Contact;
 import com.vaadin.tutorial.addressbook.backend.ContactService;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.declarative.Design;
-import com.vaadin.ui.renderers.DateRenderer;
-
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.function.Consumer;
 
 /**
  * @author Vaadin Ltd
  */
-@DesignRoot
 public class LeftPanel extends VerticalLayout {
 
     /*
@@ -43,9 +36,9 @@ public class LeftPanel extends VerticalLayout {
      * com.vaadin.ui package and there are over 500 more in
      * vaadin.com/directory.
      */
-    private Grid<Contact> contactList;
-    private TextField filter;
-    private Button newContact;
+    private Grid<Contact> contactList = new Grid<Contact>(Contact.class);
+    private TextField filter = new TextField();
+    private Button newContact = new Button("new");
 
     void addEditListener(Runnable editListener) {
         /*
@@ -64,19 +57,7 @@ public class LeftPanel extends VerticalLayout {
     }
 
     public LeftPanel() {
-        Design.read(this);
-        contactList.addColumn(Contact::getFirstName).setCaption("First Name");
-        contactList.addColumn(Contact::getLastName).setCaption("Last Name");
-        contactList.addColumn(Contact::getEmail).setCaption("Email");
-        contactList
-                .addColumn(
-                        c -> c.getBirthDate() == null ? null : Date.from(c.getBirthDate()
-                                .atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
-                        new DateRenderer(new SimpleDateFormat("M/d/yy")))
-                .setCaption("Birth Date");
-
-        contactList.addColumn(c -> c.isDoNotCall() ? "DO NOT CALL" : "")
-                .setCaption("Do Not Call");
+        add(filter, contactList, newContact);
     }
 
     void refresh(String filter) {
