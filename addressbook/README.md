@@ -14,8 +14,13 @@ Running the example from the command line
 $ mvn jetty:run
 ```
 
-Open [http://localhost:8080/](http://localhost:8080/)
+Open [http://localhost:8888/](http://localhost:8888/)
 
+Compiling the app for production
+-------------------
+```
+$ mvn package -Pproduction
+```
 
 Importing in IntelliJ IDEA 14
 --------------------
@@ -58,7 +63,7 @@ To checkout and run the project in Eclipse, do:
 - Right click the imported "addressbook" and choose Run As -> Maven Build...
   - Set the goal to "jetty:run" and click "Run"
 
-You should now have a Jetty server running on localhost:8080. Navigate to [http://localhost:8080/](http://localhost:8080/) to play with the application
+You should now have a Jetty server running on localhost:8080. Navigate to [http://localhost:8888/](http://localhost:8888/) to play with the application
 
 To use the built in server adapters of Eclipse, instead of doing "Run As -> Maven Build..." you can do
 - Run As -> Run on Server

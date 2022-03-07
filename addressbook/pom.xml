@@ -45,7 +45,7 @@
     <dependency>
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
-      <version>1.9.2</version>
+      <version>1.9.4</version>
       <type>jar</type>
     </dependency>
   </dependencies>
@@ -71,7 +71,6 @@
 
   <build>
     <defaultGoal>jetty:run</defaultGoal>
-
     <plugins>
       <plugin>
         <groupId>com.vaadin</groupId>
@@ -89,8 +88,7 @@
         <artifactId>jetty-maven-plugin</artifactId>
         <version>${jetty.version}</version>
         <configuration>
-                        <scanIntervalSeconds>2</scanIntervalSeconds>
-
+                    <scanIntervalSeconds>2</scanIntervalSeconds>
           <httpConnector>
             <port>8888</port>
           </httpConnector>
@@ -117,20 +115,6 @@
         </executions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
-        </plugin>
-        <plugin>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-maven-plugin</artifactId>
-          <version>7.7.0</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <dependencyManagement>
@@ -168,5 +152,27 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
+    <profiles>
+      <profile>
+          <id>production</id>
+          <build>
+              <plugins>
+                    <plugin>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build-frontend</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <productionMode>true</productionMode>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
